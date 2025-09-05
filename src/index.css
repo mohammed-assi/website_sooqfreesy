@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #00b4d8;
+  --color-primaryDark: #0077b6;
+
+  --font-primary: "Nunito", sans-serif;
+  --font-heading: "Nunito Sans", sans-serif;
+  --text-sm: 16px;
+  --text-heading: 56px;
+  --text-subHeading: 20px;
+}
+
+body {
+  font-family: var(--font-primary);
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+.spacer-x {
+  width: 1150px;
+  margin: auto;
+}
+
+.image-heading {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 55px;
+  color: #fff;
+}
+
+.image-subheading {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 60px;
+  color: #fff;
+  line-height: 40px;
+}
+
+.main-heading {
+  font-weight: 700;
+  font-size: 30px;
+}
+
+.input-icon-grp {
+  position: relative;
+}
+.input-icon-grp i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 25px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--gray-400);
+}
