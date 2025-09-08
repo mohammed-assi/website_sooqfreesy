@@ -1,0 +1,164 @@
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+export const ChangePassModal = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+  const { t } = useTranslation();
+
+  const schema = Yup.object().shape({
+    password: Yup.string().required(t("userPasswordRequired")),
+    newPassword: Yup.string()
+      .required(t("userPasswordRequired"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        t("passwordRegx")
+      ),
+    confirmPassword: Yup.string()
+      .required(t("confirmPasswordRequired"))
+      .oneOf([Yup.ref("newPassword")], t("passwordsMustMatch")),
+  });
+
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const [toggle, setToggle] = useState(true);
+  const [toggleNew, setToggleNew] = useState(true);
+  const [toggleConfirm, setToggleConfirm] = useState(true);
+
+  const handlepass = () => {
+    setToggle(!toggle);
+  };
+
+  const handlepassNew = () => {
+    setToggleNew(!toggleNew);
+  };
+
+  const handlepassConfirm = () => {
+    setToggleConfirm(!toggleConfirm);
+  };
+
+  const onSubmit = (data) => {
+    console.log("data", data);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      <div className="relative w-full max-w-lg rounded-lg bg-white shadow-lg px-5 py-4">
+        <div className="flex items-center justify-between border-b border-gray-200 py-4 ">
+          <h2 className="text-2xl font-bold">{t("changePassword")}</h2>
+          <button
+            onClick={() => {
+              onClose();
+              reset();
+            }}
+            className="absolute top-8 right-6 text-gray-400 hover:text-gray-600"
+          >
+            <i className="fa-solid fa-xmark fa-lg" />
+          </button>
+        </div>
+
+        <div className="py-4 space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div>
+              <label className="block mb-2 text-md font-bold">
+                {t("password")}
+              </label>
+              <div className="input-icon-grp">
+                <input
+                  {...register("password")}
+                  type={toggle === true ? "password" : "text"}
+                  id="password"
+                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  autoComplete="off"
+                />
+                <i
+                  className={
+                    toggle === true
+                      ? "fa-regular fa-eye-slash show-pass"
+                      : "fa-regular fa-eye show-pass"
+                  }
+                  onClick={handlepass}
+                />
+              </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm">
+                  {errors.password?.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block mb-2 text-md font-bold">
+                {t("newPassword")}
+              </label>
+              <div className="input-icon-grp">
+                <input
+                  {...register("newPassword")}
+                  type={toggleNew === true ? "password" : "text"}
+                  id="newPassword"
+                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  autoComplete="off"
+                />
+                <i
+                  className={
+                    toggleNew === true
+                      ? "fa-regular fa-eye-slash show-pass"
+                      : "fa-regular fa-eye show-pass"
+                  }
+                  onClick={handlepassNew}
+                />
+              </div>
+              {errors.newPassword && (
+                <p className="text-red-500 text-sm">
+                  {errors.newPassword?.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block mb-2 text-md font-bold">
+                {t("confirmPassword")}
+              </label>
+              <div className="input-icon-grp">
+                <input
+                  type={toggleConfirm === true ? "password" : "text"}
+                  {...register("confirmPassword")}
+                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                />
+                <i
+                  className={
+                    toggleConfirm === true
+                      ? "fa-regular fa-eye-slash show-pass"
+                      : "fa-regular fa-eye show-pass"
+                  }
+                  onClick={handlepassConfirm}
+                />
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full mt-3 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+            >
+              {t("saveButton")}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};

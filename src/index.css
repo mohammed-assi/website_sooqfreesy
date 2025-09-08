@@ -57,3 +57,16 @@ a {
   cursor: pointer;
   color: var(--gray-400);
 }
+
+#nprogress .bar {
+  background: var(--color-primary) !important;
+  height: 3px !important;
+}
+
+#nprogress .spinner {
+  display: none !important;
+}
+
+.react-datepicker-wrapper {
+  width: 100% !important;
+}

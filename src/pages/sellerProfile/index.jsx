@@ -6,6 +6,7 @@ import headerContact from "../../assets/icon/headerContact.svg";
 import menu from "../../assets/icon/menu.svg";
 import reportUser from "../../assets/icon/reportUser.svg";
 import ReportListModal from "../../components/sellerProfile/ReportListModal";
+import { ListingFilter } from "../../components/sellerProfile/ListingFilter";
 
 export const SellerProfile = () => {
   const { t } = useTranslation();
@@ -13,7 +14,7 @@ export const SellerProfile = () => {
   const [showReportListModal, setShowReportListModal] = useState(false);
   return (
     <>
-      <div className="spacer-x">
+      <div className="spacer-x pb-10">
         <div className="pt-15">
           <div className="text-sm text-gray-500 mb-2">
             {t("home")} <span className="mx-1">{">"}</span> Search
@@ -69,6 +70,8 @@ export const SellerProfile = () => {
             </div>
           </div>
         </div>
+
+        <ListingFilter />
       </div>
 
       {showReportListModal && (

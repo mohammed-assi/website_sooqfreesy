@@ -23,11 +23,11 @@ const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
-        <h2 className="font-bold text-xl mb-4">Report Seller</h2>
+        <h2 className="font-bold text-xl">Report Seller</h2>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           {reasons.map((reason, idx) => (
-            <label key={idx} className="flex items-center gap-2 cursor-pointer">
+            <label key={idx} className="flex items-center gap-3 py-1 cursor-pointer">
               <input
                 type="radio"
                 name="reportReason"

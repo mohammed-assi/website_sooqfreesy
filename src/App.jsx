@@ -4,7 +4,9 @@ import { useEffect } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { ToastContainer } from "react-toastify";
+import "react-phone-input-2/lib/style.css";
 import "react-toastify/dist/ReactToastify.css";
+import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   const location = useLocation();

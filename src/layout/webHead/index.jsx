@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 import { showSuccessToast } from "../../utils/toastUtils";
 import { clearUser } from "../../redux/slices/userSlice";
+import { ROUTE } from "../../config/constants";
 
 export const WebHead = () => {
   const { t } = useTranslation();
@@ -74,7 +75,7 @@ export const WebHead = () => {
     dispatch(logout());
     dispatch(clearUser());
     setOpen(false);
-    showSuccessToast("Logout successful");
+    showSuccessToast(t("logOutMsg"));
   };
 
   return (
@@ -128,15 +129,15 @@ export const WebHead = () => {
               <div className="relative" ref={dropdownRef}>
                 {accessToken ? (
                   <div className="flex gap-7 items-center px-7 py-3">
-                    <div>
+                    <Link to={ROUTE.NOTIFICATIONS}>
                       <img src={notification} alt="icon" />
-                    </div>
-                    <div>
+                    </Link>
+                    <Link to={ROUTE.WISHLIST}>
                       <img src={wishlist} alt="icon" />
-                    </div>
-                    <div>
+                    </Link>
+                    <Link to={ROUTE.MY_ADS}>
                       <img src={ads} alt="icon" />
-                    </div>
+                    </Link>
 
                     <div
                       className="cursor-pointer flex justify-center"
@@ -158,7 +159,7 @@ export const WebHead = () => {
                 ) : (
                   <button
                     onClick={() => setOpen(!open)}
-                    className="flex gap-4 items-center px-7 py-3 border border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition group"
+                    className="flex font-bold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition group"
                   >
                     <img
                       src={signin}
@@ -191,23 +192,49 @@ export const WebHead = () => {
                     </div>
 
                     <ul className="p-2">
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                        <img src={profile} alt="icon" /> {t("profile")}
+                      <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                        <Link
+                          to={ROUTE.USER_PROFILE}
+                          className="flex items-center gap-3 "
+                        >
+                          <img src={profile} alt="icon" /> {t("profile")}
+                        </Link>
                       </li>
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                        <img src={ads} alt="icon" />
-                        {t("myAds")}
+                      <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                        <Link
+                          to={ROUTE.MY_ADS}
+                          className="flex items-center gap-3 "
+                        >
+                          <img src={ads} alt="icon" />
+                          {t("myAds")}
+                        </Link>
                       </li>
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                        <img src={wishlist} alt="icon" /> {t("wishlist")}
+                      <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                        <Link
+                          to={ROUTE.WISHLIST}
+                          className="flex items-center gap-3 "
+                        >
+                          <img src={wishlist} alt="icon" /> {t("wishlist")}
+                        </Link>
                       </li>
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                        <img src={notification} alt="icon" />
-                        {t("notification")}
+                      <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                        <Link
+                          to={ROUTE.NOTIFICATIONS}
+                          className="flex items-center gap-3 "
+                        >
+                          <img src={notification} alt="icon" />
+                          {t("notification")}
+                        </Link>
                       </li>
                       <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg">
-                        <img src={support} alt="icon" />
-                        {t("helpSupport")}
+                        <Link
+                          to={ROUTE.HELP_SUPPORT}
+                          state={{ from: "contact" }}
+                          className="flex items-center gap-3 "
+                        >
+                          <img src={support} alt="icon" />
+                          {t("helpSupport")}
+                        </Link>
                       </li>
                     </ul>
 

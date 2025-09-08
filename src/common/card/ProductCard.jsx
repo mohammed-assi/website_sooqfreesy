@@ -2,6 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Pagination } from "swiper/modules";
 import wishlist from "../../assets/icon/whiteHeart.svg";
+import heartFilled from "../../assets/icon/heartFilled.svg";
 import location from "../../assets/icon/silverLocation.svg";
 
 export const ProductCard = ({ item }) => {
@@ -25,7 +26,11 @@ export const ProductCard = ({ item }) => {
       </Swiper>
 
       <button className="cursor-pointer absolute top-3 right-3 z-9">
-        <img src={wishlist} alt="icon" />
+        {item.liked ? (
+          <img src={heartFilled} alt="icon" />
+        ) : (
+          <img src={wishlist} alt="icon" />
+        )}
       </button>
 
       <div className="py-4 space-y-2">

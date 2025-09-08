@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import "swiper/css";
 import audi from "../../assets/image/audi.png";
 import verna from "../../assets/image/verna.png";
 import ferrari from "../../assets/image/ferrari.png";
@@ -30,6 +29,7 @@ export const Products = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [audi, verna, ferrari],
+      liked: false
     },
 
     {
@@ -40,6 +40,7 @@ export const Products = () => {
       location: "Palmyra",
       category: t("appliances"),
       images: [machine, mixer],
+      liked: false
     },
 
     {
@@ -50,6 +51,7 @@ export const Products = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [verna, audi],
+      liked: false
     },
 
     {
@@ -60,6 +62,7 @@ export const Products = () => {
       location: "Palmyra",
       category: t("property"),
       images: [office, building],
+      liked: false
     },
     {
       id: 5,
@@ -69,6 +72,7 @@ export const Products = () => {
       location: "Palmyra",
       category: t("appliances"),
       images: [mixer, machine],
+      liked: false
     },
 
     {
@@ -79,6 +83,7 @@ export const Products = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [ferrari, audi],
+      liked: false
     },
 
     {
@@ -89,6 +94,7 @@ export const Products = () => {
       location: "Palmyra",
       category: t("electronics"),
       images: [iphone, machine],
+      liked: false
     },
 
     {
@@ -99,6 +105,7 @@ export const Products = () => {
       location: "Palmyra",
       category: t("property"),
       images: [building, office],
+      liked: false
     },
   ];
 

@@ -3,7 +3,6 @@ import { AuthModal } from "../../common/modal/AuthModal";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RegisterModal } from "./RegisterModal";

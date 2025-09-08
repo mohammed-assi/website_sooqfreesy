@@ -3,6 +3,8 @@ import logo from "../../assets/icon/footerLogo.svg";
 import facebook from "../../assets/icon/facebook.svg";
 import instagram from "../../assets/icon/instagram.svg";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { ROUTE } from "../../config/constants";
 
 export const Footer = () => {
   const { t } = useTranslation();
@@ -18,13 +20,13 @@ export const Footer = () => {
             <h3 className="font-bold text-lg mb-3">{t("aboutSouqSyria")}</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#">{t("aboutUs")}</a>
+                <Link to={ROUTE.ABOUT_US}>{t("aboutUs")}</Link>
               </li>
               <li>
-                <a href="#">{t("termsConditions")}</a>
+                <Link to={ROUTE.TERMS_CONDITIONS}>{t("termsConditions")}</Link>
               </li>
               <li>
-                <a href="#">{t("privacyPolicy")}</a>
+                <Link to={ROUTE.PRIVACY_POLICY}>{t("privacyPolicy")}</Link>
               </li>
             </ul>
           </div>
@@ -33,10 +35,10 @@ export const Footer = () => {
             <h3 className="font-bold text-lg mb-3">{t("support")}</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <a href="#">{t("contactUs")}</a>
+                <Link to={ROUTE.HELP_SUPPORT} state={{from:'contact'}}>{t("contactUs")}</Link>
               </li>
               <li>
-                <a href="#">{t("FAQ")}</a>
+                <Link to={ROUTE.HELP_SUPPORT} state={{from:'faq'}}>{t("FAQ")}</Link>
               </li>
             </ul>
           </div>

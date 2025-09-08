@@ -14,7 +14,6 @@ const RatingStar = ({ starValue }) => {
   return (
     <div className="flex items-center gap-1">
       {stars}
-      <span className="ml-1 text-sm">({starValue})</span>
     </div>
   );
 };

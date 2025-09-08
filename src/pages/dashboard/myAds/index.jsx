@@ -1,0 +1,136 @@
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import audi from "../../../assets/image/audi.png";
+import verna from "../../../assets/image/verna.png";
+import ferrari from "../../../assets/image/ferrari.png";
+import office from "../../../assets/image/office.png";
+import building from "../../../assets/image/building.png";
+import iphone from "../../../assets/image/iphone.png";
+import mixer from "../../../assets/image/mixer.png";
+import machine from "../../../assets/image/machine.png";
+import ProductListCard from "../../../components/searchPage/ProductListCard";
+
+export const MyAds = () => {
+  const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState("active");
+
+  const tabs = [
+    { id: "active", label: t("active") },
+    { id: "sold", label: t("sold") },
+    { id: "reject", label: t("reject") },
+  ];
+
+  const cars = [
+    {
+      id: 1,
+      price: "£3500",
+      title: "Hyundai Verna",
+      description: "Audi Silver 1K km",
+      location: "Palmyra",
+      category: t("cars"),
+      images: [audi, verna, ferrari],
+    },
+
+    {
+      id: 2,
+      price: "£3500",
+      title: "Washing Machine",
+      description: "White 2K km",
+      location: "Palmyra",
+      category: t("appliances"),
+      images: [machine, mixer],
+    },
+
+    {
+      id: 3,
+      price: "£4000",
+      title: "Honda Civic",
+      description: "White 2K km",
+      location: "Palmyra",
+      category: t("cars"),
+      images: [verna, audi],
+    },
+
+    {
+      id: 4,
+      price: "£3000",
+      title: "Commercial Office",
+      description: "White 2K km",
+      location: "Palmyra",
+      category: t("property"),
+      images: [office, building],
+    },
+    {
+      id: 5,
+      price: "£4500",
+      title: "Kitchen Mixer",
+      description: "White 2K km",
+      location: "Palmyra",
+      category: t("appliances"),
+      images: [mixer, machine],
+    },
+
+    {
+      id: 6,
+      price: "£5500",
+      title: "Ferrari Enzo",
+      description: "White 2K km",
+      location: "Palmyra",
+      category: t("cars"),
+      images: [ferrari, audi],
+    },
+
+    {
+      id: 7,
+      price: "£2500",
+      title: "iPhone X",
+      description: "White 2K km",
+      location: "Palmyra",
+      category: t("electronics"),
+      images: [iphone, machine],
+    },
+
+    {
+      id: 8,
+      price: "£5500",
+      title: "Compound Building",
+      description: "White 2K km",
+      location: "Palmyra",
+      category: t("property"),
+      images: [building, office],
+    },
+  ];
+
+  return (
+    <div className="p-5">
+      <h1 className="main-heading">{t("myAds")}</h1>
+
+      <div className="flex py-8">
+        {tabs.map((tab) => (
+          <p
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`relative cursor-pointer pb-2 px-10 text-lg font-semibold  transition-colors ${
+              activeTab === tab.id
+                ? "text-primary"
+                : "text-gray-600 hover:text-primary"
+            }`}
+          >
+            {tab.label}
+            <span
+              className={`absolute left-0 -bottom-[1px] h-[1px] w-full rounded-full transition-colors ${
+                activeTab === tab.id ? "bg-primary h-[2px]" : "bg-gray-300"
+              }`}
+            />
+          </p>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        {cars.map((car) => (
+          <ProductListCard key={car.id} item={car} />
+        ))}
+      </div>
+    </div>
+  );
+};

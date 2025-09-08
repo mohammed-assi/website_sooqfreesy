@@ -50,6 +50,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [audi, verna, ferrari],
+      liked: false
     },
 
     {
@@ -60,6 +61,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("appliances"),
       images: [machine, mixer],
+      liked: false
     },
 
     {
@@ -70,6 +72,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [verna, audi],
+      liked: false
     },
 
     {
@@ -80,6 +83,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("property"),
       images: [office, building],
+      liked: false
     },
     {
       id: 5,
@@ -89,6 +93,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("appliances"),
       images: [mixer, machine],
+      liked: false
     },
 
     {
@@ -99,6 +104,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [ferrari, audi],
+      liked: false
     },
 
     {
@@ -109,6 +115,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("electronics"),
       images: [iphone, machine],
+      liked: false
     },
 
     {
@@ -119,6 +126,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("property"),
       images: [building, office],
+      liked: false
     },
   ];
   const imagesss = [building1, building3, building4, building5];

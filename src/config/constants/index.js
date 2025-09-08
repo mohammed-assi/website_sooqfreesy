@@ -7,4 +7,12 @@ export const LOCAL_STORAGE = {
 export const ROUTE = {
   PRODUCT_PAGE: "/products",
   SELLER_PROFILE: "/seller-profile",
+  USER_PROFILE: "/profile",
+  MY_ADS: "/my-ads",
+  WISHLIST: "/wishlist",
+  NOTIFICATIONS: "/notification",
+  HELP_SUPPORT: "/help-support",
+  ABOUT_US: "/about-us",
+  TERMS_CONDITIONS: "/terms-conditions",
+  PRIVACY_POLICY: "/privacy-policies",
 };
