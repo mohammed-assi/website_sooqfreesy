@@ -20,3 +20,16 @@ export const AUTH = {
   RESET_PASSWORD: `${BASEURL}${PREFIX}/reset-password`,
   RESEND_OTP: `${BASEURL}${PREFIX}/resend-otp`,
 };
+
+export const CUSTOMER = {
+  CONTACT_US: `${BASEURL}/customer/contact-issue/create`,
+  UPDATE_PROFILE_PIC: `${BASEURL}/customer/update-profile-picture`,
+  UPDATE_PASSWORD: `${BASEURL}/customer/change-password`,
+  UPDATE_PROFILE_INFO: `${BASEURL}/customer/update-custom-profile`,
+  SEND_OTP: `${BASEURL}/customer/send-verification-otp`,
+  VERIFY_OTP: `${BASEURL}/customer/verify-customer-otp`,
+};
+
+export const REPORT_LIST = {
+  CONTACT_US: `${BASEURL}/report/report-listing`,
+};

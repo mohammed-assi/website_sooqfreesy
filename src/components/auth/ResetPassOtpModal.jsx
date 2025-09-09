@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AuthModal } from "../../common/modal/AuthModal";
 import { useForm } from "react-hook-form";
@@ -96,6 +96,10 @@ export const ResetPassOtpModal = ({
       }
     }
   };
+
+    useEffect(() => {
+    reset();
+  }, [t]);
 
   return (
     <>

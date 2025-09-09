@@ -1,58 +1,103 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import { useTranslation } from "react-i18next";
+import { getRequest, postRequest } from "../../config/apiFunctions";
+import { CUSTOMER, REPORT_LIST } from "../../config/endPoints";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 export const ContactUs = () => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const schema = yup.object().shape({
-    fullName: yup.string().required("Name is required"),
-    email: yup.string().email("Invalid email").required("Email is required"),
-    phone: yup
+    fullName: yup.string().required(t("fullNameRequired")),
+    email: yup
       .string()
-      .required("Phone number is required"),
-    description: yup.string().required("Description is required"),
-    platform: yup.string().required("Platform is required"),
-    help: yup.string().required("This field is required"),
+      .required(t("emailRequired"))
+      .email(t("validEmail"))
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        t("validEmail")
+      ),
+    phone: yup.string().required(t("userPhoneRequired")),
+    description: yup.string().required(t("descriptionRequired")),
+    platform: yup.string().required(t("platformRequired")),
+    help: yup.string().required(t("fieldRequired")),
   });
-  
+
   const [countryCode, setCountryCode] = useState(963);
-  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [reportList, setReportList] = useState([]);
 
   const {
     handleSubmit,
     register,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log("data", data);
-    console.log("countryCode", countryCode);
-    console.log("phoneNumber", phoneNumber);
+  const onSubmit = async (data) => {
+    const payload = {
+      reportList_id: Number(data.help),
+      os_platform: data.platform,
+      description: data.description,
+      username: data.fullName,
+      email: data.email,
+      country_code: `+${countryCode}`,
+      phone: data.phone,
+    };
+
+    try {
+      const response = await postRequest(CUSTOMER.CONTACT_US, payload);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        showSuccessToast(response?.data?.message);
+        setCountryCode(963);
+        setValue("phone", "");
+        reset();
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
   };
+
+  const getContactReportList = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setReportList(response?.data?.data);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    getContactReportList(`${REPORT_LIST.CONTACT_US}?reportType=CONTACT_ISSUE`);
+  }, []);
+
+  useEffect(() => {
+    reset();
+  }, [t]);
 
   return (
     <div className="pb-8">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-[60%]">
         <div className="">
           <label className="block mb-2 text-md font-bold">
-            What do you need help with?
+            {t("needHelpWith")}
           </label>
           <select
             {...register("help")}
             className="w-full rounded p-3 bg-gray-100 focus:outline-none"
           >
-            <option value="Report a User or Listing">Report a User or Listing</option>
-            <option value="My Listing">My Listing</option>
-            <option value="Browse & Search issues">Browse & Search issues</option>
-            <option value="Login & Registration">Login & Registration</option>
-            <option value="Legal Matters">Legal Matters</option>
-            <option value="Suggestions & Improvements">Suggestions & Improvements</option>
+            {reportList?.map((item) => (
+              <option key={item.id} value={item.id}>
+                {i18n.language === "ar" ? item.arabic_name : item.name}
+              </option>
+            ))}
           </select>
           {errors.help && (
             <p className="text-red-500 text-sm mt-1">{errors.help.message}</p>
@@ -60,15 +105,17 @@ export const ContactUs = () => {
         </div>
 
         <div className="">
-          <label className="block mb-2 text-md font-bold">OS Platform</label>
+          <label className="block mb-2 text-md font-bold">
+            {t("OSPlatform")}
+          </label>
           <select
             {...register("platform")}
             className="w-full rounded p-3 bg-gray-100 focus:outline-none"
           >
-            <option value="iOS">iOS</option>
-            <option value="Android">Android</option>
-            <option value="Desktop/PC">Desktop/PC</option>
-            <option value="Mobile Web">Mobile Web</option>
+            <option value={t("iOS")}>{t("iOS")}</option>
+            <option value={t("android")}>{t("android")}</option>
+            <option value={t("desktopPC")}>{t("desktopPC")}</option>
+            <option value={t("mobileWeb")}>{t("mobileWeb")}</option>
           </select>
           {errors.platform && (
             <p className="text-red-500 text-sm mt-1">
@@ -79,7 +126,7 @@ export const ContactUs = () => {
 
         <div>
           <label className="block mb-2 text-md font-bold">
-            {t("Description")}
+            {t("description")}
           </label>
           <textarea
             type="text"
@@ -95,9 +142,7 @@ export const ContactUs = () => {
         </div>
 
         <div>
-          <label className="block mb-2 text-md font-bold">
-            {t("Name")}
-          </label>
+          <label className="block mb-2 text-md font-bold">{t("name")}</label>
           <input
             type="text"
             {...register("fullName")}
@@ -125,7 +170,6 @@ export const ContactUs = () => {
               const phoneNumber = value.replace(countryCode, "");
 
               setCountryCode(countryCode);
-              setPhoneNumber(phoneNumber);
               setValue("phone", phoneNumber);
             }}
           />
@@ -136,7 +180,7 @@ export const ContactUs = () => {
 
         <div>
           <label className="block mb-2 text-md font-bold">
-            {t("email")}
+            {t("emailField")}
           </label>
           <input
             type="text"
@@ -144,9 +188,7 @@ export const ContactUs = () => {
             className="w-full rounded p-3 bg-gray-100 focus:outline-none"
           />
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.email.message}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
 

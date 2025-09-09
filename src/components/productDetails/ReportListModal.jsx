@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { InfoModal } from "../../common/modal/InfoModal";
+import { useTranslation } from "react-i18next";
 
 export const ReportListModal = ({ onClose }) => {
+  const { t } = useTranslation();
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [report, setReport] = useState("");
 
@@ -31,7 +33,7 @@ export const ReportListModal = ({ onClose }) => {
             <i className="fa-solid fa-xmark fa-lg" />
           </button>
 
-          <h2 className="text-xl font-bold mb-4">Report this Listing</h2>
+          <h2 className="text-xl font-bold mb-4">{t("reportListing")}</h2>
 
           <ul className="space-y-2">
             {cities.map((city) => (
@@ -56,8 +58,8 @@ export const ReportListModal = ({ onClose }) => {
             setShowInfoModal(false);
             onClose();
           }}
-          title="Reported!"
-          subtitle="We will validate the information reported by you"
+          title={t("reported")}
+          subtitle={t("informationReported")}
         />
       )}
     </>

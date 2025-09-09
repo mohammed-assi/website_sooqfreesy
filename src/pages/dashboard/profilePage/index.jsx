@@ -10,6 +10,7 @@ import moment from "moment/moment";
 
 export const ProfilePage = () => {
   const { t } = useTranslation();
+  const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { userInfo } = useSelector((state) => state.user);
   const [activeTab, setActiveTab] = useState("editProfile");
 
@@ -33,7 +34,11 @@ export const ProfilePage = () => {
         <div className="relative flex items-center justify-between bg-white shadow-md rounded-2xl p-4 w-full">
           <div className="flex items-center gap-4">
             <img
-              src={defaultUser}
+              src={
+                userInfo?.user_profile_url
+                  ? `${imagePath}/${userInfo.user_profile_url}`
+                  : defaultUser
+              }
               alt="userImg"
               className="w-60 h-45 rounded-lg object-cover"
             />
@@ -41,7 +46,8 @@ export const ProfilePage = () => {
               <h3 className="text-xl font-bold pb-1">{userInfo?.username}</h3>
               <RatingStar starValue={4.5} />
               <p className="text-sm text-gray-500 pt-5">
-                {t("memberSince")} {moment(userInfo?.userInfo?.created_at).format("MM/DD/YYYY")}
+                {t("memberSince")}{" "}
+                {moment(userInfo?.created_at).format("MM/DD/YYYY")}
               </p>
             </div>
           </div>
@@ -69,7 +75,7 @@ export const ProfilePage = () => {
         ))}
       </div>
 
-      {activeTab === "editProfile" && <EditProfile />}
+      {activeTab === "editProfile" && <EditProfile userInfo={userInfo} imagePath={imagePath} />}
       {activeTab === "reviews" && (
         <div className="pt-4">
           <h3 className="font-semibold text-2xl py-6">{t("ratingReviews")}</h3>

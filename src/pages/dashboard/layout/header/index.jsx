@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../../assets/icon/headerLogo.svg";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
@@ -7,7 +7,7 @@ import profile from "../../../../assets/icon/profile.svg";
 import ads from "../../../../assets/icon/ads.svg";
 import wishlist from "../../../../assets/icon/wishlist.svg";
 import notification from "../../../../assets/icon/notification.svg";
-import support from "../../../../assets/icon/support.svg";
+// import support from "../../../../assets/icon/support.svg";
 import login from "../../../../assets/icon/login.svg";
 import logoutIcon from "../../../../assets/icon/logout.svg";
 import signin from "../../../../assets/icon/signin.svg";
@@ -23,6 +23,8 @@ export const DashboardHeader = () => {
   const dropdownRef = useRef(null);
   const searchRef = useRef(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
@@ -60,6 +62,7 @@ export const DashboardHeader = () => {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearUser());
+    navigate(ROUTE.ROOT);
     setOpen(false);
     showSuccessToast(t("logOutMsg"));
   };
@@ -91,7 +94,11 @@ export const DashboardHeader = () => {
                 >
                   <div className="w-14 h-12 flex items-center justify-center gap-2">
                     <img
-                      src={userInfo?.userInfo?.user_profile_url || defaultUser}
+                      src={
+                        userInfo?.user_profile_url
+                          ? `${imagePath}/${userInfo.user_profile_url}`
+                          : defaultUser
+                      }
                       alt="icon"
                       className="h-full w-full object-cover rounded-md border-3 border-blue-100"
                     />
@@ -102,12 +109,15 @@ export const DashboardHeader = () => {
                 {open && (
                   <div className="absolute top-15 -right-18 mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
                     <div className="flex items-center gap-3 p-4 border-b border-gray-200">
-                      <div className="w-20 h-20 rounded flex items-center justify-center">
+                      <div className="w-20 h-18 rounded flex items-center justify-center">
                         <img
                           src={
-                            userInfo?.userInfo?.user_profile_url || defaultUser
+                            userInfo?.user_profile_url
+                              ? `${imagePath}/${userInfo.user_profile_url}`
+                              : defaultUser
                           }
                           alt="icon"
+                          className="h-full w-full object-cover rounded"
                         />
                       </div>
                       <div>
@@ -122,26 +132,53 @@ export const DashboardHeader = () => {
 
                     <ul className="p-2">
                       <li
-                        onClick={() => setOpen(false)}
+                        onClick={() => {
+                          setOpen(false);
+                          navigate(ROUTE.USER_PROFILE);
+                        }}
                         className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
                       >
                         <img src={profile} alt="icon" /> {t("profile")}
                       </li>
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                      <li
+                        onClick={() => {
+                          setOpen(false);
+                          navigate(ROUTE.MY_ADS);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                      >
                         <img src={ads} alt="icon" />
                         {t("myAds")}
                       </li>
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                      <li
+                        onClick={() => {
+                          setOpen(false);
+                          navigate(ROUTE.WISHLIST);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                      >
                         <img src={wishlist} alt="icon" /> {t("wishlist")}
                       </li>
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                      <li
+                        onClick={() => {
+                          setOpen(false);
+                          navigate(ROUTE.NOTIFICATIONS);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                      >
                         <img src={notification} alt="icon" />
                         {t("notification")}
                       </li>
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg">
+                      {/* <li
+                        onClick={() => {
+                          setOpen(false);
+                          navigate(ROUTE.HELP_SUPPORT);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg"
+                      >
                         <img src={support} alt="icon" />
                         {t("helpSupport")}
-                      </li>
+                      </li> */}
                     </ul>
 
                     <div className="border-t border-gray-200 p-2">

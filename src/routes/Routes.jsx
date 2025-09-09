@@ -15,6 +15,8 @@ import { HelpSupport } from "../pages/helpSupport";
 import { AboutUs } from "../pages/aboutUs";
 import { TermConditions } from "../pages/termConditions";
 import { PrivacyPolicy } from "../pages/privacyPolicy";
+import ProtectedRoute from "./section/ProtectedRoute";
+import UnprotectedRoute from "./section/UnprotectedRoute";
 
 export const Router = () => {
   return (
@@ -29,7 +31,13 @@ export const Router = () => {
         <Route path={ROUTE.PRIVACY_POLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTE.HELP_SUPPORT} element={<HelpSupport />} />
       </Route>
-      <Route element={<DashboardLayout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path={ROUTE.USER_PROFILE} element={<ProfilePage />} />
         <Route path={ROUTE.MY_ADS} element={<MyAds />} />
         <Route path={ROUTE.WISHLIST} element={<MyWishlist />} />

@@ -3,15 +3,18 @@ import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { postRequest } from "../../config/apiFunctions";
+import { CUSTOMER } from "../../config/endPoints";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import { InfoModal } from "../../common/modal/InfoModal";
 
 export const ChangePassModal = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
   const { t } = useTranslation();
 
   const schema = Yup.object().shape({
     password: Yup.string().required(t("userPasswordRequired")),
     newPassword: Yup.string()
-      .required(t("userPasswordRequired"))
+      .required(t("userNewPasswordRequired"))
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
         t("passwordRegx")
@@ -33,6 +36,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
   const [toggle, setToggle] = useState(true);
   const [toggleNew, setToggleNew] = useState(true);
   const [toggleConfirm, setToggleConfirm] = useState(true);
+  const [showInfoModal, setShowInfoModal] = useState(false);
 
   const handlepass = () => {
     setToggle(!toggle);
@@ -46,9 +50,25 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
     setToggleConfirm(!toggleConfirm);
   };
 
-  const onSubmit = (data) => {
-    console.log("data", data);
+  const onSubmit = async (data) => {
+    const payload = {
+      currentPassword: data.password,
+      newPassword: data.newPassword,
+    };
+
+    try {
+      const response = await postRequest(CUSTOMER.UPDATE_PASSWORD, payload);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        showSuccessToast(response?.data?.message);
+        setShowInfoModal(true);
+        reset();
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -159,6 +179,17 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
           </form>
         </div>
       </div>
+
+      {showInfoModal && (
+        <InfoModal
+          onClose={() => {
+            setShowInfoModal(false);
+            onClose();
+          }}
+          title={t("passwordChanged")}
+          subtitle={t("passwordChangedSuccessfully")}
+        />
+      )}
     </div>
   );
 };

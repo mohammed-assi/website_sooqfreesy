@@ -50,7 +50,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [audi, verna, ferrari],
-      liked: false
+      liked: false,
     },
 
     {
@@ -61,7 +61,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("appliances"),
       images: [machine, mixer],
-      liked: false
+      liked: false,
     },
 
     {
@@ -72,7 +72,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [verna, audi],
-      liked: false
+      liked: false,
     },
 
     {
@@ -83,7 +83,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("property"),
       images: [office, building],
-      liked: false
+      liked: false,
     },
     {
       id: 5,
@@ -93,7 +93,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("appliances"),
       images: [mixer, machine],
-      liked: false
+      liked: false,
     },
 
     {
@@ -104,7 +104,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("cars"),
       images: [ferrari, audi],
-      liked: false
+      liked: false,
     },
 
     {
@@ -115,7 +115,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("electronics"),
       images: [iphone, machine],
-      liked: false
+      liked: false,
     },
 
     {
@@ -126,7 +126,7 @@ export const ProductDetail = () => {
       location: "Palmyra",
       category: t("property"),
       images: [building, office],
-      liked: false
+      liked: false,
     },
   ];
   const imagesss = [building1, building3, building4, building5];
@@ -370,8 +370,8 @@ export const ProductDetail = () => {
       {showNotifyModal && (
         <InfoModal
           onClose={() => setShowNotifyModal(false)}
-          title="Request Submitted!"
-          subtitle="Your price request has been successfully submitted."
+          title={t("requestSubmitted")}
+          subtitle={t("successfullySubmitted")}
         />
       )}
       {showReportListModal && (

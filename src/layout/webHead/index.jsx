@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/icon/headerLogo.svg";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
@@ -23,14 +23,14 @@ export const WebHead = () => {
   const dropdownRef = useRef(null);
   const searchRef = useRef(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-
-  console.log("userInfo", userInfo);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -74,6 +74,7 @@ export const WebHead = () => {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearUser());
+    navigate(ROUTE.ROOT);
     setOpen(false);
     showSuccessToast(t("logOutMsg"));
   };
@@ -146,7 +147,9 @@ export const WebHead = () => {
                       <div className="w-14 h-12 flex items-center justify-center gap-2">
                         <img
                           src={
-                            userInfo?.userInfo?.user_profile_url || defaultUser
+                            userInfo?.user_profile_url
+                              ? `${imagePath}/${userInfo.user_profile_url}`
+                              : defaultUser
                           }
                           alt="icon"
                           className="h-full w-full object-cover rounded-md border-3 border-blue-100"
@@ -173,12 +176,15 @@ export const WebHead = () => {
                 {open && (
                   <div className="absolute -right-10 mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
                     <div className="flex items-center gap-3 p-4 border-b border-gray-200">
-                      <div className="w-20 h-20 rounded flex items-center justify-center">
+                      <div className="w-20 h-18 rounded flex items-center justify-center">
                         <img
                           src={
-                            userInfo?.userInfo?.user_profile_url || defaultUser
+                            userInfo?.user_profile_url
+                              ? `${imagePath}/${userInfo.user_profile_url}`
+                              : defaultUser
                           }
                           alt="icon"
+                          className="h-full w-full object-cover rounded"
                         />
                       </div>
                       <div>

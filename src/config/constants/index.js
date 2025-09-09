@@ -5,6 +5,7 @@ export const LOCAL_STORAGE = {
 };
 
 export const ROUTE = {
+  ROOT: "/",
   PRODUCT_PAGE: "/products",
   SELLER_PROFILE: "/seller-profile",
   USER_PROFILE: "/profile",
