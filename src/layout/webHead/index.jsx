@@ -92,7 +92,7 @@ export const WebHead = () => {
               <Link to="/">
                 <img src={logo} alt="logo" />
               </Link>
-              {isScrolled && (
+              {isScrolled && location.pathname !== ROUTE.CREATE_POST && (
                 <div className="relative" ref={searchRef}>
                   <div className="rounded-lg px-4 py-3 flex justify-between items-center bg-gray-100">
                     <input
@@ -126,151 +126,162 @@ export const WebHead = () => {
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-4">
-              <div className="relative" ref={dropdownRef}>
-                {accessToken ? (
-                  <div className="flex gap-7 items-center px-7 py-3">
-                    <Link to={ROUTE.NOTIFICATIONS}>
-                      <img src={notification} alt="icon" />
-                    </Link>
-                    <Link to={ROUTE.WISHLIST}>
-                      <img src={wishlist} alt="icon" />
-                    </Link>
-                    <Link to={ROUTE.MY_ADS}>
-                      <img src={ads} alt="icon" />
-                    </Link>
+            {location.pathname !== ROUTE.CREATE_POST ? (
+              <div className="flex items-center gap-4">
+                <div className="relative" ref={dropdownRef}>
+                  {accessToken ? (
+                    <div className="flex gap-7 items-center px-7 py-3">
+                      <Link to={ROUTE.NOTIFICATIONS}>
+                        <img src={notification} alt="icon" />
+                      </Link>
+                      <Link to={ROUTE.WISHLIST}>
+                        <img src={wishlist} alt="icon" />
+                      </Link>
+                      <Link to={ROUTE.MY_ADS}>
+                        <img src={ads} alt="icon" />
+                      </Link>
 
-                    <div
-                      className="cursor-pointer flex justify-center"
+                      <div
+                        className="cursor-pointer flex justify-center"
+                        onClick={() => setOpen(!open)}
+                      >
+                        <div className="w-14 h-12 flex items-center justify-center gap-2">
+                          <img
+                            src={
+                              userInfo?.user_profile_url
+                                ? `${imagePath}/${userInfo.user_profile_url}`
+                                : defaultUser
+                            }
+                            alt="icon"
+                            className="h-full w-full object-cover rounded-md border-3 border-blue-100"
+                          />
+
+                          <i className="fa-solid fa-angle-down fa-sm" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
                       onClick={() => setOpen(!open)}
+                      className="flex font-bold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition group"
                     >
-                      <div className="w-14 h-12 flex items-center justify-center gap-2">
-                        <img
-                          src={
-                            userInfo?.user_profile_url
-                              ? `${imagePath}/${userInfo.user_profile_url}`
-                              : defaultUser
-                          }
-                          alt="icon"
-                          className="h-full w-full object-cover rounded-md border-3 border-blue-100"
-                        />
+                      <img
+                        src={signin}
+                        alt="icon"
+                        className="transition group-hover:brightness-0 group-hover:invert"
+                      />
+                      <p>{t("singIn")}</p>
+                      <i className="fa-solid fa-angle-down fa-sm" />
+                    </button>
+                  )}
+                  {open && (
+                    <div className="absolute -right-10 mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
+                      <div className="flex items-center gap-3 p-4 border-b border-gray-200">
+                        <div className="w-20 h-18 rounded flex items-center justify-center">
+                          <img
+                            src={
+                              userInfo?.user_profile_url
+                                ? `${imagePath}/${userInfo.user_profile_url}`
+                                : defaultUser
+                            }
+                            alt="icon"
+                            className="h-full w-full object-cover rounded"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-bold">
+                            {userInfo?.username || "User Name"}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {userInfo?.email || "Lorem ipsum semper urna"}
+                          </p>
+                        </div>
+                      </div>
 
-                        <i className="fa-solid fa-angle-down fa-sm" />
+                      <ul className="p-2">
+                        <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                          <Link
+                            to={ROUTE.USER_PROFILE}
+                            className="flex items-center gap-3 "
+                          >
+                            <img src={profile} alt="icon" /> {t("profile")}
+                          </Link>
+                        </li>
+                        <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                          <Link
+                            to={ROUTE.MY_ADS}
+                            className="flex items-center gap-3 "
+                          >
+                            <img src={ads} alt="icon" />
+                            {t("myAds")}
+                          </Link>
+                        </li>
+                        <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                          <Link
+                            to={ROUTE.WISHLIST}
+                            className="flex items-center gap-3 "
+                          >
+                            <img src={wishlist} alt="icon" /> {t("wishlist")}
+                          </Link>
+                        </li>
+                        <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                          <Link
+                            to={ROUTE.NOTIFICATIONS}
+                            className="flex items-center gap-3 "
+                          >
+                            <img src={notification} alt="icon" />
+                            {t("notification")}
+                          </Link>
+                        </li>
+                        <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg">
+                          <Link
+                            to={ROUTE.HELP_SUPPORT}
+                            state={{ from: "contact" }}
+                            className="flex items-center gap-3 "
+                          >
+                            <img src={support} alt="icon" />
+                            {t("helpSupport")}
+                          </Link>
+                        </li>
+                      </ul>
+
+                      <div className="border-t border-gray-200 p-2">
+                        {accessToken ? (
+                          <button
+                            onClick={handleLogout}
+                            className="flex text-red-700 items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
+                          >
+                            <img src={logoutIcon} alt="icon" />
+                            {t("logout")}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={handleShowLoginModal}
+                            className="flex items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
+                          >
+                            <img src={login} alt="icon" />
+                            {t("login")}
+                          </button>
+                        )}
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setOpen(!open)}
-                    className="flex font-bold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition group"
-                  >
-                    <img
-                      src={signin}
-                      alt="icon"
-                      className="transition group-hover:brightness-0 group-hover:invert"
-                    />
-                    <p>{t("singIn")}</p>
-                    <i className="fa-solid fa-angle-down fa-sm" />
-                  </button>
-                )}
-                {open && (
-                  <div className="absolute -right-10 mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
-                    <div className="flex items-center gap-3 p-4 border-b border-gray-200">
-                      <div className="w-20 h-18 rounded flex items-center justify-center">
-                        <img
-                          src={
-                            userInfo?.user_profile_url
-                              ? `${imagePath}/${userInfo.user_profile_url}`
-                              : defaultUser
-                          }
-                          alt="icon"
-                          className="h-full w-full object-cover rounded"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-bold">
-                          {userInfo?.username || "User Name"}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          {userInfo?.email || "Lorem ipsum semper urna"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <ul className="p-2">
-                      <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                        <Link
-                          to={ROUTE.USER_PROFILE}
-                          className="flex items-center gap-3 "
-                        >
-                          <img src={profile} alt="icon" /> {t("profile")}
-                        </Link>
-                      </li>
-                      <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                        <Link
-                          to={ROUTE.MY_ADS}
-                          className="flex items-center gap-3 "
-                        >
-                          <img src={ads} alt="icon" />
-                          {t("myAds")}
-                        </Link>
-                      </li>
-                      <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                        <Link
-                          to={ROUTE.WISHLIST}
-                          className="flex items-center gap-3 "
-                        >
-                          <img src={wishlist} alt="icon" /> {t("wishlist")}
-                        </Link>
-                      </li>
-                      <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                        <Link
-                          to={ROUTE.NOTIFICATIONS}
-                          className="flex items-center gap-3 "
-                        >
-                          <img src={notification} alt="icon" />
-                          {t("notification")}
-                        </Link>
-                      </li>
-                      <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg">
-                        <Link
-                          to={ROUTE.HELP_SUPPORT}
-                          state={{ from: "contact" }}
-                          className="flex items-center gap-3 "
-                        >
-                          <img src={support} alt="icon" />
-                          {t("helpSupport")}
-                        </Link>
-                      </li>
-                    </ul>
-
-                    <div className="border-t border-gray-200 p-2">
-                      {accessToken ? (
-                        <button
-                          onClick={handleLogout}
-                          className="flex text-red-700 items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
-                        >
-                          <img src={logoutIcon} alt="icon" />
-                          {t("logout")}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleShowLoginModal}
-                          className="flex items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
-                        >
-                          <img src={login} alt="icon" />
-                          {t("login")}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
+                <Link
+                  to={ROUTE.CREATE_POST}
+                  className="flex font-bold gap-4 items-center px-7 py-3 border border-2 border-primaryDark rounded text-primaryDark cursor-pointer transition"
+                >
+                  <i className="fa-solid fa-plus" />
+                  <p>{t("postAdButton")}</p>
+                </Link>
               </div>
-              <button className="flex font-bold gap-4 items-center px-7 py-3 border border-2 border-primaryDark rounded text-primaryDark cursor-pointer transition">
-                <i className="fa-solid fa-plus" />
-                <p>{t("postAdButton")}</p>
-              </button>
-            </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <button onClick={() => navigate(-1)}>
+                  <i className="fa-solid fa-xmark-large" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

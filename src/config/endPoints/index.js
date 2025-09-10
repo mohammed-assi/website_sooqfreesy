@@ -28,8 +28,13 @@ export const CUSTOMER = {
   UPDATE_PROFILE_INFO: `${BASEURL}/customer/update-custom-profile`,
   SEND_OTP: `${BASEURL}/customer/send-verification-otp`,
   VERIFY_OTP: `${BASEURL}/customer/verify-customer-otp`,
+
+  CATEGORY_LIST:`${BASEURL}/customer/category/get-all`,
+  GET_SUBCATEGORY:`${BASEURL}/customer/subcategory/get-by-category`,
+  GET_FORM_DATA:`${BASEURL}/customer/forms/get-by-cat-and-subcat`,
 };
 
 export const REPORT_LIST = {
   CONTACT_US: `${BASEURL}/report/report-listing`,
 };
+

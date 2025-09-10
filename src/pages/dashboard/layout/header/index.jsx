@@ -80,96 +80,97 @@ export const DashboardHeader = () => {
               <Link to="/">
                 <img src={logo} alt="logo" />
               </Link>
-              <div className="flex items-center gap-8 relative">
-                <Link
-                  to="/"
-                  className="flex font-semibold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition"
-                >
-                  <i className="fa-solid fa-arrow-left" />
-                  <p>{t("Back to SouqSyria")}</p>
-                </Link>
-                <div
-                  className="cursor-pointer flex justify-center"
-                  onClick={() => setOpen(!open)}
-                >
-                  <div className="w-14 h-12 flex items-center justify-center gap-2">
-                    <img
-                      src={
-                        userInfo?.user_profile_url
-                          ? `${imagePath}/${userInfo.user_profile_url}`
-                          : defaultUser
-                      }
-                      alt="icon"
-                      className="h-full w-full object-cover rounded-md border-3 border-blue-100"
-                    />
+              {location.pathname !== ROUTE.CREATE_POST && (
+                <div className="flex items-center gap-8 relative">
+                  <Link
+                    to="/"
+                    className="flex font-semibold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition"
+                  >
+                    <i className="fa-solid fa-arrow-left" />
+                    <p>{t("Back to SouqSyria")}</p>
+                  </Link>
+                  <div
+                    className="cursor-pointer flex justify-center"
+                    onClick={() => setOpen(!open)}
+                  >
+                    <div className="w-14 h-12 flex items-center justify-center gap-2">
+                      <img
+                        src={
+                          userInfo?.user_profile_url
+                            ? `${imagePath}/${userInfo.user_profile_url}`
+                            : defaultUser
+                        }
+                        alt="icon"
+                        className="h-full w-full object-cover rounded-md border-3 border-blue-100"
+                      />
 
-                    <i className="fa-solid fa-angle-down fa-sm" />
-                  </div>
-                </div>
-                {open && (
-                  <div className="absolute top-15 -right-18 mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
-                    <div className="flex items-center gap-3 p-4 border-b border-gray-200">
-                      <div className="w-20 h-18 rounded flex items-center justify-center">
-                        <img
-                          src={
-                            userInfo?.user_profile_url
-                              ? `${imagePath}/${userInfo.user_profile_url}`
-                              : defaultUser
-                          }
-                          alt="icon"
-                          className="h-full w-full object-cover rounded"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-bold">
-                          {userInfo?.username || "User Name"}
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          {userInfo?.email || "Lorem ipsum semper urna"}
-                        </p>
-                      </div>
+                      <i className="fa-solid fa-angle-down fa-sm" />
                     </div>
+                  </div>
+                  {open && (
+                    <div className="absolute top-15 -right-18 mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
+                      <div className="flex items-center gap-3 p-4 border-b border-gray-200">
+                        <div className="w-20 h-18 rounded flex items-center justify-center">
+                          <img
+                            src={
+                              userInfo?.user_profile_url
+                                ? `${imagePath}/${userInfo.user_profile_url}`
+                                : defaultUser
+                            }
+                            alt="icon"
+                            className="h-full w-full object-cover rounded"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-bold">
+                            {userInfo?.username || "User Name"}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {userInfo?.email || "Lorem ipsum semper urna"}
+                          </p>
+                        </div>
+                      </div>
 
-                    <ul className="p-2">
-                      <li
-                        onClick={() => {
-                          setOpen(false);
-                          navigate(ROUTE.USER_PROFILE);
-                        }}
-                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
-                      >
-                        <img src={profile} alt="icon" /> {t("profile")}
-                      </li>
-                      <li
-                        onClick={() => {
-                          setOpen(false);
-                          navigate(ROUTE.MY_ADS);
-                        }}
-                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
-                      >
-                        <img src={ads} alt="icon" />
-                        {t("myAds")}
-                      </li>
-                      <li
-                        onClick={() => {
-                          setOpen(false);
-                          navigate(ROUTE.WISHLIST);
-                        }}
-                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
-                      >
-                        <img src={wishlist} alt="icon" /> {t("wishlist")}
-                      </li>
-                      <li
-                        onClick={() => {
-                          setOpen(false);
-                          navigate(ROUTE.NOTIFICATIONS);
-                        }}
-                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
-                      >
-                        <img src={notification} alt="icon" />
-                        {t("notification")}
-                      </li>
-                      {/* <li
+                      <ul className="p-2">
+                        <li
+                          onClick={() => {
+                            setOpen(false);
+                            navigate(ROUTE.USER_PROFILE);
+                          }}
+                          className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                        >
+                          <img src={profile} alt="icon" /> {t("profile")}
+                        </li>
+                        <li
+                          onClick={() => {
+                            setOpen(false);
+                            navigate(ROUTE.MY_ADS);
+                          }}
+                          className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                        >
+                          <img src={ads} alt="icon" />
+                          {t("myAds")}
+                        </li>
+                        <li
+                          onClick={() => {
+                            setOpen(false);
+                            navigate(ROUTE.WISHLIST);
+                          }}
+                          className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                        >
+                          <img src={wishlist} alt="icon" /> {t("wishlist")}
+                        </li>
+                        <li
+                          onClick={() => {
+                            setOpen(false);
+                            navigate(ROUTE.NOTIFICATIONS);
+                          }}
+                          className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                        >
+                          <img src={notification} alt="icon" />
+                          {t("notification")}
+                        </li>
+                        {/* <li
                         onClick={() => {
                           setOpen(false);
                           navigate(ROUTE.HELP_SUPPORT);
@@ -179,65 +180,77 @@ export const DashboardHeader = () => {
                         <img src={support} alt="icon" />
                         {t("helpSupport")}
                       </li> */}
-                    </ul>
+                      </ul>
 
-                    <div className="border-t border-gray-200 p-2">
-                      {accessToken ? (
-                        <button
-                          onClick={handleLogout}
-                          className="flex text-red-700 items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
-                        >
-                          <img src={logoutIcon} alt="icon" />
-                          {t("logout")}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleShowLoginModal}
-                          className="flex items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
-                        >
-                          <img src={login} alt="icon" />
-                          {t("login")}
-                        </button>
-                      )}
+                      <div className="border-t border-gray-200 p-2">
+                        {accessToken ? (
+                          <button
+                            onClick={handleLogout}
+                            className="flex text-red-700 items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
+                          >
+                            <img src={logoutIcon} alt="icon" />
+                            {t("logout")}
+                          </button>
+                        ) : (
+                          <button
+                            onClick={handleShowLoginModal}
+                            className="flex items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
+                          >
+                            <img src={login} alt="icon" />
+                            {t("login")}
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-4">
-              <div className="relative" ref={dropdownRef}>
-                {accessToken ? (
-                  <div className="flex gap-7 items-center px-7 py-3">
-                    <Link to={ROUTE.NOTIFICATIONS}>
-                      <img src={notification} alt="icon" />
-                    </Link>
-                    <Link to={ROUTE.WISHLIST}>
-                      <img src={wishlist} alt="icon" />
-                    </Link>
-                    <Link to={ROUTE.MY_ADS}>
-                      <img src={ads} alt="icon" />
-                    </Link>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setOpen(!open)}
-                    className="flex gap-4 items-center px-7 py-3 border border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition group"
-                  >
-                    <img
-                      src={signin}
-                      alt="icon"
-                      className="transition group-hover:brightness-0 group-hover:invert"
-                    />
-                    <p>{t("singIn")}</p>
-                    <i className="fa-solid fa-angle-down fa-sm" />
-                  </button>
-                )}
+            {location.pathname !== ROUTE.CREATE_POST ? (
+              <div className="flex items-center gap-4">
+                <div className="relative" ref={dropdownRef}>
+                  {accessToken ? (
+                    <div className="flex gap-7 items-center px-7 py-3">
+                      <Link to={ROUTE.NOTIFICATIONS}>
+                        <img src={notification} alt="icon" />
+                      </Link>
+                      <Link to={ROUTE.WISHLIST}>
+                        <img src={wishlist} alt="icon" />
+                      </Link>
+                      <Link to={ROUTE.MY_ADS}>
+                        <img src={ads} alt="icon" />
+                      </Link>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setOpen(!open)}
+                      className="flex gap-4 items-center px-7 py-3 border border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition group"
+                    >
+                      <img
+                        src={signin}
+                        alt="icon"
+                        className="transition group-hover:brightness-0 group-hover:invert"
+                      />
+                      <p>{t("singIn")}</p>
+                      <i className="fa-solid fa-angle-down fa-sm" />
+                    </button>
+                  )}
+                </div>
+                <Link
+                  to={ROUTE.CREATE_POST}
+                  className="flex font-bold gap-4 items-center px-7 py-3 border border-2 border-primaryDark rounded text-primaryDark cursor-pointer transition"
+                >
+                  <i className="fa-solid fa-plus" />
+                  <p>{t("postAdButton")}</p>
+                </Link>
               </div>
-              <button className="flex font-bold gap-4 items-center px-7 py-3 border border-2 border-primaryDark rounded text-primaryDark cursor-pointer transition">
-                <i className="fa-solid fa-plus" />
-                <p>{t("postAdButton")}</p>
-              </button>
-            </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <button onClick={() => navigate(-1)}>
+                  <i className="fa-solid fa-xmark-large" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

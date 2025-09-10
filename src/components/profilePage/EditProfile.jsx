@@ -246,8 +246,6 @@ export const EditProfile = ({ userInfo, imagePath }) => {
     }
   }, [userInfo, setValue]);
 
-  console.log("userInfo", userInfo);
-
   return (
     <div className="pt-4">
       <h3 className="font-semibold text-2xl py-6">{t("profileDetails")}</h3>

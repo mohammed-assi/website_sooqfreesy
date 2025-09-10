@@ -7,19 +7,17 @@ import { ToastContainer } from "react-toastify";
 import "react-phone-input-2/lib/style.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
-import { logout } from "./redux/slices/authSlice";
-import { clearUser } from "./redux/slices/userSlice";
-import { ROUTE } from "./config/constants";
-import { useDispatch } from "react-redux";
 import infoModalIcon from "./assets/icon/sessionExpire.png";
 import { useTranslation } from "react-i18next";
+import ScrollToTop from "./utils/scrollToUp";
+import { setupAxiosInterceptors } from "./config/apiFunctions";
+import { useDispatch } from "react-redux";
 
 function App() {
   const { t } = useTranslation();
   const location = useLocation();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showSessionModal, setShowSessionModal] = useState(false);
 
   useEffect(() => {
@@ -37,26 +35,12 @@ function App() {
   }, [location]);
 
   useEffect(() => {
-    const interceptor = axios.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error.response?.status === 401) {
-          dispatch(logout());
-          dispatch(clearUser());
-          setShowSessionModal(true);
-          navigate(ROUTE.ROOT);
-        }
-        return Promise.reject(error);
-      }
-    );
-
-    return () => {
-      axios.interceptors.response.eject(interceptor);
-    };
-  }, [navigate]);
+    setupAxiosInterceptors(dispatch, navigate, setShowSessionModal);
+  }, [dispatch, navigate]);
 
   return (
     <>
+      <ScrollToTop />
       <Router />
       <ToastContainer />
       {showSessionModal && (

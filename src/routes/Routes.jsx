@@ -17,6 +17,7 @@ import { TermConditions } from "../pages/termConditions";
 import { PrivacyPolicy } from "../pages/privacyPolicy";
 import ProtectedRoute from "./section/ProtectedRoute";
 import UnprotectedRoute from "./section/UnprotectedRoute";
+import { CreatePost } from "../pages/createPost";
 
 export const Router = () => {
   return (
@@ -30,6 +31,7 @@ export const Router = () => {
         <Route path={ROUTE.TERMS_CONDITIONS} element={<TermConditions />} />
         <Route path={ROUTE.PRIVACY_POLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTE.HELP_SUPPORT} element={<HelpSupport />} />
+        <Route path={ROUTE.CREATE_POST} element={<CreatePost />} />
       </Route>
       <Route
         element={
