@@ -213,7 +213,21 @@ const resources = {
        mustNumberValidation: "must be a number",
        onlyImageAllowed : "Only image files are allowed",
        oneImage: "At least one image is required",
-       fiveImages: "You can upload at most 5 images"
+       fiveImages: "You can upload at most 5 images",
+       filters: 'Filters',
+       city: "City",
+       type: "Type",
+       forSale:"For Sale",
+       forRent: 'For Rent',
+       category: "Category",
+       priceRange: "Price Range",
+       products: "Products",
+       similarPosts: "Similar Posts",
+       viewAll: "View All",
+       productDetails : 'Product Details',
+       priceDrops: "Notify me when price drops",
+       postOwner: "Post Owner",
+       addReviewsButton: 'Add Reviews'
     },
   },
   ar: {

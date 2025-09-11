@@ -106,12 +106,10 @@ import { ROUTE } from "../../config/constants";
 
 let controller = null;
 
-// Create single axios instance
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL || "",
 });
 
-// Request interceptor
 apiClient.interceptors.request.use((config) => {
   NProgress.start();
 
@@ -126,7 +124,6 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor
 export const setupAxiosInterceptors = (dispatch, navigate, setShowSessionModal) => {
   apiClient.interceptors.response.use(
     (response) => {
@@ -151,7 +148,6 @@ export const setupAxiosInterceptors = (dispatch, navigate, setShowSessionModal) 
   );
 };
 
-// Cancel request support
 export function cancelRequest() {
   if (controller) {
     controller.abort();
@@ -159,10 +155,8 @@ export function cancelRequest() {
   }
 }
 
-// Generic API request wrapper
 export async function apiRequest(endPoint, data = {}, method = "get", customHeaders = {}) {
   return new Promise(async (resolve, reject) => {
-    cancelRequest();
     controller = new AbortController();
     const signal = controller.signal;
 
@@ -185,7 +179,6 @@ export async function apiRequest(endPoint, data = {}, method = "get", customHead
   });
 }
 
-// Shortcut methods
 export const getRequest = (URL, headers = {}) => apiRequest(URL, {}, "get", headers);
 export const postRequest = (URL, payload, headers = {}) => apiRequest(URL, payload, "post", headers);
 export const putRequest = (URL, payload, headers = {}) => apiRequest(URL, payload, "put", headers);

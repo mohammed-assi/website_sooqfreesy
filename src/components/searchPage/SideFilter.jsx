@@ -1,101 +1,115 @@
-import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-export const SideFilter = () => {
-  const [city, setCity] = useState("");
-  const [location, setLocation] = useState("");
-  const [type, setType] = useState("");
-  const [category, setCategory] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 25000]);
+export const SideFilter = ({ allCategory, filters, handleChange }) => {
+  const { i18n, t } = useTranslation();
+
   return (
     <aside className="bg-white shadow rounded-lg p-5 space-y-6">
-      <h2 className="text-lg font-semibold mb-4">Filters</h2>
+      <h2 className="text-lg font-semibold mb-4">{t("filters")}</h2>
 
+      {/* City */}
       <div>
-        <label className="block text-sm font-medium mb-1">City</label>
+        <label className="block text-sm font-medium mb-1">{t("city")}</label>
         <select
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
+          value={filters?.city}
+          onChange={(e) => handleChange("city", e.target.value)}
           className="w-full border rounded-lg px-3 py-2 text-sm"
         >
-          <option value="">Select City</option>
           <option value="Damascus">Damascus</option>
           <option value="Aleppo">Aleppo</option>
           <option value="Homs">Homs</option>
         </select>
       </div>
 
+      {/* Location */}
       <div>
         <label className="block text-sm font-medium mb-1">
-          Nearby Location
+          {t("nearbyLocation")}
         </label>
         <input
           type="text"
-          placeholder="Enter Area"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          value={filters?.location}
+          onChange={(e) => handleChange("location", e.target.value)}
           className="w-full border rounded-lg px-3 py-2 text-sm"
         />
       </div>
 
+      {/* Type */}
       <div>
-        <label className="block text-sm font-medium mb-1">Vehicle Type</label>
+        <label className="block text-sm font-medium mb-1">{t("type")}</label>
         <div className="flex gap-3">
           <button
-            onClick={() => setType("sale")}
+            type="button"
+            onClick={() => handleChange("type", "SALE")}
             className={`flex-1 px-3 py-2 border rounded-lg text-sm ${
-              type === "sale" ? "bg-primary text-white" : "hover:bg-gray-100"
+              filters?.type === "SALE"
+                ? "bg-primary text-white"
+                : "hover:bg-gray-100"
             }`}
           >
-            Vehicle for Sale
+            {t("forSale")}
           </button>
           <button
-            onClick={() => setType("rent")}
+            type="button"
+            onClick={() => handleChange("type", "RENT")}
             className={`flex-1 px-3 py-2 border rounded-lg text-sm ${
-              type === "rent" ? "bg-primary text-white" : "hover:bg-gray-100"
+              filters?.type === "RENT"
+                ? "bg-primary text-white"
+                : "hover:bg-gray-100"
             }`}
           >
-            Vehicle for Rent
+            {t("forRent")}
           </button>
         </div>
       </div>
 
+      {/* Category */}
       <div>
         <label className="block text-sm font-medium mb-1">
-          Vehicle Category
+          {t("category")}
         </label>
         <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          value={filters?.category}
+          onChange={(e) => handleChange("category", e.target.value)}
           className="w-full border rounded-lg px-3 py-2 text-sm"
         >
-          <option value="">Select Vehicle</option>
-          <option value="Car">Car</option>
-          <option value="Truck">Truck</option>
-          <option value="Bike">Bike</option>
+          <option value="">---</option>
+          {allCategory?.map((item) => (
+            <option key={item.id} value={item.id}>
+              {i18n.language === "ar" ? item.arabic_name : item.name}
+            </option>
+          ))}
         </select>
       </div>
 
+      {/* Price Range */}
       <div>
-        <label className="block text-sm font-medium mb-1">Price Range</label>
+        <label className="block text-sm font-medium mb-1">
+          {t("priceRange")}
+        </label>
         <input
           type="range"
           min="0"
           max="25000"
-          value={priceRange[0]}
-          onChange={(e) => setPriceRange([+e.target.value, priceRange[1]])}
+          value={filters?.priceRange[0]}
+          onChange={(e) =>
+            handleChange("priceRange", [+e.target.value, filters?.priceRange[1]])
+          }
           className="w-full"
         />
         <input
           type="range"
           min="0"
           max="25000"
-          value={priceRange[1]}
-          onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
+          value={filters?.priceRange[1]}
+          onChange={(e) =>
+            handleChange("priceRange", [filters?.priceRange[0], +e.target.value])
+          }
           className="w-full"
         />
         <div className="flex justify-between text-sm mt-2">
-          <span>£{priceRange[0]}</span>
-          <span>£{priceRange[1]}</span>
+          <span>£{filters?.priceRange[0]}</span>
+          <span>£{filters?.priceRange[1]}</span>
         </div>
       </div>
     </aside>

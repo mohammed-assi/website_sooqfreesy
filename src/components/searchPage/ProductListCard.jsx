@@ -3,52 +3,60 @@ import location from "../../assets/icon/silverLocation.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Pagination } from "swiper/modules";
+import heartFilled from "../../assets/icon/heartFilled.svg";
+import { Link } from "react-router-dom";
+import { ROUTE } from "../../config/constants";
 
-const ProductListCard = ({ item }) => {
+const ProductListCard = ({ item, imagePath }) => {
   return (
     <div className="flex bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
       <div className="relative w-3/6">
-        <Swiper
-          pagination={{
-            dynamicBullets: true,
-          }}
-          modules={[Pagination]}
-        >
-          {item.images.map((img, index) => (
-            <SwiperSlide key={index}>
-              <img
-                src={img}
-                alt={item.title}
-                className="w-full h-60 object-cover rounded-xl"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <button className="cursor-pointer absolute top-3 right-3 z-9">
-          <img src={wishlist} alt="icon" />
-        </button>
+        <Link to={`${ROUTE.PRODUCT_PAGE}/${item.id}`}>
+          <Swiper
+            pagination={{
+              dynamicBullets: true,
+            }}
+            modules={[Pagination]}
+          >
+            {item.images.map((img, index) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={`${imagePath}/${img.image_url}`}
+                  alt={item.title}
+                  className="w-full h-60 object-cover rounded-xl"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <button className="cursor-pointer absolute top-3 right-3 z-9">
+            {item.liked ? (
+              <img src={heartFilled} alt="icon" />
+            ) : (
+              <img src={wishlist} alt="icon" />
+            )}
+          </button>
+        </Link>
       </div>
 
       <div className="w-3/6 p-4 relative">
-        <span className="absolute top-3 right-3 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full">
-          {item.category}
-        </span>
+        <Link to={`${ROUTE.PRODUCT_PAGE}/${item.id}`}>
+          <span className="absolute top-3 right-3 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full">
+            {item.sub_categoryName}
+          </span>
 
-        <h2 className="text-2xl font-bold text-gray-900">{item.price}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">£{item.price}</h2>
 
-        <h3 className="text-xl font-bold text-gray-800 mt-3">
-          {item.title}
-        </h3>
+          <h3 className="text-xl font-bold text-gray-800 mt-3">{item.title}</h3>
 
-        <p className="text-sm text-gray-700 mt-2 line-clamp-2">
-          Lorem ipsum dolor sit amet consectetur. Sodales turpis sit nunc duis.
-          Aliquam urna a at ullamcorper faucibus volutpat quis at.
-        </p>
+          <p className="text-sm text-gray-700 mt-2 line-clamp-2">
+            {item.description}
+          </p>
 
-        <div className="flex items-center gap-2 text-gray-500 text-sm pt-2">
-          <img src={location} alt="icon" />
-          {item.location}
-        </div>
+          <div className="flex items-center gap-2 text-gray-500 text-sm pt-2">
+            <img src={location} alt="icon" />
+            {item.nearby_location}
+          </div>
+        </Link>
       </div>
     </div>
   );

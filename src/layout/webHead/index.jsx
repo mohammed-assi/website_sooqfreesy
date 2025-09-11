@@ -30,7 +30,38 @@ export const WebHead = () => {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const popularSearches = [
+    t("cars"),
+    t("bikes"),
+    t("land"),
+    t("offices"),
+    t("washingMachine"),
+    t("phone"),
+    t("laptop"),
+  ];
+
+  const handleShowLoginModal = () => {
+    setShowLoginModal(true);
+    setOpen(false);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(clearUser());
+    navigate(ROUTE.ROOT);
+    setOpen(false);
+    showSuccessToast(t("logOutMsg"));
+  };
+
+  const goToProductPage = () => {
+    setSearchOpen(false);
+    if (searchValue !== "") {
+      navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: searchValue } });
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -56,29 +87,6 @@ export const WebHead = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const popularSearches = [
-    t("cars"),
-    t("bikes"),
-    t("land"),
-    t("offices"),
-    t("washingMachine"),
-    t("phone"),
-    t("laptop"),
-  ];
-
-  const handleShowLoginModal = () => {
-    setShowLoginModal(true);
-    setOpen(false);
-  };
-
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(clearUser());
-    navigate(ROUTE.ROOT);
-    setOpen(false);
-    showSuccessToast(t("logOutMsg"));
-  };
-
   return (
     <>
       <div
@@ -98,10 +106,17 @@ export const WebHead = () => {
                     <input
                       type="text"
                       placeholder={t("searchPlaceholder")}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
                       onFocus={() => setSearchOpen(true)}
                       className="w-full focus:outline-none "
                     />
-                    <i className="fa-regular fa-magnifying-glass fa-lg" />
+                    <button
+                      onClick={goToProductPage}
+                      disabled={searchValue === ""}
+                    >
+                      <i className="fa-regular fa-magnifying-glass fa-lg" />
+                    </button>
                   </div>
 
                   {searchOpen && (
@@ -115,6 +130,7 @@ export const WebHead = () => {
                         {popularSearches.map((item) => (
                           <li
                             key={item}
+                            onClick={() => setSearchValue(item)}
                             className="px-4 py-3 text-gray-700 cursor-pointer hover:bg-gray-100 border-t border-gray-100"
                           >
                             {item}
@@ -267,12 +283,17 @@ export const WebHead = () => {
                     </div>
                   )}
                 </div>
-                <Link
+                {/* <Link
                   to={ROUTE.CREATE_POST}
                   className="flex font-bold gap-4 items-center px-7 py-3 border border-2 border-primaryDark rounded text-primaryDark cursor-pointer transition"
                 >
                   <i className="fa-solid fa-plus" />
                   <p>{t("postAdButton")}</p>
+                </Link> */}
+                <Link to={ROUTE.CREATE_POST} className="custom-btn">
+                  <span className="icon ">
+                    <span>+</span> {t("postAdButton")}
+                  </span>
                 </Link>
               </div>
             ) : (

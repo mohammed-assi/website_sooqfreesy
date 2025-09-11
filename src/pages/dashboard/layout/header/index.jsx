@@ -236,12 +236,10 @@ export const DashboardHeader = () => {
                     </button>
                   )}
                 </div>
-                <Link
-                  to={ROUTE.CREATE_POST}
-                  className="flex font-bold gap-4 items-center px-7 py-3 border border-2 border-primaryDark rounded text-primaryDark cursor-pointer transition"
-                >
-                  <i className="fa-solid fa-plus" />
-                  <p>{t("postAdButton")}</p>
+                <Link to={ROUTE.CREATE_POST} className="custom-btn">
+                  <span className="icon ">
+                    <span>+</span> {t("postAdButton")}
+                  </span>
                 </Link>
               </div>
             ) : (

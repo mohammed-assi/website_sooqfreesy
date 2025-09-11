@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SelectCityLocation } from "../../components/createPost/SelectCityLocation";
 import { ChooseCategory } from "../../components/createPost/ChooseCategory";
-import { showErrorToast } from "../../utils/toastUtils";
-import { getRequest } from "../../config/apiFunctions";
-import { CUSTOMER } from "../../config/endPoints";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import { getRequest, postRequest } from "../../config/apiFunctions";
+import { CUSTOMER, POST } from "../../config/endPoints";
 import { ChooseSubCategory } from "../../components/createPost/ChooseSubCategory";
 import { ChooseRentSale } from "../../components/createPost/ChooseRentSale";
 import { ChoodeLandlordAgent } from "../../components/createPost/ChoodeLandlordAgent";
@@ -12,6 +12,7 @@ import { FinalForm } from "../../components/createPost/FinalForm";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
 
 const cities = [
   { value: "al-hasakah", label: "Al-Hasakah" },
@@ -26,6 +27,7 @@ const cities = [
 export const CreatePost = () => {
   const { i18n, t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const navigate = useNavigate();
   const [showChooseCategory, setShowChooseCategory] = useState(false);
   const [showSaleRent, setShowSaleRent] = useState(false);
   const [showSubCategory, setShowSubCategory] = useState(false);
@@ -42,22 +44,20 @@ export const CreatePost = () => {
   const [userLocation, setUserLocation] = useState("");
   const [showLocationValidation, setShowLocationValidation] = useState(false);
 
+  console.log("subCategoryId", subCategoryId);
+
   const baseSchema = {
     location: Yup.string().required(t("locationRequired")),
     buildingNumber: Yup.string(),
     apartmentNumber: Yup.string(),
     pictures: Yup.array()
       .of(
-        Yup.mixed().test(
-          "fileType",
-          t("onlyImageAllowed"),
-          (value) => {
-            if (!value) return false;
-            return (
-              value.file instanceof File && value.file.type.startsWith("image/")
-            );
-          }
-        )
+        Yup.mixed().test("fileType", t("onlyImageAllowed"), (value) => {
+          if (!value) return false;
+          return (
+            value.file instanceof File && value.file.type.startsWith("image/")
+          );
+        })
       )
       .min(1, t("oneImage"))
       .max(5, t("fiveImages")),
@@ -125,10 +125,64 @@ export const CreatePost = () => {
 
   const pictures = watch("pictures") || [];
 
-  const onSubmit = (data) => {
-    console.log("Form submitted:", data);
+  console.log("selectedCity", selectedCity);
 
-    const formData = new FormData()
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("price", Number(data.price));
+    formData.append("country_code", data.country_code || "+963");
+    formData.append("phone", data.phone || "9876543210");
+    formData.append("city", selectedCity.label || "Mohali");
+    formData.append("country", data.country || "Syria");
+    formData.append("nearby_location", data.location);
+    formData.append("longitude", data.longitude || 34.8021);
+    formData.append("latitude", data.latitude || 38.9968);
+    formData.append("building_street_name", data.buildingNumber);
+    formData.append("apartment_villa_no", data.apartmentNumber);
+    formData.append("category_id", categoryData?.id);
+    formData.append("sub_category_id", subCategoryId);
+    formData.append("post_type", saleRentId === 1 ? "SALE" : "RENT");
+    formData.append("user_type", landlordAgentId === 1 ? "OWNER" : "AGENT");
+
+    data.pictures.forEach((pic) => {
+      formData.append("images", pic.file);
+    });
+
+    const {
+      title,
+      description,
+      price,
+      country_code,
+      phone,
+      city,
+      country,
+      location,
+      longitude,
+      latitude,
+      buildingNumber,
+      apartmentNumber,
+      category_id,
+      sub_category_id,
+      post_type,
+      user_type,
+      pictures,
+      ...rest
+    } = data;
+
+    formData.append("content", JSON.stringify(rest));
+    try {
+      const response = await postRequest(POST.CREATE, formData);
+
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        showSuccessToast(response?.data?.message);
+        //  navigate()
+        reset();
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
   };
 
   const handleSelectCity = (city) => {
@@ -222,10 +276,6 @@ export const CreatePost = () => {
   useEffect(() => {
     reset();
   }, [t]);
-
-  console.log("saleRentId", saleRentId);
-  console.log("landlordAgentId", landlordAgentId);
-  console.log("errororororror", errors);
 
   return (
     <div className="spacer-x">

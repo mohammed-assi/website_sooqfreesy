@@ -15,6 +15,7 @@ export const SelectCityLocation = ({
   setShowLocationValidation,
 }) => {
   const { t } = useTranslation();
+  const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY
 
   return (
     <div className="flex gap-7 pt-4">

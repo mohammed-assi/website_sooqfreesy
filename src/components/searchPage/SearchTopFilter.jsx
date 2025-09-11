@@ -5,17 +5,22 @@ import listIcon from "../../assets/icon/listIcon.svg";
 import { useTranslation } from "react-i18next";
 import { FilterModal } from "./FilterModal";
 
-export const SearchTopFilter = ({ categories, toggleGrid, setToggleGrid }) => {
-  const { t } = useTranslation();
+export const SearchTopFilter = ({
+  categories,
+  toggleGrid,
+  setToggleGrid,
+  handleSelectSubcatIds,
+  subcategoryIds,
+  setFiltersModal,
+  searchText
+}) => {
+  const { i18n, t } = useTranslation();
   const [openFilterModal, setOpenFilterModal] = useState(false);
-  const [filters, setFilters] = useState({});
-
-  console.log("filters", filters);
 
   return (
     <div className="pt-15">
       <div className="text-sm text-gray-500 mb-2">
-        {t("home")} <span className="mx-1">{">"}</span> {t("searchButton")}
+        {t("home")} <span className="mx-1">{">"}</span> {searchText !=="" ? t("searchButton") : t("products")}
       </div>
 
       <div className="flex items-center justify-between mb-6">
@@ -44,9 +49,14 @@ export const SearchTopFilter = ({ categories, toggleGrid, setToggleGrid }) => {
         {categories.map((cat, i) => (
           <button
             key={i}
-            className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm hover:bg-gray-200 transition"
+            onClick={() => handleSelectSubcatIds(cat.id)}
+            className={`px-4 py-2 rounded-md text-sm transition ${
+              subcategoryIds.includes(cat.id)
+                ? "bg-primary text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
           >
-            {cat}
+            {i18n.language === "ar" ? cat.arabic_name : cat.name}
           </button>
         ))}
       </div>
@@ -55,7 +65,7 @@ export const SearchTopFilter = ({ categories, toggleGrid, setToggleGrid }) => {
         isOpen={openFilterModal}
         onClose={() => setOpenFilterModal(false)}
         onApply={(values) => {
-          setFilters(values);
+          setFiltersModal(values);
           setOpenFilterModal(false);
         }}
       />
