@@ -7,35 +7,36 @@ import heartFilled from "../../assets/icon/heartFilled.svg";
 import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 
-const ProductListCard = ({ item, imagePath }) => {
+const ProductListCard = ({ item, imagePath, handleLikeUnlikePost }) => {
   return (
     <div className="flex bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
       <div className="relative w-3/6">
-        <Link to={`${ROUTE.PRODUCT_PAGE}/${item.id}`}>
-          <Swiper
-            pagination={{
-              dynamicBullets: true,
-            }}
-            modules={[Pagination]}
-          >
-            {item.images.map((img, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={`${imagePath}/${img.image_url}`}
-                  alt={item.title}
-                  className="w-full h-60 object-cover rounded-xl"
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          <button className="cursor-pointer absolute top-3 right-3 z-9">
-            {item.liked ? (
-              <img src={heartFilled} alt="icon" />
-            ) : (
-              <img src={wishlist} alt="icon" />
-            )}
-          </button>
-        </Link>
+        <Swiper
+          pagination={{
+            dynamicBullets: true,
+          }}
+          modules={[Pagination]}
+        >
+          {item?.images?.map((img, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={`${imagePath}/${img.image_url}`}
+                alt={item.title}
+                className="w-full h-60 object-cover rounded-xl"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <button
+          onClick={() => handleLikeUnlikePost(item)}
+          className="cursor-pointer absolute top-3 right-3 z-9"
+        >
+          {item.isWishlisted ? (
+            <img src={heartFilled} alt="icon" />
+          ) : (
+            <img src={wishlist} alt="icon" />
+          )}
+        </button>
       </div>
 
       <div className="w-3/6 p-4 relative">

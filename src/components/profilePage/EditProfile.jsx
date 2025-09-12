@@ -44,7 +44,8 @@ export const EditProfile = ({ userInfo, imagePath }) => {
     control,
     setValue,
     watch,
-    formState: { errors },
+    reset,
+    formState: { errors, dirtyFields },
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -184,15 +185,20 @@ export const EditProfile = ({ userInfo, imagePath }) => {
     }
   };
 
-  const onSubmit = async (data) => {
-    const payload = {
-      // newUsername: data.fullName,
-      // newEmail: data.email,
-      // country_code: `+${countryCode}`,
-      // newPhoneNumber: data.phone,
-      dob: moment(data.dob).format("YYYY-MM-DD HH:mm:ss.SSS"),
-      gender: data.gender,
-    };
+  const onSubmit = async (data, e) => {
+    const action = e.nativeEvent.submitter.value;
+    let payload;
+    if (action === "username") {
+      payload = {
+        newUsername: data.fullName,
+      };
+    }
+    if (action === "profile") {
+      payload = {
+        dob: moment(data.dob).format("YYYY-MM-DD HH:mm:ss.SSS"),
+        gender: data.gender,
+      };
+    }
 
     try {
       const response = await postRequest(CUSTOMER.UPDATE_PROFILE_INFO, payload);
@@ -201,6 +207,24 @@ export const EditProfile = ({ userInfo, imagePath }) => {
         const res = await getRequest(AUTH.GET_PROFILE);
         if (res?.data?.statusCode === 200) {
           dispatch(setUser(res?.data?.data));
+
+           if (action === "username") {
+          reset(
+            { ...data, fullName: res?.data?.data?.fullName }, // updated value
+            { keepErrors: true }
+          );
+        }
+
+        if (action === "profile") {
+          reset(
+            {
+              ...data,
+              dob: res?.data?.data?.dob ? new Date(res?.data?.data?.dob) : null,
+              gender: res?.data?.data?.gender,
+            },
+            { keepErrors: true }
+          );
+        }
         }
       }
     } catch (error) {
@@ -279,13 +303,25 @@ export const EditProfile = ({ userInfo, imagePath }) => {
 
           <div className="flex gap-10 items-center pb-6">
             <label className="text-gray-700 w-1/5">{t("userName")}</label>
-            <div className="w-4/5">
+            <div className="w-4/5 relative">
               <input
                 type="text"
                 {...register("fullName")}
                 onChange={(e) => setSearchTextDebounce(e.target.value)}
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none"
               />
+              {userNameAvailable?.data?.available && (
+                <div className="absolute right-0 top-0">
+                  <button
+                    type="submit"
+                    name="action"
+                    value="username"
+                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+                  >
+                    {t("saveChangesButton")}
+                  </button>
+                </div>
+              )}
               {userNameAvailable?.data?.available ? (
                 <p className="text-green-500 text-sm mt-1">
                   {userNameAvailable?.message}
@@ -443,14 +479,18 @@ export const EditProfile = ({ userInfo, imagePath }) => {
               )}
             </div>
           </div>
-          <div className="">
-            <button
-              type="submit"
-              className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
-            >
-              {t("saveChangesButton")}
-            </button>
-          </div>
+          {(dirtyFields.gender || dirtyFields.dob) && (
+            <div className="">
+              <button
+                type="submit"
+                name="action"
+                value="profile"
+                className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+              >
+                {t("saveChangesButton")}
+              </button>
+            </div>
+          )}
         </form>
       </div>
       <ChangePassModal

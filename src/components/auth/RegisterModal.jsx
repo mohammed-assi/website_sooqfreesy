@@ -222,6 +222,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         hide={() => {
           hide();
           reset();
+          setActiveTab(1);
         }}
         title={
           activeTab === 1

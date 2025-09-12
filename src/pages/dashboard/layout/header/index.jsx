@@ -87,7 +87,7 @@ export const DashboardHeader = () => {
                     className="flex font-semibold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition"
                   >
                     <i className="fa-solid fa-arrow-left" />
-                    <p>{t("Back to SouqSyria")}</p>
+                    <p>{t("backSouqSyria")}</p>
                   </Link>
                   <div
                     className="cursor-pointer flex justify-center"

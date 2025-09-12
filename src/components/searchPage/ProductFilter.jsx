@@ -12,13 +12,17 @@ export default function ProductFilter({
   totalPages,
   allCategory,
   handleChange,
-  filters
+  filters,
+  handleLikeUnlikePost,
 }) {
-
   return (
     <div className="pt-8 pb-15">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <SideFilter allCategory={allCategory} handleChange={handleChange} filters={filters} />
+        <SideFilter
+          allCategory={allCategory}
+          handleChange={handleChange}
+          filters={filters}
+        />
 
         <main className="lg:col-span-3">
           {allPosts?.length === 0 ? (
@@ -26,7 +30,12 @@ export default function ProductFilter({
           ) : !toggleGrid ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {allPosts?.map((item) => (
-                <ProductCard key={item.id} item={item} imagePath={imagePath} />
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                  imagePath={imagePath}
+                  handleLikeUnlikePost={handleLikeUnlikePost}
+                />
               ))}
             </div>
           ) : (
@@ -36,6 +45,7 @@ export default function ProductFilter({
                   key={item.id}
                   item={item}
                   imagePath={imagePath}
+                  handleLikeUnlikePost={handleLikeUnlikePost}
                 />
               ))}
             </div>

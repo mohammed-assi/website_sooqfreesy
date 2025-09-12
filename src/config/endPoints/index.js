@@ -39,4 +39,9 @@ export const POST = {
   CREATE: `${BASEURL}/post/create-post`,
   GET_ALL: `${BASEURL}/post/get-all`,
   GET_DETAILS: `${BASEURL}/post/get-post-by-id`,
+
+  LIKE: `${BASEURL}/post/wishlist/add-item`,
+  UNLIKE: `${BASEURL}/post/wishlist/remove-item`,
+  GET_WISHLIST: `${BASEURL}/post/wishlist/get-all`,
+  GET_MYADS: `${BASEURL}/post/get-customer-posts`
 }

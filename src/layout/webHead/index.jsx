@@ -43,6 +43,17 @@ export const WebHead = () => {
     t("laptop"),
   ];
 
+  const userDropDown = [
+    { name: t("profile"), imgUrl: profile, slug: ROUTE.USER_PROFILE },
+    { name: t("myAds"), imgUrl: ads, slug: ROUTE.MY_ADS },
+    { name: t("wishlist"), imgUrl: wishlist, slug: ROUTE.WISHLIST },
+    {
+      name: t("notification"),
+      imgUrl: notification,
+      slug: ROUTE.NOTIFICATIONS,
+    },
+  ];
+
   const handleShowLoginModal = () => {
     setShowLoginModal(true);
     setOpen(false);
@@ -61,6 +72,16 @@ export const WebHead = () => {
     if (searchValue !== "") {
       navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: searchValue } });
     }
+  };
+
+  const handleNavigate = (slug) => {
+    if (accessToken) {
+      navigate(slug);
+    } else {
+      setShowLoginModal(true);
+    }
+    setOpen(false);
+    setSearchOpen(false);
   };
 
   useEffect(() => {
@@ -85,6 +106,19 @@ export const WebHead = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -206,58 +240,39 @@ export const WebHead = () => {
                         </div>
                         <div>
                           <h3 className="font-bold">
-                            {userInfo?.username || "User Name"}
+                            {userInfo?.username || t("UserName")}
                           </h3>
                           <p className="text-sm text-gray-500">
-                            {userInfo?.email || "Lorem ipsum semper urna"}
+                            {userInfo?.email || "example@gmail.com"}
                           </p>
                         </div>
                       </div>
 
                       <ul className="p-2">
+                        {userDropDown?.map((item, i) => (
+                          <li
+                            key={i}
+                            className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                          >
+                            <button
+                              onClick={() => handleNavigate(item.slug)}
+                              className="flex items-center gap-3 "
+                            >
+                              <img src={item.imgUrl} alt="icon" /> {item.name}
+                            </button>
+                          </li>
+                        ))}
                         <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                          <Link
-                            to={ROUTE.USER_PROFILE}
+                          <button
+                            onClick={() => {
+                              navigate(ROUTE.HELP_SUPPORT);
+                              setOpen(false);
+                              setSearchOpen(false);
+                            }}
                             className="flex items-center gap-3 "
                           >
-                            <img src={profile} alt="icon" /> {t("profile")}
-                          </Link>
-                        </li>
-                        <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                          <Link
-                            to={ROUTE.MY_ADS}
-                            className="flex items-center gap-3 "
-                          >
-                            <img src={ads} alt="icon" />
-                            {t("myAds")}
-                          </Link>
-                        </li>
-                        <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                          <Link
-                            to={ROUTE.WISHLIST}
-                            className="flex items-center gap-3 "
-                          >
-                            <img src={wishlist} alt="icon" /> {t("wishlist")}
-                          </Link>
-                        </li>
-                        <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
-                          <Link
-                            to={ROUTE.NOTIFICATIONS}
-                            className="flex items-center gap-3 "
-                          >
-                            <img src={notification} alt="icon" />
-                            {t("notification")}
-                          </Link>
-                        </li>
-                        <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg">
-                          <Link
-                            to={ROUTE.HELP_SUPPORT}
-                            state={{ from: "contact" }}
-                            className="flex items-center gap-3 "
-                          >
-                            <img src={support} alt="icon" />
-                            {t("helpSupport")}
-                          </Link>
+                            <img src={support} alt="icon" /> {t("helpSupport")}
+                          </button>
                         </li>
                       </ul>
 
@@ -283,18 +298,20 @@ export const WebHead = () => {
                     </div>
                   )}
                 </div>
-                {/* <Link
-                  to={ROUTE.CREATE_POST}
-                  className="flex font-bold gap-4 items-center px-7 py-3 border border-2 border-primaryDark rounded text-primaryDark cursor-pointer transition"
+                <button
+                  onClick={() => {
+                    if (accessToken) {
+                      navigate(ROUTE.CREATE_POST);
+                    } else {
+                      setShowLoginModal(true);
+                    }
+                  }}
+                  className="custom-btn"
                 >
-                  <i className="fa-solid fa-plus" />
-                  <p>{t("postAdButton")}</p>
-                </Link> */}
-                <Link to={ROUTE.CREATE_POST} className="custom-btn">
                   <span className="icon ">
                     <span>+</span> {t("postAdButton")}
                   </span>
-                </Link>
+                </button>
               </div>
             ) : (
               <div className="flex items-center gap-4">

@@ -4,11 +4,16 @@ import ProductFilter from "../../components/searchPage/ProductFilter";
 import { getRequest } from "../../config/apiFunctions";
 import { CUSTOMER, POST } from "../../config/endPoints";
 import { useLocation, useNavigate } from "react-router-dom";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import { useSelector } from "react-redux";
+import LoginModal from "../../components/auth/LoginModal";
 
 export const ProductPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const { accessToken } = useSelector((state) => state.auth);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [toggleGrid, setToggleGrid] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
@@ -99,6 +104,28 @@ export const ProductPage = () => {
     getAllPosts(url);
   };
 
+  const handleLikeUnlikePost = async (data) => {
+    if (accessToken) {
+      let url;
+      if (data?.isWishlisted) {
+        url = POST.UNLIKE;
+      } else {
+        url = POST.LIKE;
+      }
+      try {
+        const response = await getRequest(`${url}?listingId=${data?.id}`);
+        if (response?.data?.success && response?.data?.statusCode === 200) {
+          showSuccessToast(response?.data?.message);
+          getAllPostsCallBack();
+        }
+      } catch (error) {
+        showErrorToast(error?.response?.data?.message);
+      }
+    } else {
+      setShowLoginModal(true);
+    }
+  };
+
   useEffect(() => {
     if (location.state?.searchText) {
       setSearchText(location.state.searchText);
@@ -108,7 +135,7 @@ export const ProductPage = () => {
 
   useEffect(() => {
     getAllPostsCallBack();
-  }, [currentPage, filters, subcategoryIds, searchText]);
+  }, [currentPage, filters, subcategoryIds, searchText, accessToken]);
 
   useEffect(() => {
     if (
@@ -153,6 +180,13 @@ export const ProductPage = () => {
         allCategory={allCategory}
         handleChange={handleChange}
         filters={filters}
+        handleLikeUnlikePost={handleLikeUnlikePost}
+      />
+
+      <LoginModal
+        show={showLoginModal}
+        hide={() => setShowLoginModal(false)}
+        setShowLoginModal={setShowLoginModal}
       />
     </div>
   );

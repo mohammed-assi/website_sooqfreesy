@@ -61,7 +61,7 @@ export const HelpSupport = () => {
   ];
 
   useEffect(() => {
-    if (localtion.state.from) {
+    if (localtion?.state?.from) {
       setActiveTab(localtion.state.from);
     }
   }, [localtion]);

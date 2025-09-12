@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
+import { ROUTE } from "../../config/constants";
 
 const cities = [
   { value: "al-hasakah", label: "Al-Hasakah" },
@@ -44,7 +45,9 @@ export const CreatePost = () => {
   const [userLocation, setUserLocation] = useState("");
   const [showLocationValidation, setShowLocationValidation] = useState(false);
 
-  console.log("subCategoryId", subCategoryId);
+  const [coords, setCoords] = useState({ lat: null, lng: null, country: null });
+
+  console.log("coords", coords);
 
   const baseSchema = {
     location: Yup.string().required(t("locationRequired")),
@@ -115,6 +118,7 @@ export const CreatePost = () => {
     reset,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -135,10 +139,10 @@ export const CreatePost = () => {
     formData.append("country_code", data.country_code || "+963");
     formData.append("phone", data.phone || "9876543210");
     formData.append("city", selectedCity.label || "Mohali");
-    formData.append("country", data.country || "Syria");
+    formData.append("country", coords?.country || "Syria");
     formData.append("nearby_location", data.location);
-    formData.append("longitude", data.longitude || 34.8021);
-    formData.append("latitude", data.latitude || 38.9968);
+    formData.append("longitude", coords?.lng || 34.8021);
+    formData.append("latitude", coords?.lat || 38.9968);
     formData.append("building_street_name", data.buildingNumber);
     formData.append("apartment_villa_no", data.apartmentNumber);
     formData.append("category_id", categoryData?.id);
@@ -177,7 +181,7 @@ export const CreatePost = () => {
 
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
-        //  navigate()
+         navigate(ROUTE.ROOT)
         reset();
       }
     } catch (error) {
@@ -416,6 +420,8 @@ export const CreatePost = () => {
               setUserLocation={setUserLocation}
               showLocationValidation={showLocationValidation}
               setShowLocationValidation={setShowLocationValidation}
+              control={control}
+              setCoords={setCoords}
             />
           )}
 

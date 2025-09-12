@@ -1,6 +1,8 @@
 import React from "react";
 import selectedLang from "../../assets/icon/selectedLang.svg";
 import { useTranslation } from "react-i18next";
+import { Controller } from "react-hook-form";
+import Autocomplete from "react-google-autocomplete";
 
 export const SelectCityLocation = ({
   cities,
@@ -13,9 +15,11 @@ export const SelectCityLocation = ({
   showLocationValidation,
   setUserLocation,
   setShowLocationValidation,
+  setCoords,
+  control,
 }) => {
   const { t } = useTranslation();
-  const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY
+  const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
 
   return (
     <div className="flex gap-7 pt-4">
@@ -50,19 +54,39 @@ export const SelectCityLocation = ({
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label className="block mb-2 text-md font-bold">
-                {t("nearbyLocation")}*
+                {t("nearbyLocation")}
+                <span className="text-red-600">*</span>
               </label>
               <div className="input-icon-grp">
-                <input
-                  {...register("location")}
-                  onChange={(e) => {
-                    setUserLocation(e.target.value);
-                    setShowLocationValidation(false);
-                  }}
-                  type="text"
-                  id="location"
-                  className="w-full rounded p-3 bg-gray-100 focus:outline-none"
-                  autoComplete="off"
+                <Controller
+                  name="location"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <Autocomplete
+                      apiKey={GOOGLE_API_KEY}
+                      onPlaceSelected={(place) => {
+                        if (place?.geometry?.location) {
+                          const lat = place.geometry.location.lat();
+                          const lng = place.geometry.location.lng();
+                          const countryObj = place.address_components?.find(
+                            (c) => c.types.includes("country")
+                          );
+                          const country = countryObj
+                            ? countryObj.long_name
+                            : "";
+                          setCoords({ lat, lng, country });
+                          onChange(place.formatted_address);
+                          setUserLocation(place.formatted_address);
+                          setShowLocationValidation(false);
+                        }
+                      }}
+                      defaultValue={value}
+                      options={{
+                        types: ["geocode"],
+                      }}
+                      className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                    />
+                  )}
                 />
                 <i className="fa-solid fa-magnifying-glass" />
               </div>

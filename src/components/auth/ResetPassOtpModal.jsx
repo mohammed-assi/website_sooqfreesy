@@ -97,7 +97,7 @@ export const ResetPassOtpModal = ({
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     reset();
   }, [t]);
 
@@ -107,6 +107,8 @@ export const ResetPassOtpModal = ({
         show={show}
         hide={() => {
           hide();
+          reset();
+          setCode(["", "", "", ""]);
         }}
         title={t("createPassTitle")}
         subtitle={`${t("emailVerificationSubtitle")} ${userEmail}`}

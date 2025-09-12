@@ -5,9 +5,14 @@ import { ImageSlider } from "../../components/Home/ImageSlider";
 import { Products } from "../../components/Home/Products";
 import { getRequest } from "../../config/apiFunctions";
 import { POST } from "../../config/endPoints";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import LoginModal from "../../components/auth/LoginModal";
+import { useSelector } from "react-redux";
 
 export const HomePage = () => {
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const { accessToken } = useSelector((state) => state.auth);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
 
   const getAllPosts = async (url) => {
@@ -17,16 +22,52 @@ export const HomePage = () => {
     }
   };
 
-  useEffect(() => {
+  const getAllPostsCallBack = () => {
     getAllPosts(`${POST.GET_ALL}?page=${1}&limit=8`);
-  }, []);
+  };
+
+  const handleLikeUnlikePost = async (data) => {
+    if (accessToken) {
+      let url;
+      if (data?.isWishlisted) {
+        url = POST.UNLIKE;
+      } else {
+        url = POST.LIKE;
+      }
+      try {
+        const response = await getRequest(`${url}?listingId=${data?.id}`);
+        if (response?.data?.success && response?.data?.statusCode === 200) {
+          showSuccessToast(response?.data?.message);
+          getAllPostsCallBack();
+        }
+      } catch (error) {
+        showErrorToast(error?.response?.data?.message);
+      }
+    } else {
+      setShowLoginModal(true);
+    }
+  };
+
+  useEffect(() => {
+    getAllPostsCallBack();
+  }, [accessToken]);
 
   return (
     <>
       <Banner />
       <ImageSlider />
-      <Products allPosts={allPosts} imagePath={imagePath} />
+      <Products
+        allPosts={allPosts}
+        imagePath={imagePath}
+        handleLikeUnlikePost={handleLikeUnlikePost}
+      />
       <GetApplications />
+
+      <LoginModal
+        show={showLoginModal}
+        hide={() => setShowLoginModal(false)}
+        setShowLoginModal={setShowLoginModal}
+      />
     </>
   );
 };

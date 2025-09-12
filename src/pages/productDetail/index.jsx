@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import building1 from "../../assets/image/building1.png";
-import building3 from "../../assets/image/building3.png";
-import building4 from "../../assets/image/building4.png";
-import building5 from "../../assets/image/building5.png";
 import eyeIcon from "../../assets/icon/eye.svg";
 import shareIcon from "../../assets/icon/share.svg";
 import heart from "../../assets/icon/wishlist.svg";
+import heartFilled from "../../assets/icon/heartFilled.svg";
 import location from "../../assets/icon/silverLocation.svg";
 import darkLocation from "../../assets/icon/darkLocation.svg";
 import primaryBell from "../../assets/icon/primaryBell.svg";
@@ -21,8 +18,11 @@ import whitestar from "../../assets/icon/whitestar.svg";
 import defaultUser from "../../assets/icon/defaultUser.svg";
 import headerContact from "../../assets/icon/headerContact.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
-import { Pagination } from "swiper/modules";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
 import { ProductCard } from "../../common/card/ProductCard";
 import { AddReviewModal } from "../../components/productDetails/AddReviewModal";
 import RatingStar from "../../common/ratingStar/RatingStar";
@@ -32,23 +32,41 @@ import { InfoModal } from "../../common/modal/InfoModal";
 import { ReportListModal } from "../../components/productDetails/ReportListModal";
 import { getRequest } from "../../config/apiFunctions";
 import { POST } from "../../config/endPoints";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import { useSelector } from "react-redux";
+import LoginModal from "../../components/auth/LoginModal";
+import moment from "moment/moment";
+import { ShareModal } from "../../components/productDetails/ShareModal";
 
 export const ProductDetail = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
-  const imagesss = [building1, building3, building4, building5];
+  const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
+  const { accessToken } = useSelector((state) => state.auth);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showNotifyModal, setShowNotifyModal] = useState(false);
   const [showReportListModal, setShowReportListModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const [postDetailData, setPostDetailData] = useState({});
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: GOOGLE_API_KEY,
+  });
 
   const getAllPosts = async (url) => {
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
       setAllPosts(response?.data?.data?.posts);
     }
+  };
+
+  const getAllPostsCallBack = () => {
+    getAllPosts(`${POST.GET_ALL}?page=${1}&limit=8`);
   };
 
   const getPostDeatils = async (url) => {
@@ -58,15 +76,40 @@ export const ProductDetail = () => {
     }
   };
 
-  useEffect(() => {
+  const getPostDeatilsCallBack = () => {
     getPostDeatils(`${POST.GET_DETAILS}/${id}`);
-  }, []);
+  };
+
+  const handleLikeUnlikePost = async (data) => {
+    if (accessToken) {
+      let url;
+      if (data?.isWishlisted) {
+        url = POST.UNLIKE;
+      } else {
+        url = POST.LIKE;
+      }
+      try {
+        const response = await getRequest(`${url}?listingId=${data?.id}`);
+        if (response?.data?.success && response?.data?.statusCode === 200) {
+          showSuccessToast(response?.data?.message);
+          getAllPostsCallBack();
+          getPostDeatilsCallBack();
+        }
+      } catch (error) {
+        showErrorToast(error?.response?.data?.message);
+      }
+    } else {
+      setShowLoginModal(true);
+    }
+  };
 
   useEffect(() => {
-    getAllPosts(`${POST.GET_ALL}?page=${1}&limit=8`);
-  }, []);
+    getPostDeatilsCallBack();
+  }, [id]);
 
-  console.log("postDetailData", postDetailData);
+  useEffect(() => {
+    getAllPostsCallBack();
+  }, [accessToken]);
 
   return (
     <div className="spacer-x">
@@ -80,35 +123,49 @@ export const ProductDetail = () => {
         <div className="py-6 overflow-hidden flex flex-col lg:flex-row">
           <div className="lg:w-2/3 w-full">
             <Swiper
-              pagination={{
-                dynamicBullets: true,
+              style={{
+                "--swiper-navigation-color": "#00b4d8",
+                "--swiper-pagination-color": "#00b4d8",
               }}
-              modules={[Pagination]}
+              loop={true}
+              spaceBetween={10}
+              slidesPerView={1}
+              centeredSlides={true}
+              navigation={true}
+              thumbs={{ swiper: thumbsSwiper }}
+              modules={[FreeMode, Navigation, Thumbs]}
+              className="mySwiper2 h-100"
             >
-              {imagesss.map((img, index) => (
-                <SwiperSlide key={index}>
+              {postDetailData?.images?.map((item, i) => (
+                <SwiperSlide key={i}>
                   <img
-                    src={img}
-                    alt="img"
-                    className="w-full h-100 object-cover rounded-xl"
+                    src={`${imagePath}/${item.image_url}`}
+                    alt={`Nature ${i + 1}`}
+                    className="w-full h-full object-cover rounded-lg"
                   />
                 </SwiperSlide>
               ))}
             </Swiper>
-
-            <div className="grid grid-cols-5 gap-2 pt-4">
-              {imagesss.map((img, i) => (
-                <img
-                  key={i}
-                  src={img}
-                  alt="thumb"
-                  className="rounded-lg h-30 object-cover cursor-pointer"
-                />
+            <Swiper
+              onSwiper={setThumbsSwiper}
+              loop={true}
+              spaceBetween={10}
+              slidesPerView={5}
+              freeMode={true}
+              watchSlidesProgress={true}
+              modules={[FreeMode, Navigation, Thumbs]}
+              className="mySwiper h-40  mt-4 flex items-center"
+            >
+              {postDetailData?.images?.map((item, i) => (
+                <SwiperSlide key={i}>
+                  <img
+                    src={`${imagePath}/${item.image_url}`}
+                    alt={`Thumbnail ${i + 1}`}
+                    className="w-full h-full object-cover cursor-pointer rounded-lg"
+                  />
+                </SwiperSlide>
               ))}
-              <div className="relative rounded-lg h-30 bg-gray-200 flex items-center justify-center cursor-pointer">
-                <span className="text-sm font-medium">+20 more</span>
-              </div>
-            </div>
+            </Swiper>
           </div>
 
           <div className="lg:w-1/3 w-full ps-5 space-y-4">
@@ -121,12 +178,22 @@ export const ProductDetail = () => {
                   <img src={eyeIcon} alt="icon" />
                   24K
                 </div>
-                <div className="flex items-center gap-1 text-sm">
+                <button
+                  onClick={() => setShowShareModal(true)}
+                  className="flex items-center gap-1 text-sm"
+                >
                   <img src={shareIcon} alt="icon" />
-                </div>
-                <div className="flex items-center gap-1 text-sm">
-                  <img src={heart} alt="icon" />
-                </div>
+                </button>
+                <button
+                  onClick={() => handleLikeUnlikePost(postDetailData)}
+                  className="flex items-center gap-1 text-sm"
+                >
+                  {postDetailData?.isWishlisted ? (
+                    <img src={heartFilled} alt="icon" />
+                  ) : (
+                    <img src={heart} alt="icon" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -203,38 +270,65 @@ export const ProductDetail = () => {
                 </h3>
               </div>
               <div className="w-full h-70 py-2 rounded-lg overflow-hidden shadow">
-                <iframe
-                  title="Syria Map"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4371607.270781907!2d35.802118!3d34.802075!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15188e58401a2439%3A0x3d7e2f28d5f95170!2sSyria!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
+                {!isLoaded ? (
+                  <p>Loading map...</p>
+                ) : (
+                  <GoogleMap
+                    center={{
+                      lat: postDetailData.latitude,
+                      lng: postDetailData.longitude,
+                    }}
+                    zoom={14}
+                    mapContainerStyle={{ width: "100%", height: "100%" }}
+                  >
+                    <Marker
+                      position={{
+                        lat: postDetailData.latitude,
+                        lng: postDetailData.longitude,
+                      }}
+                    />
+                  </GoogleMap>
+                )}
               </div>
             </div>
 
             <div className="py-4">
               <h3 className="font-bold text-xl">{t("postOwner")}</h3>
-              <div className="flex items-center gap-3">
-                <div className="w-40 h-40 rounded flex items-center justify-center">
-                  <img src={defaultUser} alt="icon" className="h-full w-full" />
+              <div className="flex items-center gap-3 py-2">
+                <div className="w-40 h-40 flex items-center justify-center">
+                  <img
+                    src={
+                      postDetailData?.user?.user_profile_url
+                        ? `${imagePath}/${postDetailData?.user?.user_profile_url}`
+                        : defaultUser
+                    }
+                    alt="icon"
+                    className="h-full w-full rounded-lg object-cover"
+                  />
                 </div>
                 <Link to={ROUTE.SELLER_PROFILE}>
-                  <h3 className="text-xl font-bold">Anwar Ali</h3>
+                  <h3 className="text-xl font-bold">
+                    {postDetailData?.user?.username}
+                  </h3>
                   <RatingStar starValue={4.5} />
-                  <p className="text-sm text-gray-500">
-                    {t("memberSince")} 14/01/2025
+                  <p className="text-sm text-gray-500 py-2">
+                    {t("memberSince")}{" "}
+                    {moment(postDetailData?.user?.created_at).format(
+                      "MM/DD/yyyy"
+                    )}
                   </p>
                 </Link>
               </div>
 
               <div className="flex gap-1">
-                <button className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition">
+                <button
+                  onClick={() =>
+                    (window.location.href = `tel:${postDetailData?.user?.phone}`)
+                  }
+                  className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                >
                   <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
-                  9876543210
+                  {postDetailData?.user?.phone}
                 </button>
                 <button
                   onClick={() => setShowReviewModal(true)}
@@ -257,7 +351,12 @@ export const ProductDetail = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {allPosts?.map((car) => (
-              <ProductCard key={car.id} item={car} imagePath={imagePath} />
+              <ProductCard
+                key={car.id}
+                item={car}
+                imagePath={imagePath}
+                handleLikeUnlikePost={handleLikeUnlikePost}
+              />
             ))}
           </div>
         </div>
@@ -277,6 +376,16 @@ export const ProductDetail = () => {
       {showReportListModal && (
         <ReportListModal onClose={() => setShowReportListModal(false)} />
       )}
+
+      {showShareModal && (
+        <ShareModal onClose={() => setShowShareModal(false)} />
+      )}
+
+      <LoginModal
+        show={showLoginModal}
+        hide={() => setShowLoginModal(false)}
+        setShowLoginModal={setShowLoginModal}
+      />
     </div>
   );
 };

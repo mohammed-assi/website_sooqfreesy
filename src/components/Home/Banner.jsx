@@ -9,7 +9,7 @@ import { ROUTE } from "../../config/constants";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Banner = () => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const categories = [
     {
@@ -40,7 +40,7 @@ export const Banner = () => {
   };
   return (
     <div
-      dir={i18n.language === "ar" ? "rtl" : "ltr"}
+      // dir={i18n.language === "ar" ? "rtl" : "ltr"}
       className="relative flex text-center items-center justify-center h-150 bg-gradient-to-r from-orange-100 to-blue-100"
     >
       <div className="absolute bottom-0 start-0">

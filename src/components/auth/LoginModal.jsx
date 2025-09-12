@@ -180,6 +180,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
         hide={() => {
           hide();
           reset();
+          setActiveTab(1);
         }}
         title={
           activeTab === 1 ? t("loginTitleByPhone") : t("loginTitleByUsername")
@@ -320,13 +321,19 @@ function LoginModal({ show, hide, setShowLoginModal }) {
       </AuthModal>
       <RegisterModal
         show={showRegisterModal}
-        hide={() => setShowRegisterModal(false)}
+        hide={() => {
+          setShowRegisterModal(false);
+          setActiveTab(1);
+        }}
         showLoginModal={() => setShowLoginModal(true)}
       />
 
       <ForgotPasswordModal
         show={showForgotModal}
-        hide={() => setShowForgotModal(false)}
+        hide={() => {
+          setShowForgotModal(false);
+          setActiveTab(1);
+        }}
         setShowRegisterModal={setShowRegisterModal}
         setShowLoginModal={setShowLoginModal}
       />

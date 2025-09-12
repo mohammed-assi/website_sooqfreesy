@@ -60,7 +60,7 @@ a {
 
 #nprogress .bar {
   background: var(--color-primary) !important;
-  height: 3px !important;
+  height: 2px !important;
 }
 
 #nprogress .spinner {
@@ -123,4 +123,8 @@ a {
 .custom-btn:hover::before,
 .custom-btn:hover::after {
   top: calc(100% - 25px);
+}
+
+.pac-container:after {
+  display: none !important;
 }

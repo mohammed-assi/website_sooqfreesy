@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ProductCard } from "../../common/card/ProductCard";
 
-export const Products = ({allPosts, imagePath}) => {
+export const Products = ({allPosts, imagePath, handleLikeUnlikePost}) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("forYou");
 
@@ -11,6 +11,8 @@ export const Products = ({allPosts, imagePath}) => {
     { id: "nearby", label: t("nearby") },
     { id: "worldwide", label: t("worldwide") },
   ];
+
+  console.log("allPosts", allPosts);
 
   return (
     <div className="spacer-x py-20">
@@ -42,7 +44,7 @@ export const Products = ({allPosts, imagePath}) => {
             activeTab === "worldwide") && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {allPosts?.map((item) => (
-                <ProductCard key={item.id} item={item} imagePath={imagePath}/>
+                <ProductCard key={item.id} item={item} imagePath={imagePath} handleLikeUnlikePost={handleLikeUnlikePost}/>
               ))}
             </div>
           )}

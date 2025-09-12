@@ -1,105 +1,36 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import audi from "../../../assets/image/audi.png";
-import verna from "../../../assets/image/verna.png";
-import ferrari from "../../../assets/image/ferrari.png";
-import office from "../../../assets/image/office.png";
-import building from "../../../assets/image/building.png";
-import iphone from "../../../assets/image/iphone.png";
-import mixer from "../../../assets/image/mixer.png";
-import machine from "../../../assets/image/machine.png";
 import ProductListCard from "../../../components/searchPage/ProductListCard";
+import { getRequest } from "../../../config/apiFunctions";
+import { POST } from "../../../config/endPoints";
 
 export const MyAds = () => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState("active");
-
   const tabs = [
-    { id: "active", label: t("active") },
-    { id: "sold", label: t("sold") },
-    { id: "reject", label: t("reject") },
+    { id: 1, label: t("active") },
+    { id: 3, label: t("sold") },
+    { id: 2, label: t("reject") },
   ];
+  const [activeTab, setActiveTab] = useState(1);
+  const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const [allPosts, setAllPosts] = useState([]);
 
-  const cars = [
-    {
-      id: 1,
-      price: "£3500",
-      title: "Hyundai Verna",
-      description: "Audi Silver 1K km",
-      location: "Palmyra",
-      category: t("cars"),
-      images: [audi, verna, ferrari],
-    },
+  const getAllPosts = async (url) => {
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setAllPosts(response?.data?.data?.posts);
+    }
+  };
 
-    {
-      id: 2,
-      price: "£3500",
-      title: "Washing Machine",
-      description: "White 2K km",
-      location: "Palmyra",
-      category: t("appliances"),
-      images: [machine, mixer],
-    },
+  const getAllPostsCallBack = () => {
+    getAllPosts(`${POST.GET_MYADS}?status=${activeTab}`);
+  };
 
-    {
-      id: 3,
-      price: "£4000",
-      title: "Honda Civic",
-      description: "White 2K km",
-      location: "Palmyra",
-      category: t("cars"),
-      images: [verna, audi],
-    },
+  useEffect(() => {
+    getAllPostsCallBack();
+  }, [activeTab]);
 
-    {
-      id: 4,
-      price: "£3000",
-      title: "Commercial Office",
-      description: "White 2K km",
-      location: "Palmyra",
-      category: t("property"),
-      images: [office, building],
-    },
-    {
-      id: 5,
-      price: "£4500",
-      title: "Kitchen Mixer",
-      description: "White 2K km",
-      location: "Palmyra",
-      category: t("appliances"),
-      images: [mixer, machine],
-    },
-
-    {
-      id: 6,
-      price: "£5500",
-      title: "Ferrari Enzo",
-      description: "White 2K km",
-      location: "Palmyra",
-      category: t("cars"),
-      images: [ferrari, audi],
-    },
-
-    {
-      id: 7,
-      price: "£2500",
-      title: "iPhone X",
-      description: "White 2K km",
-      location: "Palmyra",
-      category: t("electronics"),
-      images: [iphone, machine],
-    },
-
-    {
-      id: 8,
-      price: "£5500",
-      title: "Compound Building",
-      description: "White 2K km",
-      location: "Palmyra",
-      category: t("property"),
-      images: [building, office],
-    },
-  ];
+  console.log("allPosts", allPosts);
 
   return (
     <div className="p-5">
@@ -127,8 +58,8 @@ export const MyAds = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-6">
-        {cars.map((car) => (
-          <ProductListCard key={car.id} item={car} />
+        {allPosts?.map((item) => (
+          <ProductListCard key={item.id} item={item} imagePath={imagePath} />
         ))}
       </div>
     </div>
