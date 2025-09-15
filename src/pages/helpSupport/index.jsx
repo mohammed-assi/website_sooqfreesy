@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { Faq } from "../../components/helpSupport/Faq";
 import { ContactUs } from "../../components/helpSupport/ContactUs";
+import { CONTENT } from "../../config/endPoints";
+import { getRequest } from "../../config/apiFunctions";
 
 export const HelpSupport = () => {
   const { t } = useTranslation();
@@ -60,11 +62,26 @@ export const HelpSupport = () => {
     },
   ];
 
+  const [pageData, setPageData] = useState({});
+
+  const getPageData = async (url) => {
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setPageData(response?.data?.data?.content);
+    }
+  };
+
+  useEffect(() => {
+    getPageData(`${CONTENT.GET}?type=FAQ`);
+  }, []);
+
   useEffect(() => {
     if (localtion?.state?.from) {
       setActiveTab(localtion.state.from);
     }
   }, [localtion]);
+
+  console.log("pageData", pageData);
 
   return (
     <div className="spacer-x">

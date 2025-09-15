@@ -111,6 +111,8 @@ export const ProductDetail = () => {
     getAllPostsCallBack();
   }, [accessToken]);
 
+  console.log("postDetailData", postDetailData);
+
   return (
     <div className="spacer-x">
       <div className="pt-15">
@@ -176,7 +178,7 @@ export const ProductDetail = () => {
               <div className="flex items-center gap-5">
                 <div className="flex items-center gap-1 text-sm">
                   <img src={eyeIcon} alt="icon" />
-                  24K
+                  {postDetailData?.views}
                 </div>
                 <button
                   onClick={() => setShowShareModal(true)}
@@ -306,7 +308,9 @@ export const ProductDetail = () => {
                     className="h-full w-full rounded-lg object-cover"
                   />
                 </div>
-                <Link to={ROUTE.SELLER_PROFILE}>
+                <Link
+                  to={`${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`}
+                >
                   <h3 className="text-xl font-bold">
                     {postDetailData?.user?.username}
                   </h3>
@@ -363,7 +367,10 @@ export const ProductDetail = () => {
       </div>
 
       {showReviewModal && (
-        <AddReviewModal onClose={() => setShowReviewModal(false)} />
+        <AddReviewModal
+          onClose={() => setShowReviewModal(false)}
+          postDetailData={postDetailData}
+        />
       )}
 
       {showNotifyModal && (

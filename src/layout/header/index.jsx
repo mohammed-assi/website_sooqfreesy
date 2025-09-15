@@ -4,6 +4,8 @@ import headLang from "../../assets/icon/headLang.svg";
 import { useTranslation } from "react-i18next";
 import { LanguageSelectBox } from "../../components/Header/LanguageSelectBox";
 import { AllCitiesDropdown } from "../../components/Header/AllCitiesDropdown";
+import { ROUTE } from "../../config/constants";
+import { Link } from "react-router-dom";
 
 export const Header = () => {
   const { t } = useTranslation();
@@ -16,10 +18,14 @@ export const Header = () => {
           <AllCitiesDropdown />
         </div>
         <div className="flex gap-6 items-center">
-          <div className="flex gap-2 items-center">
+          <Link
+            to={ROUTE.HELP_SUPPORT}
+            state={{ from: "contact" }}
+            className="flex gap-2 items-center"
+          >
             <img src={headerContact} alt="icon" />
             <p>{t("contactUs")}</p>
-          </div>
+          </Link>
           <div className="flex gap-2 items-center">
             <img src={headLang} alt="icon" />
             <LanguageSelectBox />

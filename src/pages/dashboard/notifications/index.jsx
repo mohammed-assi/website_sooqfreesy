@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import defaultUser from "../../../assets/icon/defaultUser.svg";
 import notificationSetting from "../../../assets/icon/notificationSetting.svg";
 import SettingModal from "../../../components/notification/SettingModal";
 import { useTranslation } from "react-i18next";
+import { CUSTOMER } from "../../../config/endPoints";
+import { showErrorToast } from "../../../utils/toastUtils";
+import { getRequest } from "../../../config/apiFunctions";
 
 export const Notifictions = () => {
   const { t } = useTranslation();
@@ -28,8 +31,28 @@ export const Notifictions = () => {
       time: "4 hr ago",
     },
   ];
-
   const [showSettingModal, setShowSetttingModal] = useState(false);
+  const [notificationSettingsData, setNotificationSettingData] = useState({});
+
+  const getNotificationSettingData = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setNotificationSettingData(response?.data?.data);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
+  const getNotificationSettingDataCallback = () => {
+    getNotificationSettingData(CUSTOMER.GET_NOTIFICATION_SETTNGS);
+  };
+
+  useEffect(() => {
+    getNotificationSettingDataCallback();
+  }, []);
+
   return (
     <div className="p-5">
       <div className="flex items-center justify-between">
@@ -57,6 +80,8 @@ export const Notifictions = () => {
       <SettingModal
         isOpen={showSettingModal}
         onClose={() => setShowSetttingModal(false)}
+        settingData={notificationSettingsData}
+        getNotificationSettingDataCallback={getNotificationSettingDataCallback}
       />
     </div>
   );

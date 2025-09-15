@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../../redux/slices/authSlice";
 import axios from "axios";
 import { setUser } from "../../redux/slices/userSlice";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 function LoginModal({ show, hide, setShowLoginModal }) {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [code, setCode] = useState(["", "", "", ""]);
+  const [loading, setLoading] = useState(false);
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -75,6 +77,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     let payload, apiUrl;
     if (activeTab === 1) {
       payload = {
@@ -112,15 +115,18 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           showSuccessToast(response?.data?.message);
           hide();
           reset();
+          setLoading(false);
         }
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
   };
 
   const handleVerifiyOtp = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const fullCode = code.join("");
     if (fullCode.length === 4) {
       const payload = {
@@ -146,14 +152,17 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           reset();
           setCode(["", "", "", ""]);
           setShowOtpModal(false);
+          setLoading(false);
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
+        setLoading(false);
       }
     }
   };
 
   const handleResendOtp = async () => {
+    setLoading(true);
     const payload = {
       country_code: `+${countryCode}`,
       phone: phoneNumber,
@@ -163,9 +172,11 @@ function LoginModal({ show, hide, setShowLoginModal }) {
       console.log("response", response);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
   };
 
@@ -300,12 +311,20 @@ function LoginModal({ show, hide, setShowLoginModal }) {
               </>
             )}
 
-            <button
+            {/* <button
               type="submit"
               className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition"
             >
               {t("login")}
-            </button>
+            </button> */}
+            <LoadingButton
+              type="submit"
+              loading={loading}
+              disabled={loading}
+              className="bg-primary text-white hover:bg-primaryDark"
+            >
+              {t("login")}
+            </LoadingButton>
           </form>
 
           <p className="text-center font-bold text-sm text-gray-500 mt-6">
@@ -347,6 +366,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
         setCode={setCode}
         handleSubmit={handleVerifiyOtp}
         handleResend={handleResendOtp}
+        loading={loading}
       />
     </>
   );

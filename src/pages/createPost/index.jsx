@@ -15,16 +15,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 
-const cities = [
-  { value: "al-hasakah", label: "Al-Hasakah" },
-  { value: "aleppo", label: "Aleppo" },
-  { value: "damascus", label: "Damascus" },
-  { value: "daraa", label: "Daraa" },
-  { value: "deir-ez-zor", label: "Deir ez-Zor" },
-  { value: "hama", label: "Hama" },
-  { value: "homs", label: "Homs" },
-];
-
 export const CreatePost = () => {
   const { i18n, t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
@@ -38,16 +28,16 @@ export const CreatePost = () => {
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [saleRentId, setSaleRentId] = useState(null);
   const [landlordAgentId, setLandlordAgentId] = useState(null);
-  const [selectedCity, setSelectedCity] = useState(cities[0]);
+  const [selectedCity, setSelectedCity] = useState("");
   const [categoryList, setCategoryList] = useState([]);
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [formData, setFormData] = useState({});
   const [userLocation, setUserLocation] = useState("");
   const [showLocationValidation, setShowLocationValidation] = useState(false);
 
-  const [coords, setCoords] = useState({ lat: null, lng: null, country: null });
+  console.log("selectedCity", selectedCity);
 
-  console.log("coords", coords);
+  const [coords, setCoords] = useState({ lat: null, lng: null, country: null });
 
   const baseSchema = {
     location: Yup.string().required(t("locationRequired")),
@@ -129,8 +119,6 @@ export const CreatePost = () => {
 
   const pictures = watch("pictures") || [];
 
-  console.log("selectedCity", selectedCity);
-
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append("title", data.title);
@@ -181,16 +169,12 @@ export const CreatePost = () => {
 
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
-         navigate(ROUTE.ROOT)
+        navigate(ROUTE.ROOT);
         reset();
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
     }
-  };
-
-  const handleSelectCity = (city) => {
-    setSelectedCity(city);
   };
 
   const handleChooseCategory = (data) => {
@@ -301,12 +285,11 @@ export const CreatePost = () => {
               !showLandlordAgent &&
               !showFinalForm &&
               t("chooseCategory")}
-            {showSaleRent &&
-            !showLandlordAgent &&
-            !showFinalForm &&
-            i18n.language === "ar"
-              ? categoryData?.arabic_name
-              : categoryData?.name}
+            {showSaleRent && !showLandlordAgent && !showFinalForm
+              ? i18n.language === "ar"
+                ? categoryData?.arabic_name
+                : categoryData?.name
+              : ""}
             {showLandlordAgent &&
               !showFinalForm &&
               "Are you a landlord or an agent?"}
@@ -321,6 +304,8 @@ export const CreatePost = () => {
                 onClick={() => {
                   if (userLocation === "") {
                     setShowLocationValidation(true);
+                  } else if (selectedCity === "") {
+                    showErrorToast(t("selectCityToast"));
                   } else {
                     setShowChooseCategory(true);
                   }
@@ -410,9 +395,8 @@ export const CreatePost = () => {
           !showLandlordAgent &&
           !showFinalForm && (
             <SelectCityLocation
-              cities={cities}
               selectedCity={selectedCity}
-              handleSelectCity={handleSelectCity}
+              setSelectedCity={setSelectedCity}
               register={register}
               errors={errors}
               onSubmit={onSubmit}
@@ -422,6 +406,7 @@ export const CreatePost = () => {
               setShowLocationValidation={setShowLocationValidation}
               control={control}
               setCoords={setCoords}
+              coords={coords}
             />
           )}
 

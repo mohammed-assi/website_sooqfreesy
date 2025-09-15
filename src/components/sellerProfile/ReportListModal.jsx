@@ -1,33 +1,38 @@
 import React, { useState } from "react";
-
-const reasons = [
-  "Seller is threatening me",
-  "Seller is insulting me",
-  "Inappropriate profile image",
-  "Fraud",
-  "Spam",
-  "Other",
-];
+import { useTranslation } from "react-i18next";
 
 const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
+  const { t } = useTranslation();
   const [selectedReason, setSelectedReason] = useState("");
   const [customReason, setCustomReason] = useState("");
 
-  if (!isOpen) return null;
+  const reasons = [
+    t("sellerThreatening"),
+    t("sellerInsulting"),
+    t("inappropriateProfileImage"),
+    t("fraud"),
+    t("spam"),
+    t("other"),
+  ];
 
   const handleSubmit = () => {
     setShowReportButton(false);
     onClose();
   };
 
+  if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
-        <h2 className="font-bold text-xl">Report Seller</h2>
+        <h2 className="font-bold text-xl">{t("reportSeller")}</h2>
 
         <div className="space-y-2">
           {reasons.map((reason, idx) => (
-            <label key={idx} className="flex items-center gap-3 py-1 cursor-pointer">
+            <label
+              key={idx}
+              className="flex items-center gap-3 py-1 cursor-pointer"
+            >
               <input
                 type="radio"
                 name="reportReason"
@@ -42,7 +47,7 @@ const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
         </div>
 
         <textarea
-          placeholder="Type your reason..."
+          placeholder={t("yourReason")}
           value={customReason}
           onChange={(e) => setCustomReason(e.target.value)}
           className="w-full border-b border-gray-600 p-2 mt-4 focus:outline-none"
@@ -53,7 +58,7 @@ const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
             onClick={handleSubmit}
             className="w-full px-5 py-2 bg-primary text-white rounded-md hover:bg-primaryDark transition"
           >
-            Submit
+            {t("submit")}
           </button>
           <button
             onClick={() => {
@@ -62,7 +67,7 @@ const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
             }}
             className="w-full px-5 py-2 border border-primary text-cyan-500 rounded-md hover:bg-primary hover:text-white transition"
           >
-            Cancel
+            {t("cancelButton")}
           </button>
         </div>
       </div>

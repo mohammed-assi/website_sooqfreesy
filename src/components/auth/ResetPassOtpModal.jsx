@@ -8,6 +8,7 @@ import { AuthConfirmationModal } from "../../common/modal/AuthConfirmationModal"
 import { postRequest } from "../../config/apiFunctions";
 import { AUTH } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const ResetPassOtpModal = ({
   show,
@@ -22,6 +23,7 @@ export const ResetPassOtpModal = ({
   const [toggle, setToggle] = useState(true);
   const [toggleConfirm, setToggleConfirm] = useState(true);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const schema = Yup.object().shape({
     password: Yup.string()
@@ -79,6 +81,7 @@ export const ResetPassOtpModal = ({
   const onSubmit = async (data) => {
     const fullCode = code.join("");
     if (fullCode.length === 4) {
+      setLoading(true);
       const payload = {
         email: userEmail,
         otp: fullCode,
@@ -90,9 +93,11 @@ export const ResetPassOtpModal = ({
           showSuccessToast(response?.data?.message);
           reset();
           setShowConfirmationModal(true);
+          setLoading(false);
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
+        setLoading(false);
       }
     }
   };
@@ -198,12 +203,14 @@ export const ResetPassOtpModal = ({
               )}
             </div>
 
-            <button
+            <LoadingButton
               type="submit"
-              className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition"
+              loading={loading}
+              disabled={loading}
+              className="bg-primary text-white hover:bg-primaryDark"
             >
               {t("submit")}
-            </button>
+            </LoadingButton>
           </form>
         </div>
       </AuthModal>

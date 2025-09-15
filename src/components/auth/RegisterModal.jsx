@@ -12,6 +12,7 @@ import { AUTH } from "../../config/endPoints";
 import { getRequest, postRequest } from "../../config/apiFunctions";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import useSearchDebounce from "../../utils/searchDebounce";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const { t } = useTranslation();
@@ -26,6 +27,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const [code, setCode] = useState(["", "", "", ""]);
   const [searchTextDebounce, setSearchTextDebounce] = useSearchDebounce();
   const [userNameAvailable, setUserNameAvailable] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -101,6 +103,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     let payload, apiUrl;
     if (activeTab === 1) {
       payload = {
@@ -125,19 +128,23 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           showSuccessToast(response?.data?.message);
           setShowOtpModal(true);
           reset();
+          setLoading(false);
         } else {
           setShowConfirmationModal(true);
           showSuccessToast(response?.data?.message);
           reset();
+          setLoading(false);
         }
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
   };
 
   const handleVerifiyOtp = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const fullCode = code.join("");
     if (fullCode.length === 4) {
       let payload, apiUrl;
@@ -166,14 +173,17 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           reset();
           setCode(["", "", "", ""]);
           setShowOtpModal(false);
+          setLoading(false);
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
+        setLoading(false);
       }
     }
   };
 
   const handleResendOtp = async () => {
+    setLoading(true);
     let payload;
     if (activeTab === 1) {
       payload = {
@@ -190,9 +200,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
       console.log("response", response);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
   };
 
@@ -407,12 +419,14 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
               </p>
             )}
 
-            <button
+            <LoadingButton
               type="submit"
-              className="w-full mt-3 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition"
+              loading={loading}
+              disabled={loading}
+              className="bg-primary text-white hover:bg-primaryDark"
             >
               {t("signUp")}
-            </button>
+            </LoadingButton>
           </form>
 
           <p className="text-center font-bold text-sm text-gray-500 mt-6">
@@ -439,6 +453,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         setCode={setCode}
         handleSubmit={handleVerifiyOtp}
         handleResend={handleResendOtp}
+        loading={loading}
       />
 
       {showConfirmationModal && (

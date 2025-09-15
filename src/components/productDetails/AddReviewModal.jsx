@@ -1,17 +1,46 @@
 import React, { useState } from "react";
+import { CUSTOMER } from "../../config/endPoints";
+import { postRequest } from "../../config/apiFunctions";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import { useTranslation } from "react-i18next";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
-export const AddReviewModal = ({ onClose }) => {
-  const [rating, setRating] = useState(0);
+export const AddReviewModal = ({ onClose, postDetailData }) => {
+  const { i18n, t } = useTranslation();
+  const [rating, setRating] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleStarClick = (value) => {
     setRating(value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ rating, feedback });
-    onClose();
+
+    if (rating === "") {
+      showErrorToast(t("addStars"));
+    } else {
+      const payload = {
+        seller_id: postDetailData?.user?.userid,
+        rating: rating,
+        review_text:
+          i18n.language === "ar" ? { ar: feedback } : { en: feedback },
+      };
+      try {
+        const response = await postRequest(CUSTOMER.CREATE_REVIEW, payload);
+        if (response?.data?.success && response?.data?.statusCode === 200) {
+          showSuccessToast(response?.data?.message);
+          onClose();
+          setFeedback("");
+          setRating("");
+          setLoading(false);
+        }
+      } catch (error) {
+        showErrorToast(error?.response?.data?.message);
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -24,7 +53,7 @@ export const AddReviewModal = ({ onClose }) => {
           <i className="fa-solid fa-xmark fa-lg" />
         </button>
 
-        <h2 className="text-xl font-bold mb-4">Add Review</h2>
+        <h2 className="text-xl font-bold mb-4">{t("addReview")}</h2>
 
         <hr className="border-gray-300" />
 
@@ -51,7 +80,8 @@ export const AddReviewModal = ({ onClose }) => {
 
         <form onSubmit={handleSubmit}>
           <label className="block text-sm font-bold mb-2">
-            Tell us more <span className="text-gray-400">(Optional)</span>
+            {t("tellMore")}{" "}
+            <span className="text-gray-400">{t("optional")}</span>
           </label>
           <textarea
             value={feedback}
@@ -61,12 +91,14 @@ export const AddReviewModal = ({ onClose }) => {
             placeholder="Write your feedback..."
           />
 
-          <button
+          <LoadingButton
             type="submit"
-            className="w-full bg-primary hover:bg-primaryDark text-white py-3 rounded-lg font-medium transition"
+            loading={loading}
+            disabled={loading}
+            className="bg-primary text-white hover:bg-primaryDark"
           >
-            Submit
-          </button>
+            {t("submit")}
+          </LoadingButton>
         </form>
       </div>
     </div>

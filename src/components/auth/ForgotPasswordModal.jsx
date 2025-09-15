@@ -10,6 +10,7 @@ import { AuthConfirmationModal } from "../../common/modal/AuthConfirmationModal"
 import { postRequest } from "../../config/apiFunctions";
 import { AUTH } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 function ForgotPasswordModal({
   show,
@@ -20,7 +21,8 @@ function ForgotPasswordModal({
   const { t } = useTranslation();
   const [showResetPassModal, setShowResetPassModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [userEmail, setUserEmail]= useState("")
+  const [userEmail, setUserEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const schema = Yup.object().shape({
     email: Yup.string()
@@ -53,7 +55,8 @@ function ForgotPasswordModal({
   };
 
   const onSubmit = async (data) => {
-    setUserEmail(data.email)
+    setLoading(true);
+    setUserEmail(data.email);
     const payload = {
       email: data.email,
     };
@@ -63,24 +66,29 @@ function ForgotPasswordModal({
         showSuccessToast(response?.data?.message);
         reset();
         setShowConfirmationModal(true);
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
+    setLoading(true);
     const payload = {
-      email: userEmail
+      email: userEmail,
     };
     try {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
       console.log("response", response);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
   };
 
@@ -117,12 +125,14 @@ function ForgotPasswordModal({
               )}
             </div>
 
-            <button
+            <LoadingButton
               type="submit"
-              className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition"
+              loading={loading}
+              disabled={loading}
+              className="bg-primary text-white hover:bg-primaryDark"
             >
               {t("submit")}
-            </button>
+            </LoadingButton>
           </form>
 
           <p className="text-center font-bold text-sm text-gray-500 mt-6">

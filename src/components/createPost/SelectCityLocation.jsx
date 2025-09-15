@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import selectedLang from "../../assets/icon/selectedLang.svg";
 import { useTranslation } from "react-i18next";
 import { Controller } from "react-hook-form";
 import Autocomplete from "react-google-autocomplete";
+import { City, Country } from "country-state-city";
 
 export const SelectCityLocation = ({
-  cities,
-  handleSelectCity,
+  setSelectedCity,
   selectedCity,
   register,
   errors,
@@ -17,9 +17,22 @@ export const SelectCityLocation = ({
   setShowLocationValidation,
   setCoords,
   control,
+  coords,
 }) => {
   const { t } = useTranslation();
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
+  const [citiesList, setCitiesList] = useState([]);
+
+  useEffect(() => {
+    const country = Country.getAllCountries().find(
+      (c) => c.name === coords.country
+    );
+
+    if (country) {
+      const cities = City.getCitiesOfCountry(country.isoCode);
+      setCitiesList(cities.map((c) => c.name));
+    }
+  }, [coords.country]);
 
   return (
     <div className="flex gap-7 pt-4">
@@ -27,24 +40,30 @@ export const SelectCityLocation = ({
         <h3 className="text-2xl font-bold">{t("selectCity")}</h3>
         <p className="text-gray-600">{t("placeYourAd")}</p>
         <div className="py-3">
-          <ul className="space-y-5 p-5 border border-gray-200 rounded-lg">
-            {cities.map((city) => (
-              <li
-                key={city.value}
-                onClick={() => handleSelectCity(city)}
-                className={`${
-                  selectedCity.value === city.value
-                    ? "text-black font-medium"
-                    : "text-gray-600"
-                } flex items-center justify-between cursor-pointer p-2 hover:text-black border-b border-gray-100`}
-              >
-                <span>{city.label}</span>
-                {selectedCity.value === city.value && (
-                  <img src={selectedLang} alt="icon" />
-                )}
-              </li>
-            ))}
-          </ul>
+          {citiesList.length > 0 ? (
+            <ul className="space-y-5 p-5 border border-gray-200 rounded-lg">
+              {citiesList.map((city) => (
+                <li
+                  key={city}
+                  onClick={() => setSelectedCity(city)}
+                  className={`${
+                    selectedCity === city
+                      ? "text-black font-medium"
+                      : "text-gray-600"
+                  } flex items-center justify-between cursor-pointer p-2 hover:text-black border-b border-gray-100`}
+                >
+                  <span>{city}</span>
+                  {selectedCity === city && (
+                    <img src={selectedLang} alt="icon" />
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-600 pt-4">
+              {t("selectCities")} <span className="text-red-600">*</span>
+            </p>
+          )}
         </div>
       </div>
       <div className="w-full p-5 shadow-lg rounded-lg">
@@ -83,6 +102,12 @@ export const SelectCityLocation = ({
                       defaultValue={value}
                       options={{
                         types: ["geocode"],
+                      }}
+                      onChange={() => {
+                        setSelectedCity("");
+                        setCitiesList([]);
+                        setUserLocation("");
+                        setCoords({ lat: null, lng: null, country: null });
                       }}
                       className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                     />

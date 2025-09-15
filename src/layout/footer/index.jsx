@@ -12,9 +12,9 @@ export const Footer = () => {
     <footer className="bg-primaryDark text-white">
       <div className="spacer-x py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-7">
-          <div>
+          <Link to={ROUTE.ROOT}>
             <img src={logo} alt="SouqSyria" className="h-12 mb-4" />
-          </div>
+          </Link>
 
           <div>
             <h3 className="font-bold text-lg mb-3">{t("aboutSouqSyria")}</h3>
@@ -35,10 +35,14 @@ export const Footer = () => {
             <h3 className="font-bold text-lg mb-3">{t("support")}</h3>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link to={ROUTE.HELP_SUPPORT} state={{from:'contact'}}>{t("contactUs")}</Link>
+                <Link to={ROUTE.HELP_SUPPORT} state={{ from: "contact" }}>
+                  {t("contactUs")}
+                </Link>
               </li>
               <li>
-                <Link to={ROUTE.HELP_SUPPORT} state={{from:'faq'}}>{t("FAQ")}</Link>
+                <Link to={ROUTE.HELP_SUPPORT} state={{ from: "faq" }}>
+                  {t("FAQ")}
+                </Link>
               </li>
             </ul>
           </div>
@@ -68,12 +72,20 @@ export const Footer = () => {
           </p>
 
           <div className="flex gap-4">
-            <a href="#" target="_blank" rel="noopener noreferrer">
+            <Link
+              to="https://www.facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src={facebook} alt="Facebook" className="h-6 w-6" />
-            </a>
-            <a href="#" target="_blank" rel="noopener noreferrer">
+            </Link>
+            <Link
+              to="https://www.instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src={instagram} alt="Instagram" className="h-6 w-6" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

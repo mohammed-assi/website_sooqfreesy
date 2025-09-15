@@ -15,7 +15,7 @@ import { FilterModal } from "../searchPage/FilterModal";
 import { SellerReviews } from "./SellerReviews";
 import RatingSummary from "./RatingSummary";
 
-export const ListingFilter = () => {
+export const ListingFilter = ({sellerReviews, imagePath}) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("listing");
   const [openFilterModal, setOpenFilterModal] = useState(false);
@@ -24,8 +24,8 @@ export const ListingFilter = () => {
   console.log("filters", filters);
 
   const tabs = [
-    { id: "listing", label: t("Listing") },
-    { id: "reviews", label: t("Reviews") },
+    { id: "listing", label: t("listing") },
+    { id: "reviews", label: t("reviewss") },
   ];
   const cars = [
     {
@@ -140,7 +140,7 @@ export const ListingFilter = () => {
           ))}
         </div>
         <div className="flex gap-3 items-center">
-          <p className="text-lg text-gray-600">Sorting</p>
+          <p className="text-lg text-gray-600">{t("sorting")}</p>
           <button
             onClick={() => setOpenFilterModal(true)}
             className="p-2 rounded hover:bg-gray-100"
@@ -175,7 +175,7 @@ export const ListingFilter = () => {
             </aside>
 
             <div>
-              <SellerReviews />
+              <SellerReviews sellerReviews={sellerReviews} imagePath={imagePath} />
             </div>
           </div>
         )}

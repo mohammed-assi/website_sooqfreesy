@@ -30,8 +30,6 @@ export const MyAds = () => {
     getAllPostsCallBack();
   }, [activeTab]);
 
-  console.log("allPosts", allPosts);
-
   return (
     <div className="p-5">
       <h1 className="main-heading">{t("myAds")}</h1>

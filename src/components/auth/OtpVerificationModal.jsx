@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { AuthModal } from "../../common/modal/AuthModal";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const OtpVerificationModal = ({
   show,
@@ -11,6 +12,7 @@ export const OtpVerificationModal = ({
   code,
   setCode,
   handleResend,
+  loading,
 }) => {
   const { t } = useTranslation();
   const inputsRef = useRef([]);
@@ -73,12 +75,14 @@ export const OtpVerificationModal = ({
                 ))}
               </div>
 
-              <button
+              <LoadingButton
                 type="submit"
-                className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition"
+                loading={loading}
+                disabled={loading}
+                className="bg-primary text-white hover:bg-primaryDark"
               >
                 {t("Verify")}
-              </button>
+              </LoadingButton>
             </form>
 
             <p className="text-center font-bold text-sm text-gray-500 mt-6">

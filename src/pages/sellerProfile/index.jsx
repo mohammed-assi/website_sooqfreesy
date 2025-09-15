@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import defaultUser from "../../assets/icon/defaultUser.svg";
 import RatingStar from "../../common/ratingStar/RatingStar";
@@ -7,36 +7,84 @@ import menu from "../../assets/icon/menu.svg";
 import reportUser from "../../assets/icon/reportUser.svg";
 import ReportListModal from "../../components/sellerProfile/ReportListModal";
 import { ListingFilter } from "../../components/sellerProfile/ListingFilter";
+import { showErrorToast } from "../../utils/toastUtils";
+import { getRequest } from "../../config/apiFunctions";
+import { CUSTOMER } from "../../config/endPoints";
+import { useParams } from "react-router-dom";
 
 export const SellerProfile = () => {
   const { t } = useTranslation();
+  const { id } = useParams();
+  const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const [showReportButton, setShowReportButton] = useState(false);
   const [showReportListModal, setShowReportListModal] = useState(false);
+  const [sellerProfile, setSellerProfile] = useState({});
+  const [sellerReviews, setSellerReviews] = useState([]);
+
+  const getSellerProfile = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setSellerProfile(response?.data?.data);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    getSellerProfile(`${CUSTOMER.GET_SELLER_PROFILE}/${id}`);
+  }, [id]);
+
+  const getSellerReview = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setSellerReviews(response?.data?.data);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    getSellerReview(`${CUSTOMER.GET_SELLER_REVIEWS}?seller_id=${id}`);
+  }, [id]);
+
+  console.log("sellerProfile", sellerProfile);
+  console.log("sellerReviews", sellerReviews);
+
   return (
     <>
       <div className="spacer-x pb-10">
         <div className="pt-15">
           <div className="text-sm text-gray-500 mb-2">
-            {t("home")} <span className="mx-1">{">"}</span> Search
-            <span className="mx-1">{">"}</span> Product Details{" "}
-            <span className="mx-1">{">"}</span> Seller Profile
+            {t("home")} <span className="mx-1">{">"}</span> {t("searchButton")}
+            <span className="mx-1">{">"}</span> {t("productDetails")}{" "}
+            <span className="mx-1">{">"}</span> {t("sellerProfile")}
           </div>
 
-          <h1 className="main-heading">Seller Profile</h1>
+          <h1 className="main-heading">{t("sellerProfile")}</h1>
 
           <div className="py-10">
             <div className="relative flex items-center justify-between bg-white shadow-md rounded-2xl p-4 w-full">
               <div className="flex items-center gap-4">
                 <img
-                  src={defaultUser}
+                  src={
+                    sellerProfile?.user_profile_url
+                      ? `${imagePath}/${sellerProfile?.user_profile_url}`
+                      : defaultUser
+                  }
                   alt="userImg"
                   className="w-60 h-45 rounded-lg object-cover"
                 />
                 <div>
-                  <h3 className="text-xl font-bold pb-1">Anwar Ali</h3>
+                  <h3 className="text-xl font-bold pb-1">
+                    {sellerProfile?.username}
+                  </h3>
                   <RatingStar starValue={4.5} />
                   <p className="text-sm text-gray-500 pt-5">
-                    Member since 14/01/2025
+                    {t("memberSince")} 14/01/2025
                   </p>
                 </div>
               </div>
@@ -44,7 +92,7 @@ export const SellerProfile = () => {
               <div className="flex items-center gap-3">
                 <button className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition">
                   <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
-                  9876543210
+                  {sellerProfile?.phone}
                 </button>
 
                 <div className="absolute top-5 right-4">
@@ -62,7 +110,7 @@ export const SellerProfile = () => {
                       className="rounded-md shadow-md text-gray-700 p-4 flex items-center gap-2"
                     >
                       <img src={reportUser} alt="userImg" className="w-6 h-6" />
-                      Report Seller
+                      {t("reportSeller")}
                     </button>
                   </div>
                 )}
@@ -71,7 +119,7 @@ export const SellerProfile = () => {
           </div>
         </div>
 
-        <ListingFilter />
+        <ListingFilter sellerReviews={sellerReviews} imagePath={imagePath} />
       </div>
 
       {showReportListModal && (
