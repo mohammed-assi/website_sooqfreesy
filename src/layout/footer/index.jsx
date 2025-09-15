@@ -45,6 +45,7 @@ export const Footer = () => {
 
           <div>
             <h3 className="font-bold text-lg mb-3">{t("contactInfo")}</h3>
+            
             <ul className="space-y-3 text-sm">
               <li className="flex gap-2">
                 <p className="w-[120px]">{t("phoneNumber")}</p>
