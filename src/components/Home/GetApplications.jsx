@@ -30,7 +30,7 @@ export const GetApplications = () => {
           <img
             src={phone}
             alt="Phone App"
-            className="w-[280px] md:w-[350px] lg:w-[400px] drop-shadow-2xl relative -top-12"
+            className="w-[280px] md:w-[350px] lg:w-[400px] drop-shadow-2xl -mt-[45px]"
           />
         </div>
       </div>

@@ -19,7 +19,7 @@ export const ImageSlider = () => {
       }}
       navigation={true}
       modules={[Pagination, Navigation]}
-      className="mySwiper"
+      className="mySwiper image-slider"
     >
       {items.map((item, i) => (
         <SwiperSlide key={i}>

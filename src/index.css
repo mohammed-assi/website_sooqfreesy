@@ -128,3 +128,23 @@ a {
 .pac-container:after {
   display: none !important;
 }
+
+.image-slider .swiper-button-next::after, .image-slider  .swiper-button-prev::after {
+    color: #fff;
+    font-size: 25px !important;
+    cursor: pointer;
+}
+.image-slider .swiper-pagination {
+    position: absolute;
+    bottom: 20px !important;
+}
+.image-slider span.swiper-pagination-bullet {
+    width: 9px !important;
+    height: 9px !important;
+    background-color: rgba(255, 255, 255, 0.4);
+    opacity: 1;
+    transform: scale(1) !important;
+}
+.image-slider .swiper-pagination-bullet-active-main {
+    background-color: var(--color-primary) !important;
+}
