@@ -28,7 +28,6 @@ export const CUSTOMER = {
   GET_SUBCATEGORY: `${BASEURL}/customer/subcategory/get-by-category`,
   GET_FORM_DATA: `${BASEURL}/customer/forms/get-by-cat-and-subcat`,
   GET_ALL_SUBCATEGORY: `${BASEURL}/customer/subcategory/get-all`,
-
   GET_NOTIFICATION_SETTNGS: `${BASEURL}/customer/notification-setting/get-all`,
   UPDATE_SETTING: `${BASEURL}/customer/notification-setting/update`,
   GET_SELLER_PROFILE: `${BASEURL}/customer/seller-profile`,
@@ -50,7 +49,6 @@ export const POST = {
   GET_MYADS: `${BASEURL}/post/get-customer-posts`,
 };
 
-
 export const CONTENT = {
-  GET : `${BASEURL}/content/get-by-type`
-}
+  GET: `${BASEURL}/content/get-by-type`,
+};

@@ -18,7 +18,7 @@ export const AboutUs = () => {
     getPageData(`${CONTENT.GET}?type=ABOUT_US`);
   }, []);
 
-  console.log("pageData", pageData);
+  console.log("pageData-->", pageData);
 
   return (
     <div className="spacer-x">

@@ -21,10 +21,11 @@ import moment from "moment";
 export const EditProfile = ({ userInfo, imagePath }) => {
   const { t } = useTranslation();
   const schema = yup.object().shape({
-    fullName: yup.string().required(t("usernameRequired")),
+    fullName: yup.string(),
+    // .required(t("usernameRequired"))
     email: yup
       .string()
-      .required(t("emailRequired"))
+      // .required(t("emailRequired"))
       .email(t("validEmail"))
       .matches(
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -32,7 +33,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
       ),
     phone: yup
       .string()
-      .required(t("userPhoneRequired"))
+      // .required(t("userPhoneRequired"))
       .min(10, t("phoneInvalid")),
     gender: yup.string().required(t("genderRequired")),
     dob: yup.date().required(t("dobRequired")),
@@ -208,23 +209,25 @@ export const EditProfile = ({ userInfo, imagePath }) => {
         if (res?.data?.statusCode === 200) {
           dispatch(setUser(res?.data?.data));
 
-           if (action === "username") {
-          reset(
-            { ...data, fullName: res?.data?.data?.fullName }, // updated value
-            { keepErrors: true }
-          );
-        }
+          if (action === "username") {
+            reset(
+              { ...data, fullName: res?.data?.data?.fullName }, // updated value
+              { keepErrors: true }
+            );
+          }
 
-        if (action === "profile") {
-          reset(
-            {
-              ...data,
-              dob: res?.data?.data?.dob ? new Date(res?.data?.data?.dob) : null,
-              gender: res?.data?.data?.gender,
-            },
-            { keepErrors: true }
-          );
-        }
+          if (action === "profile") {
+            reset(
+              {
+                ...data,
+                dob: res?.data?.data?.dob
+                  ? new Date(res?.data?.data?.dob)
+                  : null,
+                gender: res?.data?.data?.gender,
+              },
+              { keepErrors: true }
+            );
+          }
         }
       }
     } catch (error) {
