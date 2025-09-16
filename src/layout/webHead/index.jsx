@@ -225,9 +225,9 @@ export const WebHead = () => {
                     </button>
                   )}
                   {open && (
-                    <div className="absolute -right-10 mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
-                      <div className="flex items-center gap-3 p-4 border-b border-gray-200">
-                        <div className="w-20 h-18 rounded flex items-center justify-center">
+                    <div className="absolute px-4 -right-10 mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
+                      <div className="flex items-center gap-3 py-4 border-b border-gray-200">
+                        <div className="w-[70px] h-[60px] rounded flex items-center justify-center">
                           <img
                             src={
                               userInfo?.user_profile_url
@@ -248,11 +248,11 @@ export const WebHead = () => {
                         </div>
                       </div>
 
-                      <ul className="p-2">
+                      <ul className="py-2 mb-1">
                         {userDropDown?.map((item, i) => (
                           <li
                             key={i}
-                            className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                            className="px-2 py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md border-b border-gray-100"
                           >
                             <button
                               onClick={() => handleNavigate(item.slug)}
@@ -262,7 +262,7 @@ export const WebHead = () => {
                             </button>
                           </li>
                         ))}
-                        <li className="px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100">
+                        <li className="px-2 py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md ">
                           <button
                             onClick={() => {
                               navigate(ROUTE.HELP_SUPPORT);
@@ -276,11 +276,11 @@ export const WebHead = () => {
                         </li>
                       </ul>
 
-                      <div className="border-t border-gray-200 p-2">
+                      <div className="border-t border-gray-200 py-2">
                         {accessToken ? (
                           <button
                             onClick={handleLogout}
-                            className="flex text-red-700 items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
+                            className="flex text-red-700 items-center gap-3 px-2 py-5 w-full hover:bg-gray-100 rounded-md cursor-pointer"
                           >
                             <img src={logoutIcon} alt="icon" />
                             {t("logout")}
@@ -288,7 +288,7 @@ export const WebHead = () => {
                         ) : (
                           <button
                             onClick={handleShowLoginModal}
-                            className="flex items-center gap-3 px-4 py-5 w-full hover:bg-gray-100 rounded-b-xl cursor-pointer"
+                            className="flex items-center gap-3 px-2 py-5 w-full hover:bg-gray-100 rounded-md cursor-pointer"
                           >
                             <img src={login} alt="icon" />
                             {t("login")}

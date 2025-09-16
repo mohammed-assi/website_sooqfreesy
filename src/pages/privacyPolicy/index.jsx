@@ -21,10 +21,10 @@ export const PrivacyPolicy = () => {
   console.log("pageData", pageData);
   return (
     <div className="spacer-x">
-      <div className="pt-20 pb-5 border-b border-gray-200">
+      <div className="pt-14 pb-5 border-b border-gray-200">
         <h1 className="main-heading">{t("souqSyriaPrivacyPolicy")}</h1>
       </div>
-      <div className="py-6">
+      <div className="pt-4 pb-20">
         <h3 className="font-bold text-xl pt-4">Lorem ipsum dolor sit amet?</h3>
         <p className="text-gray-700 py-1">
           Lorem ipsum dolor sit amet consectetur. Adipiscing elementum sed sem
