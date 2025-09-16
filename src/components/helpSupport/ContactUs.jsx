@@ -84,14 +84,14 @@ export const ContactUs = () => {
 
   return (
     <div className="pb-8">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-[60%]">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-[60%]">
         <div className="">
           <label className="block mb-2 text-md font-bold">
             {t("needHelpWith")}
           </label>
           <select
             {...register("help")}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            className="w-full rounded-md p-3 bg-gray-100 focus:outline-none select-filter"
           >
             {reportList?.map((item) => (
               <option key={item.id} value={item.id}>
@@ -110,7 +110,7 @@ export const ContactUs = () => {
           </label>
           <select
             {...register("platform")}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            className="w-full rounded-md p-3 bg-gray-100 focus:outline-none select-filter"
           >
             <option value={t("iOS")}>{t("iOS")}</option>
             <option value={t("android")}>{t("android")}</option>
@@ -132,7 +132,7 @@ export const ContactUs = () => {
             type="text"
             {...register("description")}
             rows={4}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            className="w-full rounded-md resize-none h-[100px] p-3 bg-gray-100 focus:outline-none"
           />
           {errors.description && (
             <p className="text-red-500 text-sm mt-1">
@@ -146,7 +146,7 @@ export const ContactUs = () => {
           <input
             type="text"
             {...register("fullName")}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            className="w-full rounded-md p-3 bg-gray-100 focus:outline-none"
           />
           {errors.fullName && (
             <p className="text-red-500 text-sm mt-1">
@@ -185,7 +185,7 @@ export const ContactUs = () => {
           <input
             type="text"
             {...register("email")}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            className="w-full rounded-md p-3 bg-gray-100 focus:outline-none"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -194,7 +194,7 @@ export const ContactUs = () => {
 
         <button
           type="submit"
-          className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+          className="w-full py-4 bg-primary text-white font-semibold rounded-md hover:bg-primaryDark transition"
         >
           {t("Submit")}
         </button>
