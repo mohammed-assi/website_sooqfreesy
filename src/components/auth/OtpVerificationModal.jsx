@@ -54,12 +54,12 @@ export const OtpVerificationModal = ({
         }
       >
         <div className="flex h-full items-center justify-center">
-          <div className="px-10 py-8">
+          <div className="w-full">
             <form
               onSubmit={handleSubmit}
               className="flex flex-col items-center gap-4"
             >
-              <div className="flex justify-between gap-4">
+              <div className="flex justify-between gap-2">
                 {code?.map((digit, index) => (
                   <input
                     key={index}
@@ -70,7 +70,7 @@ export const OtpVerificationModal = ({
                     onChange={(e) => handleChange(e.target.value, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     ref={(el) => (inputsRef.current[index] = el)}
-                    className="w-12 h-12 text-center text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+                    className="w-13 h-13 text-center text-[22px] font-medium border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
                   />
                 ))}
               </div>
@@ -79,13 +79,13 @@ export const OtpVerificationModal = ({
                 type="submit"
                 loading={loading}
                 disabled={loading}
-                className="bg-primary text-white hover:bg-primaryDark"
+                className="bg-primary text-white hover:bg-primaryDark max-w-[354px] mt-3 h-[54px]"
               >
                 {t("Verify")}
               </LoadingButton>
             </form>
 
-            <p className="text-center font-bold text-sm text-gray-500 mt-6">
+            <p className="text-center font-bold text-sm mt-10 text-gray-500 mt-6">
               {t("Didn’t received OTP?")}{" "}
               <button
                 onClick={handleResend}

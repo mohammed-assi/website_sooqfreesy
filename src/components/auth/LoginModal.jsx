@@ -202,8 +202,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
             : t("loginSubtitleByUsername")
         }
       >
-        <div className="flex justify-center pt-6 px-8 border-b border-gray-200">
-          <div className="flex gap-6">
+        <div className="flex justify-center border-b border-gray-200">
+          <div className="flex w-full">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -211,7 +211,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                   setActiveTab(tab.id);
                   reset();
                 }}
-                className={`relative pb-2 px-6 text-lg font-semibold transition-colors ${
+                className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
                   activeTab === tab.id
                     ? "text-primary"
                     : "text-gray-600 hover:text-primary"
@@ -228,17 +228,17 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           </div>
         </div>
 
-        <div className="px-10 py-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="pt-[50px] flex flex-col justify-between h-full">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {activeTab === 1 && (
               <div>
-                <label className="block mb-2 text-md font-bold">
+                <label className="block mb-2 text-base text-black font-bold">
                   {t("countryCode")} & {t("phone")}
                 </label>
                 <PhoneInput
                   country={"sy"}
                   enableSearch={true}
-                  inputClass="!w-full !h-11 !bg-gray-100 !border-none !rounded !pl-12"
+                  inputClass="!w-full !h-[48px] !bg-gray-100 !border-none !rounded !pl-12"
                   buttonClass="!bg-gray-100 !border-none !rounded-l"
                   dropdownClass="custom-dropdown"
                   onChange={(value, country) => {
@@ -261,13 +261,13 @@ function LoginModal({ show, hide, setShowLoginModal }) {
             {activeTab === 2 && (
               <>
                 <div>
-                  <label className="block mb-2 text-md font-bold">
+                  <label className="block mb-2 text-base text-black font-bold">
                     {t("userName")}
                   </label>
                   <input
                     type="text"
                     {...register("username")}
-                    className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                    className="w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none"
                   />
                   {errors.username && (
                     <p className="text-red-500 text-sm mt-1">
@@ -276,7 +276,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                   )}
                 </div>
                 <div>
-                  <label className="block mb-2 text-md font-bold">
+                  <label className="block mb-2 text-base text-black font-bold">
                     {t("password")}
                   </label>
                   <div className="input-icon-grp">
@@ -284,7 +284,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                       {...register("password")}
                       type={toggle === true ? "password" : "text"}
                       id="password"
-                      className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                      className="w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
                       autoComplete="off"
                     />
                     <i
@@ -321,13 +321,13 @@ function LoginModal({ show, hide, setShowLoginModal }) {
               type="submit"
               loading={loading}
               disabled={loading}
-              className="bg-primary text-white hover:bg-primaryDark"
+              className="bg-primary text-white text-base hover:bg-primaryDark h-[56px]"
             >
               {t("login")}
             </LoadingButton>
           </form>
 
-          <p className="text-center font-bold text-sm text-gray-500 mt-6">
+          <p className="text-center font-bold text-sm text-gray-500 mb-7">
             {t("newto")}{" "}
             <button
               onClick={handleOpenRegisterModal}

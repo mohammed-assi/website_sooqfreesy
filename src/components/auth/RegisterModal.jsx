@@ -247,13 +247,13 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
             : t("registerSubtitleByUsername")
         }
       >
-        <div className="flex justify-center pt-6 px-8 border-b border-gray-200">
-          <div className="flex gap-6">
+        <div className="flex justify-center border-b border-gray-200">
+          <div className="flex gap-6 w-full">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`relative pb-2 px-6 text-lg font-semibold transition-colors ${
+                className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
                   activeTab === tab.id
                     ? "text-primary"
                     : "text-gray-600 hover:text-primary"
@@ -270,8 +270,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           </div>
         </div>
 
-        <div className="px-10 py-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="flex h-full justify-between flex-col pt-[50px]">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
             {activeTab === 1 && (
               <div>
                 <label className="block mb-2 text-md font-bold">
@@ -280,7 +280,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                 <PhoneInput
                   country={"sy"}
                   enableSearch={true}
-                  inputClass="!w-full !h-11 !bg-gray-100 !border-none !rounded !pl-12"
+                  inputClass="!w-full !h-[48px] !bg-gray-100 !border-none !rounded-md !pl-12 "
                   buttonClass="!bg-gray-100 !border-none !rounded-l"
                   dropdownClass="custom-dropdown"
                   onChange={(value, country) => {
@@ -310,7 +310,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                     type="text"
                     {...register("username")}
                     onChange={(e) => setSearchTextDebounce(e.target.value)}
-                    className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                    className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
                   />
                   {userNameAvailable?.data?.available ? (
                     <p className="text-green-500 text-sm mt-1">
@@ -334,7 +334,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                   <input
                     type="email"
                     {...register("email")}
-                    className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                    className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
                   />
                   {errors.email && (
                     <p className="text-red-500 text-sm mt-1">
@@ -352,7 +352,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                       {...register("password")}
                       type={toggle === true ? "password" : "text"}
                       id="password"
-                      className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                      className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
                       autoComplete="off"
                     />
                     <i
@@ -379,7 +379,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                     <input
                       type={toggleConfirm === true ? "password" : "text"}
                       {...register("confirmPassword")}
-                      className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                      className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
                     />
                     <i
                       className={
@@ -398,7 +398,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                 </div>
               </>
             )}
-
+            <div>
             <div className="flex items-center gap-2 m-0">
               <input
                 type="checkbox"
@@ -418,18 +418,19 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                 {errors.terms.message}
               </p>
             )}
+            </div>
 
             <LoadingButton
               type="submit"
               loading={loading}
               disabled={loading}
-              className="bg-primary text-white hover:bg-primaryDark"
+              className="bg-primary text-white hover:bg-primaryDark h-[56px] rounded-md"
             >
               {t("signUp")}
             </LoadingButton>
           </form>
 
-          <p className="text-center font-bold text-sm text-gray-500 mt-6">
+          <p className="text-center font-bold text-sm text-gray-500 mt-6 mb-[50px]">
             {t("haveAccount")}{" "}
             <button
               onClick={() => {

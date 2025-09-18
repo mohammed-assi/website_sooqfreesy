@@ -107,16 +107,16 @@ function ForgotPasswordModal({
         title={t("forgotPasswordTitle")}
         subtitle={t("forgotPasswordSubtitle")}
       >
-        <div className="px-10 py-8">
+        <div className="flex flex-col justify-between h-100%">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <label className="block mb-2 text-md font-bold">
+              <label className="block mb-2 text-base text-black font-bold">
                 {t("enterEmail")}
               </label>
               <input
                 type="email"
                 {...register("email")}
-                className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                className="w-full rounded-md h-[48px] px-5 py-2 bg-gray-100 focus:outline-none"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">
@@ -129,7 +129,7 @@ function ForgotPasswordModal({
               type="submit"
               loading={loading}
               disabled={loading}
-              className="bg-primary text-white hover:bg-primaryDark"
+              className="rounded-md bg-primary text-white hover:bg-primaryDark h-[56px]"
             >
               {t("submit")}
             </LoadingButton>

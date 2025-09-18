@@ -17,7 +17,7 @@ export default function ProductFilter({
 }) {
   return (
     <div className="pt-8 pb-15">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         <SideFilter
           allCategory={allCategory}
           handleChange={handleChange}
