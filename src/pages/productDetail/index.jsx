@@ -31,7 +31,7 @@ import { ROUTE } from "../../config/constants";
 import { InfoModal } from "../../common/modal/InfoModal";
 import { ReportListModal } from "../../components/productDetails/ReportListModal";
 import { getRequest } from "../../config/apiFunctions";
-import { POST } from "../../config/endPoints";
+import { POST, REPORT_LIST } from "../../config/endPoints";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import { useSelector } from "react-redux";
@@ -53,6 +53,7 @@ export const ProductDetail = () => {
   const [allPosts, setAllPosts] = useState([]);
   const [postDetailData, setPostDetailData] = useState({});
   const [showShareModal, setShowShareModal] = useState(false);
+  const [reportList, setReportList] = useState("");
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_API_KEY,
@@ -102,6 +103,21 @@ export const ProductDetail = () => {
       setShowLoginModal(true);
     }
   };
+
+  const getContactReportList = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setReportList(response?.data?.data);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    getContactReportList(`${REPORT_LIST.CONTACT_US}?reportType=POST`);
+  }, []);
 
   useEffect(() => {
     getPostDeatilsCallBack();
@@ -381,7 +397,11 @@ export const ProductDetail = () => {
         />
       )}
       {showReportListModal && (
-        <ReportListModal onClose={() => setShowReportListModal(false)} />
+        <ReportListModal
+          onClose={() => setShowReportListModal(false)}
+          reportList={reportList}
+          postDetailData={postDetailData}
+        />
       )}
 
       {showShareModal && (

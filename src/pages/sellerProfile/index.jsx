@@ -7,9 +7,9 @@ import menu from "../../assets/icon/menu.svg";
 import reportUser from "../../assets/icon/reportUser.svg";
 import ReportListModal from "../../components/sellerProfile/ReportListModal";
 import { ListingFilter } from "../../components/sellerProfile/ListingFilter";
-import { showErrorToast } from "../../utils/toastUtils";
-import { getRequest } from "../../config/apiFunctions";
-import { CUSTOMER, POST } from "../../config/endPoints";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import { getRequest, postRequest } from "../../config/apiFunctions";
+import { CUSTOMER, POST, REPORT_LIST } from "../../config/endPoints";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -24,7 +24,10 @@ export const SellerProfile = () => {
   const [sellerReviews, setSellerReviews] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
-  const [modalFilter, setModalFilter]= useState({})
+  const [modalFilter, setModalFilter] = useState({});
+  const [reportList, setReportList] = useState([]);
+  const [reportId, setReportId] = useState(null);
+  const [customReason, setCustomReason] = useState("");
   const [filters, setFilters] = useState({
     city: "",
     location: "",
@@ -70,10 +73,6 @@ export const SellerProfile = () => {
     getAllPosts(url);
   };
 
-  useEffect(() => {
-    getAllPostsCallBack();
-  }, [filters, accessToken]);
-
   const getAllCategory = async (url) => {
     try {
       const response = await getRequest(url);
@@ -84,10 +83,6 @@ export const SellerProfile = () => {
       console.error("Error fetching subcategories:", err);
     }
   };
-
-  useEffect(() => {
-    getAllCategory(CUSTOMER.CATEGORY_LIST);
-  }, []);
 
   const getSellerProfile = async (url) => {
     try {
@@ -100,10 +95,6 @@ export const SellerProfile = () => {
     }
   };
 
-  useEffect(() => {
-    getSellerProfile(`${CUSTOMER.GET_SELLER_PROFILE}/${id}`);
-  }, [id]);
-
   const getSellerReview = async (url) => {
     try {
       const response = await getRequest(url);
@@ -114,6 +105,58 @@ export const SellerProfile = () => {
       showErrorToast(error?.response?.data?.message);
     }
   };
+
+  const getContactReportList = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setReportList(response?.data?.data);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
+  const handleSubmitSellerReport = async () => {
+    if (reportId === null) {
+      showErrorToast("Please select your reason");
+    } else {
+      const payload = {
+        seller_id: sellerProfile?.id,
+        reportListing_id: reportId,
+        reason: customReason,
+      };
+
+      try {
+        const response = await postRequest(REPORT_LIST.REPORT_SELLER, payload);
+        if (response?.data?.success && response?.data?.statusCode === 200) {
+          showSuccessToast(response?.data?.message);
+          setShowReportButton(false);
+          setShowReportListModal(false);
+          setReportId(null);
+          setCustomReason("");
+        }
+      } catch (error) {
+        showErrorToast(error?.response?.data?.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getContactReportList(`${REPORT_LIST.CONTACT_US}?reportType=SELLER`);
+  }, []);
+
+  useEffect(() => {
+    getAllPostsCallBack();
+  }, [filters, accessToken]);
+
+  useEffect(() => {
+    getSellerProfile(`${CUSTOMER.GET_SELLER_PROFILE}/${id}`);
+  }, [id]);
+
+  useEffect(() => {
+    getAllCategory(CUSTOMER.CATEGORY_LIST);
+  }, []);
 
   useEffect(() => {
     getSellerReview(`${CUSTOMER.GET_SELLER_REVIEWS}?seller_id=${id}`);
@@ -203,6 +246,12 @@ export const SellerProfile = () => {
           isOpen={showReportListModal}
           onClose={() => setShowReportListModal(false)}
           setShowReportButton={setShowReportButton}
+          reportList={reportList}
+          setReportId={setReportId}
+          reportId={reportId}
+          setCustomReason={setCustomReason}
+          customReason={customReason}
+          handleSubmit={handleSubmitSellerReport}
         />
       )}
     </>

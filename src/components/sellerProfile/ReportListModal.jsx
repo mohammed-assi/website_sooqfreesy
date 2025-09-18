@@ -1,24 +1,17 @@
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
-  const { t } = useTranslation();
-  const [selectedReason, setSelectedReason] = useState("");
-  const [customReason, setCustomReason] = useState("");
-
-  const reasons = [
-    t("sellerThreatening"),
-    t("sellerInsulting"),
-    t("inappropriateProfileImage"),
-    t("fraud"),
-    t("spam"),
-    t("other"),
-  ];
-
-  const handleSubmit = () => {
-    setShowReportButton(false);
-    onClose();
-  };
+const ReportListModal = ({
+  isOpen,
+  onClose,
+  setShowReportButton,
+  reportList,
+  setReportId, 
+  reportId,
+  setCustomReason,
+  customReason,
+  handleSubmit
+}) => {
+  const { i18n, t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -28,7 +21,7 @@ const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
         <h2 className="font-bold text-xl">{t("reportSeller")}</h2>
 
         <div className="space-y-2">
-          {reasons.map((reason, idx) => (
+          {reportList.map((item, idx) => (
             <label
               key={idx}
               className="flex items-center gap-3 py-1 cursor-pointer"
@@ -36,12 +29,14 @@ const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
               <input
                 type="radio"
                 name="reportReason"
-                value={reason}
-                checked={selectedReason === reason}
-                onChange={(e) => setSelectedReason(e.target.value)}
+                value={item.id}
+                checked={reportId === item.id}
+                onChange={() => setReportId(item.id)}
                 className="accent-cyan-500"
               />
-              <span className="text-gray-700">{reason}</span>
+              <span className="text-gray-700">
+                {i18n.language === "ar" ? item.arabic_name : item.name}
+              </span>
             </label>
           ))}
         </div>

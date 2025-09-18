@@ -37,6 +37,9 @@ export const CUSTOMER = {
 
 export const REPORT_LIST = {
   CONTACT_US: `${BASEURL}/report/report-listing`,
+
+  REPORT_SELLER: `${BASEURL}/report/create-seller-report`,
+  REPORT_POST: `${BASEURL}/report/create-post-report`,
 };
 
 export const POST = {

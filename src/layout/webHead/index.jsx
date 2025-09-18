@@ -33,6 +33,8 @@ export const WebHead = () => {
   const [searchValue, setSearchValue] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  console.log("userInfo", userInfo);
+
   const popularSearches = [
     t("cars"),
     t("bikes"),

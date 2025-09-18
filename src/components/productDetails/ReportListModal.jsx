@@ -1,26 +1,32 @@
 import React, { useState } from "react";
 import { InfoModal } from "../../common/modal/InfoModal";
 import { useTranslation } from "react-i18next";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import { postRequest } from "../../config/apiFunctions";
+import { REPORT_LIST } from "../../config/endPoints";
 
-export const ReportListModal = ({ onClose }) => {
-  const { t } = useTranslation();
+export const ReportListModal = ({ onClose, reportList, postDetailData }) => {
+  const { t, i18n } = useTranslation();
   const [showInfoModal, setShowInfoModal] = useState(false);
-  const [report, setReport] = useState("");
 
-  const cities = [
-    { value: "Listing Sold", label: "Listing Sold" },
-    { value: "Incorrect Category", label: "Incorrect Category" },
-    { value: "Incorrect Price", label: "Incorrect Price" },
-    { value: "Incorrect Image", label: "Incorrect Image" },
-    { value: "Duplicate Listing", label: "Duplicate Listing" },
-    { value: "Inappropriate Listing", label: "Inappropriate Listing" },
-    { value: "Fraud", label: "Fraud" },
-  ];
+  const handleSelect = async (id) => {
+    const payload = {
+      listing_id: postDetailData?.id,
+      reportListing_id: id,
+    };
 
-  const handleSelect = (report) => {
-    setReport(report);
-    setShowInfoModal(true);
+    try {
+      const response = await postRequest(REPORT_LIST.REPORT_POST, payload);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        showSuccessToast(response?.data?.message);
+        setShowInfoModal(true);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
   };
+
+  console.log("reportList", reportList);
 
   return (
     <>
@@ -36,17 +42,15 @@ export const ReportListModal = ({ onClose }) => {
           <h2 className="text-xl font-bold mb-4">{t("reportListing")}</h2>
 
           <ul className="space-y-2">
-            {cities.map((city) => (
+            {reportList?.map((item) => (
               <li
-                key={city.value}
-                onClick={() => handleSelect(city)}
-                className={`${
-                  report.value === city.value
-                    ? "text-black font-medium"
-                    : "text-gray-600"
-                } flex items-center justify-between cursor-pointer px-2 py-1 hover:text-black border-b border-gray-100`}
+                key={item.id}
+                onClick={() => handleSelect(item.id)}
+                className={`text-gray-600 flex items-center justify-between cursor-pointer px-2 py-1 hover:text-black border-b border-gray-100`}
               >
-                <span>{city.label}</span>
+                <span>
+                  {i18n.language === "ar" ? item.arabic_name : item.name}
+                </span>
               </li>
             ))}
           </ul>
