@@ -134,7 +134,7 @@ export const ResetPassOtpModal = ({
                   onChange={(e) => handleChange(e.target.value, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   ref={(el) => (inputsRef.current[index] = el)}
-                  className="w-12 h-12 text-center text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+                  className="w-13 h-13 text-center text-[22px] border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
                 />
               ))}
             </div>
@@ -158,7 +158,7 @@ export const ResetPassOtpModal = ({
                   {...register("password")}
                   type={toggle === true ? "password" : "text"}
                   id="password"
-                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  className="w-full h-[48px] rounded px-3 py-2 bg-gray-100 focus:outline-none"
                   autoComplete="off"
                 />
                 <i
@@ -185,7 +185,7 @@ export const ResetPassOtpModal = ({
                 <input
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
-                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  className="w-full h-[48px] rounded px-3 py-2 bg-gray-100 focus:outline-none"
                 />
                 <i
                   className={
@@ -207,7 +207,7 @@ export const ResetPassOtpModal = ({
               type="submit"
               loading={loading}
               disabled={loading}
-              className="bg-primary text-white hover:bg-primaryDark"
+              className="bg-primary h-[56px] text-white hover:bg-primaryDark"
             >
               {t("submit")}
             </LoadingButton>

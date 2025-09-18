@@ -15,13 +15,13 @@ export const AuthConfirmationModal = ({
           <img src={icon} alt="OTP Icon" className="w-14 h-14" />
         </div>
 
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">{title}</h2>
+        <h2 className="text-xl font-bold text-black mb-2">{title}</h2>
 
-        <p className="text-gray-600 text-sm mb-6">{subtitle}</p>
+        <p className="text-gray-600 text-[#888888] text-sm mb-6">{subtitle}</p>
 
         <button
           onClick={onClose}
-          className="w-full py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition"
+          className="w-full py-2 rounded-lg text-white h-12 bg-primary hover:bg-primary/90 transition"
         >
           {buttonName}
         </button>
