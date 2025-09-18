@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import selectedLang from "../../assets/icon/selectedLang.svg";
+// import selectedLang from "../../assets/icon/selectedLang.svg";
 import { useTranslation } from "react-i18next";
 import { Controller } from "react-hook-form";
 import Autocomplete from "react-google-autocomplete";
@@ -18,6 +18,12 @@ export const SelectCityLocation = ({
   setCoords,
   control,
   coords,
+  countries,
+  states,
+  cities,
+  selectedCountry,
+  selectedState,
+  setValue
 }) => {
   const { t } = useTranslation();
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
@@ -34,12 +40,91 @@ export const SelectCityLocation = ({
     }
   }, [coords.country]);
 
+  console.log("citiesList", citiesList, selectedCity);
+
   return (
-    <div className="flex gap-7 pt-4">
-      <div className="w-full p-5 shadow-lg rounded-lg">
-        <h3 className="text-2xl font-bold">{t("selectCity")}</h3>
-        <p className="text-gray-600">{t("placeYourAd")}</p>
-        <div className="py-3">
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex gap-7 pt-4">
+        <div className="w-full p-5 shadow-lg rounded-lg">
+          <h3 className="text-2xl font-bold">{t("chooseLocation")}</h3>
+          <p className="text-gray-600">{t("placeYourAd")}</p>
+
+          <div className="py-3">
+            {/* Country */}
+            <div className="py-3">
+              <label className="block mb-2 text-md font-bold">
+                Country <span className="text-red-600">*</span>
+              </label>
+              <select
+                {...register("country")}
+                onChange={(e) => setValue("country", e.target.value)}
+                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+              >
+                <option value="">Select Country</option>
+                {countries.map((c) => (
+                  <option key={c.isoCode} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              {errors.country && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.country.message}
+                </p>
+              )}
+            </div>
+
+            {/* State */}
+            <div className="py-3">
+              <label className="block mb-2 text-md font-bold">
+                State <span className="text-red-600">*</span>
+              </label>
+              <select
+                {...register("state")}
+                onChange={(e) => setValue("state", e.target.value)}
+                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                disabled={!selectedCountry}
+              >
+                <option value="">Select State</option>
+                {states.map((s) => (
+                  <option key={s.isoCode} value={s.name}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+              {errors.state && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.state.message}
+                </p>
+              )}
+            </div>
+
+            {/* City */}
+            <div className="py-3">
+              <label className="block mb-2 text-md font-bold">
+                City <span className="text-red-600">*</span>
+              </label>
+              <select
+                {...register("city")}
+                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                disabled={!selectedState}
+              >
+                <option value="">Select City</option>
+                {cities.map((c) => (
+                  <option key={c.name} value={c.name}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              {errors.city && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.city.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* <div className="py-3">
           {citiesList.length > 0 ? (
             <ul className="space-y-5 p-5 border border-gray-200 rounded-lg">
               {citiesList.map((city) => (
@@ -64,18 +149,22 @@ export const SelectCityLocation = ({
               {t("selectCities")} <span className="text-red-600">*</span>
             </p>
           )}
+        </div> */}
         </div>
-      </div>
-      <div className="w-full p-5 shadow-lg rounded-lg">
-        <h3 className="text-2xl font-bold">{t("nearbyLocation")}</h3>
-        <div className="border-b border-gray-200 pt-4"></div>
-        <div className="pt-5">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div>
+        <div className="w-full p-5 shadow-lg rounded-lg">
+          <h3 className="text-2xl font-bold">{t("nearbyLocation")}</h3>
+          <div className="border-b border-gray-200 pt-4"></div>
+          <div className="pt-5">
+            <div className="py-3">
               <label className="block mb-2 text-md font-bold">
                 {t("nearbyLocation")}
                 <span className="text-red-600">*</span>
               </label>
+              {/* <input
+                type="text"
+                {...register("location")}
+                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+              /> */}
               <div className="input-icon-grp">
                 <Controller
                   name="location"
@@ -124,7 +213,7 @@ export const SelectCityLocation = ({
                 </p>
               )}
             </div>
-            <div>
+            <div className="py-3">
               <label className="block mb-2 text-md font-bold">
                 {t("buildingStreetName")}{" "}
                 <span className="text-sm font-normal text-gray-600">
@@ -142,7 +231,7 @@ export const SelectCityLocation = ({
                 </p>
               )}
             </div>
-            <div>
+            <div className="py-3">
               <label className="block mb-2 text-md font-bold">
                 {t("apartmentVillaNumber")}{" "}
                 <span className="text-sm font-normal text-gray-600">
@@ -160,9 +249,9 @@ export const SelectCityLocation = ({
                 </p>
               )}
             </div>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };

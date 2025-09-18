@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import downIcon from "../../assets/icon/down-icon.svg";
 
 export const SideFilter = ({ allCategory, filters, handleChange }) => {
   const { i18n, t } = useTranslation();

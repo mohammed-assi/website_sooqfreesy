@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
+import { City, Country, State } from "country-state-city";
 
 export const CreatePost = () => {
   const { i18n, t } = useTranslation();
@@ -34,12 +35,15 @@ export const CreatePost = () => {
   const [formData, setFormData] = useState({});
   const [userLocation, setUserLocation] = useState("");
   const [showLocationValidation, setShowLocationValidation] = useState(false);
-
-  console.log("selectedCity", selectedCity);
-
   const [coords, setCoords] = useState({ lat: null, lng: null, country: null });
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
 
   const baseSchema = {
+    country: Yup.string().required(t("countryRequired")),
+    state: Yup.string().required(t("stateRequired")),
+    city: Yup.string().required(t("cityRequired")),
     location: Yup.string().required(t("locationRequired")),
     buildingNumber: Yup.string(),
     apartmentNumber: Yup.string(),
@@ -56,10 +60,21 @@ export const CreatePost = () => {
       .max(5, t("fiveImages")),
   };
 
+  const step1Schema = Yup.object().shape({
+    country: Yup.string().required(t("countryRequired")),
+    state: Yup.string().required(t("stateRequired")),
+    city: Yup.string().required(t("cityRequired")),
+    location: Yup.string().required(t("locationRequired")),
+    buildingNumber: Yup.string(), // optional
+    apartmentNumber: Yup.string(), // optional
+  });
+
   const schemaShape = { ...baseSchema };
+
   formData?.form_data?.forEach((field) => {
     let validator;
 
+    // Text & Textarea
     if (field.type === "text" || field.type === "textarea") {
       validator = Yup.string();
       if (field.required) {
@@ -69,6 +84,7 @@ export const CreatePost = () => {
       }
     }
 
+    // Number
     if (field.type === "number") {
       validator = Yup.number().typeError(
         `${field.label} ${t("mustNumberValidation")}`
@@ -80,6 +96,7 @@ export const CreatePost = () => {
       }
     }
 
+    // Checkbox (array of strings)
     if (field.type === "checkbox") {
       validator = Yup.array()
         .transform((value, originalValue) => {
@@ -97,6 +114,36 @@ export const CreatePost = () => {
       }
     }
 
+    // Radio (single string value)
+    if (field.type === "radio") {
+      validator = Yup.string();
+      if (field.required) {
+        validator = validator.required(`${field.label} ${t("isRequired")}`);
+      } else {
+        validator = validator.notRequired();
+      }
+    }
+
+    // Dropdown / Select (single string value)
+    if (field.type === "dropdown") {
+      validator = Yup.string();
+      if (field.required) {
+        validator = validator.required(`${field.label} ${t("isRequired")}`);
+      } else {
+        validator = validator.notRequired();
+      }
+    }
+
+    // Date (react-datepicker -> JS Date object)
+    if (field.type === "date") {
+      validator = Yup.date().typeError(`${field.label} ${t("mustValidDate")}`);
+      if (field.required) {
+        validator = validator.required(`${field.label} ${t("isRequired")}`);
+      } else {
+        validator = validator.nullable();
+      }
+    }
+
     schemaShape[field.name] = validator;
   });
 
@@ -109,6 +156,7 @@ export const CreatePost = () => {
     watch,
     setValue,
     control,
+    trigger,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -117,7 +165,28 @@ export const CreatePost = () => {
     },
   });
 
+  const selectedCountry = watch("country");
+  const selectedState = watch("state");
   const pictures = watch("pictures") || [];
+
+  const handleNext = async () => {
+    const step1Fields = [
+      "country",
+      "state",
+      "city",
+      "location",
+      "buildingNumber",
+      "apartmentNumber",
+    ];
+
+    const isValid = await trigger(step1Fields);
+
+    if (isValid) {
+      setShowChooseCategory(true);
+    } else {
+      console.log("Step 1 validation failed");
+    }
+  };
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -126,8 +195,11 @@ export const CreatePost = () => {
     formData.append("price", Number(data.price));
     formData.append("country_code", data.country_code || "+963");
     formData.append("phone", data.phone || "9876543210");
-    formData.append("city", selectedCity.label || "Mohali");
-    formData.append("country", coords?.country || "Syria");
+    // formData.append("city", selectedCity.label || "Mohali");
+    // formData.append("country", coords?.country || "Syria");
+    formData.append("city", data.city || "Mohali");
+    formData.append("country", data.country || "Syria");
+
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || 34.8021);
     formData.append("latitude", coords?.lat || 38.9968);
@@ -265,6 +337,37 @@ export const CreatePost = () => {
     reset();
   }, [t]);
 
+  useEffect(() => {
+    setCountries(Country.getAllCountries());
+  }, []);
+
+  const getCountryCodeByName = (name) => {
+    const country = countries.find((c) => c.name === name);
+    return country?.isoCode || "";
+  };
+
+  useEffect(() => {
+    if (selectedCountry) {
+      const countryCode = getCountryCodeByName(selectedCountry);
+      const countryStates = State.getStatesOfCountry(countryCode);
+      setStates(countryStates);
+      setValue("state", "");
+      setCities([]);
+      setValue("city", "");
+    }
+  }, [selectedCountry, setValue]);
+
+  useEffect(() => {
+    if (selectedState && selectedCountry) {
+      const countryCode = getCountryCodeByName(selectedCountry);
+      const stateObj = states.find((s) => s.name === selectedState);
+      const stateCode = stateObj?.isoCode || "";
+      const stateCities = City.getCitiesOfState(countryCode, stateCode);
+      setCities(stateCities);
+      setValue("city", "");
+    }
+  }, [selectedState, selectedCountry, setValue, states]);
+
   return (
     <div className="spacer-x">
       <div className="pt-15 pb-10">
@@ -301,15 +404,8 @@ export const CreatePost = () => {
             !showLandlordAgent &&
             !showFinalForm && (
               <button
-                onClick={() => {
-                  if (userLocation === "") {
-                    setShowLocationValidation(true);
-                  } else if (selectedCity === "") {
-                    showErrorToast(t("selectCityToast"));
-                  } else {
-                    setShowChooseCategory(true);
-                  }
-                }}
+                type="button"
+                onClick={handleNext}
                 className="flex gap-2 items-center py-4 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
               >
                 {t("nextButton")} <i className="fa-solid fa-arrow-right" />
@@ -407,6 +503,12 @@ export const CreatePost = () => {
               control={control}
               setCoords={setCoords}
               coords={coords}
+              countries={countries}
+              states={states}
+              cities={cities}
+              selectedState={selectedState}
+              selectedCountry={selectedCountry}
+              setValue={setValue}
             />
           )}
 
@@ -456,6 +558,7 @@ export const CreatePost = () => {
             handleSubmit={handleSubmit}
             pictures={pictures}
             setValue={setValue}
+            control={control}
           />
         )}
       </div>

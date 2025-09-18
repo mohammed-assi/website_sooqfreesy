@@ -5,6 +5,7 @@ import deleteIcon from "../../assets/icon/deleteIcon.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Pagination } from "swiper/modules";
+import { Controller } from "react-hook-form";
 
 export const FinalForm = ({
   formData,
@@ -14,6 +15,7 @@ export const FinalForm = ({
   handleSubmit,
   pictures,
   setValue,
+  control,
 }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef(null);
@@ -116,8 +118,11 @@ export const FinalForm = ({
             return (
               <div key={i}>
                 <label className="block mb-2 text-md font-semibold">
-                  {field.label}
+                  {field.label}{" "}
+                  {field.required && <span className="text-red-600">*</span>}
                 </label>
+
+                {/* Text */}
                 {field.type === "text" && (
                   <input
                     type="text"
@@ -127,6 +132,7 @@ export const FinalForm = ({
                   />
                 )}
 
+                {/* Textarea */}
                 {field.type === "textarea" && (
                   <textarea
                     placeholder={field.placeholder}
@@ -136,6 +142,7 @@ export const FinalForm = ({
                   />
                 )}
 
+                {/* Number */}
                 {field.type === "number" && (
                   <input
                     type="number"
@@ -145,6 +152,7 @@ export const FinalForm = ({
                   />
                 )}
 
+                {/* Checkbox */}
                 {field.type === "checkbox" && (
                   <div className="flex flex-col gap-2">
                     {field?.options?.map((opt, idx) => (
@@ -155,10 +163,59 @@ export const FinalForm = ({
                           {...register(field.name)}
                           className="w-4 h-4"
                         />
-                        {opt.value}
+                        {opt.label || opt.value}
                       </label>
                     ))}
                   </div>
+                )}
+
+                {/* Radio */}
+                {field.type === "radio" && (
+                  <div className="flex flex-col gap-2">
+                    {field?.options?.map((opt, idx) => (
+                      <label key={idx} className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          value={opt.value}
+                          {...register(field.name)}
+                          className="w-4 h-4"
+                        />
+                        {opt.label || opt.value}
+                      </label>
+                    ))}
+                  </div>
+                )}
+
+                {/* Dropdown / Select */}
+                {field.type === "dropdown" && (
+                  <select
+                    {...register(field.name)}
+                    className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                  >
+                    <option value="">-- Select --</option>
+                    {field?.options?.map((opt, idx) => (
+                      <option key={idx} value={opt.value}>
+                        {opt.label || opt.value}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                {/* Date Picker */}
+                {field.type === "date" && (
+                  <Controller
+                    control={control}
+                    name={field.name}
+                    render={({ field: { onChange, value } }) => (
+                      <DatePicker
+                        selected={value ? new Date(value) : null}
+                        onChange={(date) => onChange(date)}
+                        placeholderText={field.placeholder || "Select a date"}
+                        dateFormat="dd/MM/yyyy"
+                        className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                      />
+                    )}
+                  />
                 )}
 
                 {/* Error Message */}
@@ -170,11 +227,12 @@ export const FinalForm = ({
               </div>
             );
           })}
+
           <h3 className="text-xl font-semibold">Location Details</h3>
 
           <div>
             <label className="block mb-2 text-md font-semibold">
-              {t("nearbyLocation")}*
+              {t("nearbyLocation")} <span className="text-red-600">*</span>
             </label>
             <div className="input-icon-grp">
               <input

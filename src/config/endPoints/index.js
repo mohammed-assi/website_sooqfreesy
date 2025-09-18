@@ -47,6 +47,8 @@ export const POST = {
   UNLIKE: `${BASEURL}/post/wishlist/remove-item`,
   GET_WISHLIST: `${BASEURL}/post/wishlist/get-all`,
   GET_MYADS: `${BASEURL}/post/get-customer-posts`,
+
+  SELLER_POST: `${BASEURL}/post/get-seller-posts`,
 };
 
 export const CONTENT = {

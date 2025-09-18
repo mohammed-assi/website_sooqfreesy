@@ -246,7 +246,13 @@ const resources = {
       listing: "Listing",
       tellMore: 'Tell us more',
       addReview: "Add Review",
-      addStars: "Please add star for rating"
+      addStars: "Please add star for rating",
+      chooseLocation: "Choose Location",
+      country: 'Country',
+      state: "State",
+      countryRequired: 'Country is required',
+      stateRequired: "State is required",
+      cityRequired: "City is required",
     },
   },
   ar: {

@@ -9,17 +9,85 @@ import ReportListModal from "../../components/sellerProfile/ReportListModal";
 import { ListingFilter } from "../../components/sellerProfile/ListingFilter";
 import { showErrorToast } from "../../utils/toastUtils";
 import { getRequest } from "../../config/apiFunctions";
-import { CUSTOMER } from "../../config/endPoints";
+import { CUSTOMER, POST } from "../../config/endPoints";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const SellerProfile = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const { accessToken } = useSelector((state) => state.auth);
   const [showReportButton, setShowReportButton] = useState(false);
   const [showReportListModal, setShowReportListModal] = useState(false);
   const [sellerProfile, setSellerProfile] = useState({});
   const [sellerReviews, setSellerReviews] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
+  const [allCategory, setAllCategory] = useState([]);
+  const [modalFilter, setModalFilter]= useState({})
+  const [filters, setFilters] = useState({
+    city: "",
+    location: "",
+    type: "",
+    category: "",
+    priceRange: [0, 0],
+  });
+
+  const handleChange = (key, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const getAllPosts = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setAllPosts(response?.data?.data?.posts);
+        // setTotalCounts(response?.data?.data?.totalCount);
+      }
+    } catch (err) {
+      console.error("Error fetching posts:", err);
+    }
+  };
+
+  const getAllPostsCallBack = () => {
+    const filterObj = {};
+
+    if (filters.category) filterObj.category_id = Number(filters.category);
+    if (filters.priceRange?.[0]) filterObj.price_min = filters.priceRange[0];
+    if (filters.priceRange?.[1]) filterObj.price_max = filters.priceRange[1];
+    if (filters.city) filterObj.city = filters.city;
+    if (filters.type) filterObj.post_type = filters.type;
+
+    let url = `${POST.SELLER_POST}/${id}`;
+
+    if (Object.keys(filterObj).length > 0) {
+      url += `?filters=${encodeURIComponent(JSON.stringify(filterObj))}`;
+    }
+
+    getAllPosts(url);
+  };
+
+  useEffect(() => {
+    getAllPostsCallBack();
+  }, [filters, accessToken]);
+
+  const getAllCategory = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setAllCategory(response?.data?.data?.categories);
+      }
+    } catch (err) {
+      console.error("Error fetching subcategories:", err);
+    }
+  };
+
+  useEffect(() => {
+    getAllCategory(CUSTOMER.CATEGORY_LIST);
+  }, []);
 
   const getSellerProfile = async (url) => {
     try {
@@ -51,8 +119,8 @@ export const SellerProfile = () => {
     getSellerReview(`${CUSTOMER.GET_SELLER_REVIEWS}?seller_id=${id}`);
   }, [id]);
 
-  console.log("sellerProfile", sellerProfile);
-  console.log("sellerReviews", sellerReviews);
+  console.log("allPosts", allPosts);
+  console.log("modalFilter", modalFilter);
 
   return (
     <>
@@ -119,7 +187,15 @@ export const SellerProfile = () => {
           </div>
         </div>
 
-        <ListingFilter sellerReviews={sellerReviews} imagePath={imagePath} />
+        <ListingFilter
+          sellerReviews={sellerReviews}
+          imagePath={imagePath}
+          allCategory={allCategory}
+          filters={filters}
+          handleChange={handleChange}
+          setModalFilter={setModalFilter}
+          allPosts={allPosts}
+        />
       </div>
 
       {showReportListModal && (
