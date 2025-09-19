@@ -65,15 +65,15 @@ export const Notifictions = () => {
         {notitfications.map((item, i) => (
           <div
             key={i}
-            className="flex items-start gap-5 shadow-md rounded-md p-4"
+            className="flex items-start gap-5 shadow-md rounded-md px-4 py-6"
           >
             <img
               src={item.imageUrl}
               alt="imageess"
-              className="h-12 w-12 object-cover rounded-full"
+              className="h-12 w-12 object-cover rounded-full flex-shrink-0"
             />
-            <p className="text-gray-600">{item.text}</p>
-            <p className="text-gray-600">{item.time}</p>
+            <p className="text-gray-600 w-full">{item.text}</p>
+            <p className="text-gray-600 text-base w-[100px] text-right">{item.time}</p>
           </div>
         ))}
       </div>

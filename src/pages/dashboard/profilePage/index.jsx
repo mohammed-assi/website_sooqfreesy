@@ -32,7 +32,7 @@ export const ProfilePage = () => {
       <h1 className="main-heading">{t("myProfile")}</h1>
       <div className="py-10">
         <div className="relative flex items-center justify-between bg-white shadow-md rounded-2xl p-4 w-full">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-8">
             <img
               src={
                 userInfo?.user_profile_url
@@ -43,9 +43,9 @@ export const ProfilePage = () => {
               className="w-60 h-45 rounded-lg object-cover"
             />
             <div>
-              <h3 className="text-xl font-bold pb-1">{userInfo?.username}</h3>
+              <h3 className="text-2xl font-bold pb-3">{userInfo?.username}</h3>
               <RatingStar starValue={4.5} />
-              <p className="text-sm text-gray-500 pt-5">
+              <p className="text-base text-[#808080] pt-7">
                 {t("memberSince")}{" "}
                 {moment(userInfo?.created_at).format("MM/DD/YYYY")}
               </p>
@@ -78,7 +78,7 @@ export const ProfilePage = () => {
       {activeTab === "editProfile" && <EditProfile userInfo={userInfo} imagePath={imagePath} />}
       {activeTab === "reviews" && (
         <div className="pt-4">
-          <h3 className="font-semibold text-2xl py-6">{t("ratingReviews")}</h3>
+          <h3 className="font-bold text-2xl py-6">{t("ratingReviews")}</h3>
           <div className="border-b-2 border-gray-200 pb-4">
             <RatingSummary
               average={4.5}
