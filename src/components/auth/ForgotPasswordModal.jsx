@@ -116,6 +116,7 @@ function ForgotPasswordModal({
               <input
                 type="email"
                 {...register("email")}
+                placeholder={t("enterEmail")}
                 className="w-full rounded-md h-[48px] px-5 py-2 bg-gray-100 focus:outline-none"
               />
               {errors.email && (

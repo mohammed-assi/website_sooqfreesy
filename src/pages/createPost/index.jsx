@@ -331,7 +331,7 @@ export const CreatePost = () => {
         `${CUSTOMER.GET_FORM_DATA}?category_id=${categoryData.id}&sub_category_id=${subCategoryId}`
       );
     }
-  }, [categoryData, subCategoryId]);
+  }, [categoryData, subCategoryId, t]);
 
   useEffect(() => {
     reset();
@@ -393,10 +393,13 @@ export const CreatePost = () => {
                 ? categoryData?.arabic_name
                 : categoryData?.name
               : ""}
-            {showLandlordAgent &&
+            {showSubCategory &&
+              !showSaleRent &&
+              !showLandlordAgent &&
               !showFinalForm &&
-              "Are you a landlord or an agent?"}
-            {showFinalForm && "You are almost there"}
+              t("chooseSubcat")}
+            {showLandlordAgent && !showFinalForm && t("landlordoragent")}
+            {showFinalForm && t("almostthere")}
           </h1>
           {!showChooseCategory &&
             !showSubCategory &&

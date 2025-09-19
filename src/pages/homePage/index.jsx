@@ -8,17 +8,21 @@ import { POST } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import LoginModal from "../../components/auth/LoginModal";
 import { useSelector } from "react-redux";
+import { ScreenLoader } from "../../utils/screenLoader";
 
 export const HomePage = () => {
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const getAllPosts = async (url) => {
+    setLoading(true);
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
       setAllPosts(response?.data?.data?.posts);
+      setLoading(false);
     }
   };
 
@@ -27,6 +31,7 @@ export const HomePage = () => {
   };
 
   const handleLikeUnlikePost = async (data) => {
+    setLoading(true);
     if (accessToken) {
       let url;
       if (data?.isWishlisted) {
@@ -39,13 +44,17 @@ export const HomePage = () => {
         if (response?.data?.success && response?.data?.statusCode === 200) {
           showSuccessToast(response?.data?.message);
           getAllPostsCallBack();
+          setLoading(false);
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
+        setLoading(false);
       }
     } else {
       setShowLoginModal(true);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -54,20 +63,26 @@ export const HomePage = () => {
 
   return (
     <>
-      <Banner />
-      <ImageSlider />
-      <Products
-        allPosts={allPosts}
-        imagePath={imagePath}
-        handleLikeUnlikePost={handleLikeUnlikePost}
-      />
-      <GetApplications />
+      {loading ? (
+        <ScreenLoader />
+      ) : (
+        <>
+          <Banner />
+          <ImageSlider />
+          <Products
+            allPosts={allPosts}
+            imagePath={imagePath}
+            handleLikeUnlikePost={handleLikeUnlikePost}
+          />
+          <GetApplications />
 
-      <LoginModal
-        show={showLoginModal}
-        hide={() => setShowLoginModal(false)}
-        setShowLoginModal={setShowLoginModal}
-      />
+          <LoginModal
+            show={showLoginModal}
+            hide={() => setShowLoginModal(false)}
+            setShowLoginModal={setShowLoginModal}
+          />
+        </>
+      )}
     </>
   );
 };

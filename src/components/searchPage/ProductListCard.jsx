@@ -6,6 +6,7 @@ import { Pagination } from "swiper/modules";
 import heartFilled from "../../assets/icon/heartFilled.svg";
 import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
+import { useTranslation } from "react-i18next";
 
 const ProductListCard = ({
   item,
@@ -13,10 +14,11 @@ const ProductListCard = ({
   handleLikeUnlikePost,
   showWishlist,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="flex bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
       <div className="relative w-3/6">
-        <Swiper
+        {/* <Swiper
           pagination={{
             dynamicBullets: true,
           }}
@@ -31,7 +33,25 @@ const ProductListCard = ({
               />
             </SwiperSlide>
           ))}
-        </Swiper>
+        </Swiper> */}
+        {item?.images?.length > 0 ? (
+          <Swiper pagination={{ dynamicBullets: true }} modules={[Pagination]}>
+            {item.images.map((img, index) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={`${imagePath}/${img.image_url}`}
+                  alt={item.title}
+                  className="w-full h-60 object-cover rounded-xl"
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <div className="w-full h-60 flex items-center justify-center bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-xl">
+            <span className="text-gray-500 text-sm">{t("noImages")}</span>
+          </div>
+        )}
+
         {showWishlist && (
           <button
             onClick={() => handleLikeUnlikePost(item)}

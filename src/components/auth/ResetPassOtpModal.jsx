@@ -99,6 +99,8 @@ export const ResetPassOtpModal = ({
         showErrorToast(error?.response?.data?.message);
         setLoading(false);
       }
+    } else {
+      showErrorToast(t("enterOtp"));
     }
   };
 
@@ -134,7 +136,9 @@ export const ResetPassOtpModal = ({
                   onChange={(e) => handleChange(e.target.value, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   ref={(el) => (inputsRef.current[index] = el)}
-                  className="w-13 h-13 text-center text-[22px] border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+                  className={`w-13 h-13 font-semibold text-center text-[22px] border-2 rounded-lg focus:outline-none ${
+                    digit ? "border-primary text-primary" : "border-gray-300"
+                  }`}
                 />
               ))}
             </div>
@@ -158,7 +162,8 @@ export const ResetPassOtpModal = ({
                   {...register("password")}
                   type={toggle === true ? "password" : "text"}
                   id="password"
-                  className="w-full h-[48px] rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  placeholder={t("enterNewPass")}
+                  className="w-full h-[48px] rounded px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                   autoComplete="off"
                 />
                 <i
@@ -185,7 +190,8 @@ export const ResetPassOtpModal = ({
                 <input
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
-                  className="w-full h-[48px] rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  placeholder={t("reenterNewPass")}
+                  className="w-full h-[48px] rounded px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                 />
                 <i
                   className={

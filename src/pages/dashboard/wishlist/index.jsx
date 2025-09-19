@@ -4,17 +4,22 @@ import { ProductCard } from "../../../common/card/ProductCard";
 import { getRequest } from "../../../config/apiFunctions";
 import { POST } from "../../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
+import { ScreenLoader } from "../../../utils/screenLoader";
 
 export const MyWishlist = () => {
   const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const [allPosts, setAllPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const getAllPosts = async (url) => {
+    setLoading(true);
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
       setAllPosts(response?.data?.data?.wishlistItems);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const getAllPostsCallBack = () => {
@@ -44,25 +49,31 @@ export const MyWishlist = () => {
   }, []);
 
   return (
-    <div className="p-5">
-      <h1 className="main-heading">{t("wishlist")}</h1>
+    <>
+      {loading ? (
+        <ScreenLoader />
+      ) : (
+        <div className="p-5">
+          <h1 className="main-heading">{t("wishlist")}</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-8">
-        {allPosts?.length > 0 ? (
-          allPosts.map((item) => (
-            <ProductCard
-              key={item.id}
-              item={item}
-              imagePath={imagePath}
-              handleLikeUnlikePost={handleLikeUnlikePost}
-            />
-          ))
-        ) : (
-          <p className="col-span-full text-center text-gray-500 font-medium py-6">
-            {t('noDataFound')}
-          </p>
-        )}
-      </div>
-    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-8">
+            {allPosts?.length > 0 ? (
+              allPosts.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                  imagePath={imagePath}
+                  handleLikeUnlikePost={handleLikeUnlikePost}
+                />
+              ))
+            ) : (
+              <p className="col-span-full text-center text-gray-500 font-medium py-6">
+                {t("noDataFound")}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 };

@@ -14,10 +14,7 @@ import signin from "../../assets/icon/signin.svg";
 import LoginModal from "../../components/auth/LoginModal";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
-import {
-  showInfoToast,
-  showSuccessToast,
-} from "../../utils/toastUtils";
+import { showInfoToast, showSuccessToast } from "../../utils/toastUtils";
 import { clearUser } from "../../redux/slices/userSlice";
 import { ROUTE } from "../../config/constants";
 
@@ -257,27 +254,25 @@ export const WebHead = () => {
                         {userDropDown?.map((item, i) => (
                           <li
                             key={i}
+                            onClick={() => handleNavigate(item.slug)}
                             className="px-2 py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md border-b border-gray-100"
                           >
-                            <button
-                              onClick={() => handleNavigate(item.slug)}
-                              className="flex items-center gap-3 "
-                            >
+                            <div className="flex items-center gap-3 ">
                               <img src={item.imgUrl} alt="icon" /> {item.name}
-                            </button>
+                            </div>
                           </li>
                         ))}
-                        <li className="px-2 py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md ">
-                          <button
-                            onClick={() => {
-                              navigate(ROUTE.HELP_SUPPORT);
-                              setOpen(false);
-                              setSearchOpen(false);
-                            }}
-                            className="flex items-center gap-3 "
-                          >
+                        <li
+                          onClick={() => {
+                            navigate(ROUTE.HELP_SUPPORT);
+                            setOpen(false);
+                            setSearchOpen(false);
+                          }}
+                          className="px-2 py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md "
+                        >
+                          <div className="flex items-center gap-3 ">
                             <img src={support} alt="icon" /> {t("helpSupport")}
-                          </button>
+                          </div>
                         </li>
                       </ul>
 

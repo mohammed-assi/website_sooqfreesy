@@ -54,7 +54,7 @@ export const SelectCityLocation = ({
             {/* Country */}
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                Country <span className="text-red-600">*</span>
+                {t('country')} <span className="text-red-600">*</span>
               </label>
               <select
                 {...register("country")}
@@ -64,7 +64,7 @@ export const SelectCityLocation = ({
                 }}
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none"
               >
-                <option value="">Select Country</option>
+                <option value="">{t('selectCountry')}</option>
                 {countries.map((c) => (
                   <option key={c.isoCode} value={c.name}>
                     {c.name}
@@ -81,7 +81,7 @@ export const SelectCityLocation = ({
             {/* State */}
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                State <span className="text-red-600">*</span>
+                {t('state')} <span className="text-red-600">*</span>
               </label>
               <select
                 {...register("state")}
@@ -92,7 +92,7 @@ export const SelectCityLocation = ({
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                 disabled={!selectedCountry}
               >
-                <option value="">Select State</option>
+                <option value="">{t("selectState")}</option>
                 {states.map((s) => (
                   <option key={s.isoCode} value={s.name}>
                     {s.name}
@@ -109,7 +109,7 @@ export const SelectCityLocation = ({
             {/* City */}
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                City <span className="text-red-600">*</span>
+                {t('city')} <span className="text-red-600">*</span>
               </label>
               <select
                 {...register("city")}
@@ -120,7 +120,7 @@ export const SelectCityLocation = ({
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                 disabled={!selectedState}
               >
-                <option value="">Select City</option>
+                <option value="">{t("selectCityField")}</option>
                 {cities.map((c) => (
                   <option key={c.name} value={c.name}>
                     {c.name}
@@ -183,6 +183,7 @@ export const SelectCityLocation = ({
                   render={({ field: { onChange, value } }) => (
                     <Autocomplete
                       apiKey={GOOGLE_API_KEY}
+                      placeholder={t("nearbyLocation")}
                       onPlaceSelected={(place) => {
                         if (place?.geometry?.location) {
                           const lat = place.geometry.location.lat();

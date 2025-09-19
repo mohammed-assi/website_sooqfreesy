@@ -6,11 +6,13 @@ import heartFilled from "../../assets/icon/heartFilled.svg";
 import location from "../../assets/icon/silverLocation.svg";
 import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
+import { useTranslation } from "react-i18next";
 
 export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
+  const { t } = useTranslation();
   return (
     <div className="bg-white rounded-xl overflow-hidden relative">
-      <Swiper
+      {/* <Swiper
         pagination={{
           dynamicBullets: true,
         }}
@@ -25,7 +27,25 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
             />
           </SwiperSlide>
         ))}
-      </Swiper>
+      </Swiper> */}
+
+      {item?.images?.length > 0 ? (
+        <Swiper pagination={{ dynamicBullets: true }} modules={[Pagination]}>
+          {item.images.map((img, i) => (
+            <SwiperSlide key={i}>
+              <img
+                src={`${imagePath}/${img.image_url}`}
+                alt={item.title}
+                className="w-full h-48 object-cover"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <div className="w-full h-48 flex items-center justify-center bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-md">
+          <span className="text-gray-500 text-sm">{t("noImages")}</span>
+        </div>
+      )}
 
       <button
         onClick={() => handleLikeUnlikePost(item)}

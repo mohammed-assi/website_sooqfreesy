@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ProductCard } from "../../common/card/ProductCard";
 import Pagination from "../../common/pagination";
 import ProductListCard from "./ProductListCard";
@@ -15,6 +16,7 @@ export default function ProductFilter({
   filters,
   handleLikeUnlikePost,
 }) {
+  const { t } = useTranslation();
   return (
     <div className="pt-8 pb-15">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
@@ -26,7 +28,7 @@ export default function ProductFilter({
 
         <main className="lg:col-span-3">
           {allPosts?.length === 0 ? (
-            <p className="text-gray-500">No results found.</p>
+            <p className="text-gray-500">{t("noDataFound")}</p>
           ) : !toggleGrid ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {allPosts?.map((item) => (

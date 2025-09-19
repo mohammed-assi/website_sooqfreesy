@@ -6,9 +6,11 @@ import { useTranslation } from "react-i18next";
 import { CUSTOMER } from "../../../config/endPoints";
 import { showErrorToast } from "../../../utils/toastUtils";
 import { getRequest } from "../../../config/apiFunctions";
+import { ScreenLoader } from "../../../utils/screenLoader";
 
 export const Notifictions = () => {
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
   const notitfications = [
     {
       imageUrl: defaultUser,
@@ -35,14 +37,18 @@ export const Notifictions = () => {
   const [notificationSettingsData, setNotificationSettingData] = useState({});
 
   const getNotificationSettingData = async (url) => {
+    setLoading(true);
     try {
       const response = await getRequest(url);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         setNotificationSettingData(response?.data?.data);
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const getNotificationSettingDataCallback = () => {
@@ -54,35 +60,45 @@ export const Notifictions = () => {
   }, []);
 
   return (
-    <div className="p-5">
-      <div className="flex items-center justify-between">
-        <h1 className="main-heading">{t("notification")}</h1>
-        <button onClick={() => setShowSetttingModal(true)}>
-          <img src={notificationSetting} alt="icon" />
-        </button>
-      </div>
-      <div className="py-8 grid grid-cols-1 gap-6">
-        {notitfications.map((item, i) => (
-          <div
-            key={i}
-            className="flex items-start gap-5 shadow-md rounded-md px-4 py-6"
-          >
-            <img
-              src={item.imageUrl}
-              alt="imageess"
-              className="h-12 w-12 object-cover rounded-full flex-shrink-0"
-            />
-            <p className="text-gray-600 w-full">{item.text}</p>
-            <p className="text-gray-600 text-base w-[100px] text-right">{item.time}</p>
+    <>
+      {loading ? (
+        <ScreenLoader />
+      ) : (
+        <div className="p-5">
+          <div className="flex items-center justify-between">
+            <h1 className="main-heading">{t("notification")}</h1>
+            <button onClick={() => setShowSetttingModal(true)}>
+              <img src={notificationSetting} alt="icon" />
+            </button>
           </div>
-        ))}
-      </div>
-      <SettingModal
-        isOpen={showSettingModal}
-        onClose={() => setShowSetttingModal(false)}
-        settingData={notificationSettingsData}
-        getNotificationSettingDataCallback={getNotificationSettingDataCallback}
-      />
-    </div>
+          <div className="py-8 grid grid-cols-1 gap-6">
+            {notitfications.map((item, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-5 shadow-md rounded-md px-4 py-6"
+              >
+                <img
+                  src={item.imageUrl}
+                  alt="imageess"
+                  className="h-12 w-12 object-cover rounded-full flex-shrink-0"
+                />
+                <p className="text-gray-600 w-full">{item.text}</p>
+                <p className="text-gray-600 text-base w-[100px] text-right">
+                  {item.time}
+                </p>
+              </div>
+            ))}
+          </div>
+          <SettingModal
+            isOpen={showSettingModal}
+            onClose={() => setShowSetttingModal(false)}
+            settingData={notificationSettingsData}
+            getNotificationSettingDataCallback={
+              getNotificationSettingDataCallback
+            }
+          />
+        </div>
+      )}
+    </>
   );
 };

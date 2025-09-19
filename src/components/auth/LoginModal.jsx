@@ -39,7 +39,10 @@ function LoginModal({ show, hide, setShowLoginModal }) {
     phone: Yup.string().when("$tab", {
       is: 1,
       then: (schema) =>
-        schema.required(t("userPhoneRequired")).min(10, t("phoneInvalid")),
+        schema
+          .required(t("userPhoneRequired"))
+          .min(10, t("phoneInvalid"))
+          .max(12, t("phoneInvalid")),
     }),
     username: Yup.string().when("$tab", {
       is: 2,
@@ -54,7 +57,6 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   const {
     handleSubmit,
     register,
-    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -158,6 +160,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
         showErrorToast(error?.response?.data?.message);
         setLoading(false);
       }
+    } else {
+      showErrorToast(t("enterOtp"));
     }
   };
 
@@ -192,6 +196,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           hide();
           reset();
           setActiveTab(1);
+          setPhoneNumber(null);
+          setCountryCode(963);
         }}
         title={
           activeTab === 1 ? t("loginTitleByPhone") : t("loginTitleByUsername")
@@ -210,6 +216,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                 onClick={() => {
                   setActiveTab(tab.id);
                   reset();
+                  setPhoneNumber(null);
+                  setCountryCode(963);
                 }}
                 className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
                   activeTab === tab.id
@@ -232,10 +240,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {activeTab === 1 && (
               <div>
-                <label className="block mb-2 text-base text-black font-bold">
-                  {t("countryCode")} & {t("phone")}
-                </label>
-                <PhoneInput
+                {/* <PhoneInput
                   country={"sy"}
                   enableSearch={true}
                   inputClass="!w-full !h-[48px] !bg-gray-100 !border-none !rounded !pl-12"
@@ -249,7 +254,45 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                     setPhoneNumber(phoneNumber);
                     setValue("phone", phoneNumber);
                   }}
-                />
+                /> */}
+                <div className="flex gap-3">
+                  <div>
+                    <label className="block mb-2 text-base text-black font-bold">
+                      {t("countryCode")}
+                    </label>
+                    <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                      <PhoneInput
+                        country={"sy"}
+                        enableSearch={true}
+                        containerClass="!w-full"
+                        inputClass="!hidden"
+                        buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                        dropdownClass="custom-dropdown"
+                        onChange={(value, country) => {
+                          setCountryCode(country?.dialCode);
+                        }}
+                      />
+                      <span className="ml-1">+{countryCode}</span>
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <label className="block mb-2 text-base text-black font-bold">
+                      {t("phone")}
+                    </label>
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      {...register("phone")}
+                      value={phoneNumber}
+                      onChange={(e) => {
+                        const onlyNums = e.target.value.replace(/\D/g, "");
+                        setPhoneNumber(onlyNums);
+                      }}
+                      className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                      placeholder={t("enterPhoneNo")}
+                    />
+                  </div>
+                </div>
                 {errors.phone && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.phone.message}
@@ -267,6 +310,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                   <input
                     type="text"
                     {...register("username")}
+                    placeholder={t("enterUsername")}
                     className="w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none"
                   />
                   {errors.username && (
@@ -286,6 +330,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                       id="password"
                       className="w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
                       autoComplete="off"
+                      placeholder={t("enterPassword")}
                     />
                     <i
                       className={

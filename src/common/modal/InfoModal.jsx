@@ -14,7 +14,7 @@ export const InfoModal = ({ onClose, title, subtitle }) => {
 
         <button
           onClick={onClose}
-          className="w-full bg-primary hover:bg-primaryDark text-white py-3 rounded-lg font-medium transition"
+          className="w-full bg-primary h-[50px] text-white hover:bg-primaryDark transition rounded font-medium transition"
         >
           {t("okay")}
         </button>

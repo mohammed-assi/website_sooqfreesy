@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ProductCard } from "../../common/card/ProductCard";
 
-export const Products = ({allPosts, imagePath, handleLikeUnlikePost}) => {
+export const Products = ({ allPosts, imagePath, handleLikeUnlikePost }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("forYou");
 
@@ -43,9 +43,18 @@ export const Products = ({allPosts, imagePath, handleLikeUnlikePost}) => {
             activeTab === "nearby" ||
             activeTab === "worldwide") && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {allPosts?.map((item) => (
-                <ProductCard key={item.id} item={item} imagePath={imagePath} handleLikeUnlikePost={handleLikeUnlikePost}/>
-              ))}
+              {allPosts?.length > 0 ? (
+                allPosts?.map((item) => (
+                  <ProductCard
+                    key={item.id}
+                    item={item}
+                    imagePath={imagePath}
+                    handleLikeUnlikePost={handleLikeUnlikePost}
+                  />
+                ))
+              ) : (
+                <p>{t("noDataFound")}</p>
+              )}
             </div>
           )}
         </div>

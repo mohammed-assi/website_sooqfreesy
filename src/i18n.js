@@ -261,7 +261,28 @@ const resources = {
       logout: "Logout",
       min: "Min",
       max: "Max",
-      writeFeedback: "Write your feedback..."
+      writeFeedback: "Write your feedback...",
+      reportReason: "Please select your reason",
+      selectCountry: "Select Country",
+      selectState: "Select State",
+      selectCityField: "Select City",
+      landlordoragent: "Are you a landlord or an agent?",
+      almostthere: "You are almost there",
+      landlord: "Landlord",
+      agent: "Agent",
+      chooseSubcat: "Choose Subcategory",
+      noImages: "No Image Available",
+
+      //new
+      enterUsername: "Enter username",
+      enterPassword: "Enter password",
+      enterConfirmPassword: "Enter confirm password",
+      enterEmailAdd: "Enter email address",
+      usernameMin: "Username must be at least 3 characters",
+      enterPhoneNo: "Enter phone number",
+      enterNewPass: "Enter new password",
+      reenterNewPass: "Re-enter new password",
+      enterOtp: "Please enter the otp"
     },
   },
   ar: {
@@ -517,7 +538,17 @@ const resources = {
       logout: "تسجيل الخروج",
       min: "الحد الأدنى",
       max: "الحد الأقصى",
-      writeFeedback: "اكتب ملاحظاتك..."
+      writeFeedback: "اكتب ملاحظاتك...",
+      reportReason: "يرجى اختيار السبب",
+      selectCountry: "اختر الدولة",
+      selectState: "اختر الولاية",
+      selectCityField: "اختر المدينة",
+      landlordoragent: "هل أنت مالك عقار أم وكيل؟",
+      almostthere: "أنت قريب جدًا من النهاية",
+      landlord: "مالك العقار",
+      agent: "وكيل",
+      chooseSubcat: "اختر الفئة الفرعية",
+      noImages: "لا توجد صورة متاحة",
     },
   },
 };

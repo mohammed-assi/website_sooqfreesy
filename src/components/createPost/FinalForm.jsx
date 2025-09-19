@@ -192,7 +192,7 @@ export const FinalForm = ({
                     {...register(field.name)}
                     className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                   >
-                    <option value="">-- Select --</option>
+                    <option value="">-- {t('select')} --</option>
                     {field?.options?.map((opt, idx) => (
                       <option key={idx} value={opt.value}>
                         {opt.label || opt.value}

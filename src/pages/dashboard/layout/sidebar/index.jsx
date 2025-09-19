@@ -20,7 +20,7 @@ const Sidebar = () => {
       icon: profile,
       slug: ROUTE.USER_PROFILE,
     },
-    { value: "My Ads", name: "My Ads", icon: ads, slug: ROUTE.MY_ADS },
+    { value: "My Ads", name: t('myAds'), icon: ads, slug: ROUTE.MY_ADS },
     {
       value: "Wishlist",
       name: t('wishlist'),

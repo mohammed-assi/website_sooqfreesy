@@ -19,7 +19,7 @@ import { OtpVerificationModal } from "../auth/OtpVerificationModal";
 import moment from "moment";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
 
-export const EditProfile = ({ userInfo, imagePath }) => {
+export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const { t } = useTranslation();
   const schema = yup.object().shape({
     fullName: yup.string(),
@@ -77,6 +77,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
       let formData = new FormData();
       formData.append("user_profile_url", file);
       try {
+        setContentLoading(true);
         const response = await postRequest(
           CUSTOMER.UPDATE_PROFILE_PIC,
           formData
@@ -88,12 +89,16 @@ export const EditProfile = ({ userInfo, imagePath }) => {
             dispatch(setUser(res?.data?.data));
           }
         }
+        setContentLoading(false);
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
+        setContentLoading(false);
       }
     } else {
       setPreview(null);
+      setContentLoading(false);
     }
+    setContentLoading(false);
   };
 
   const handleVerifiyOtp = async (e) => {

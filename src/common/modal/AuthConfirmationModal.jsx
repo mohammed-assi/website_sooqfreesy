@@ -21,7 +21,7 @@ export const AuthConfirmationModal = ({
 
         <button
           onClick={onClose}
-          className="w-full py-2 rounded-lg text-white h-12 bg-primary hover:bg-primary/90 transition"
+          className="w-full bg-primary h-[50px] text-white hover:bg-primaryDark transition rounded"
         >
           {buttonName}
         </button>

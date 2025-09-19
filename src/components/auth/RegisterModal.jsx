@@ -15,6 +15,7 @@ import useSearchDebounce from "../../utils/searchDebounce";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
 import { ROUTE } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
+import verified from "../../assets/icon/verified.svg";
 
 export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [code, setCode] = useState(["", "", "", ""]);
   const [searchTextDebounce, setSearchTextDebounce] = useSearchDebounce();
-  const [userNameAvailable, setUserNameAvailable] = useState({});
+  const [userNameAvailable, setUserNameAvailable] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const tabs = [
@@ -41,11 +42,15 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     phone: Yup.string().when("$tab", {
       is: 1,
       then: (schema) =>
-        schema.required(t("userPhoneRequired")).min(10, t("phoneInvalid")),
+        schema
+          .required(t("userPhoneRequired"))
+          .min(10, t("phoneInvalid"))
+          .max(12, t("phoneInvalid")),
     }),
     username: Yup.string().when("$tab", {
       is: 2,
-      then: (schema) => schema.required(t("usernameRequired")),
+      then: (schema) =>
+        schema.required(t("usernameRequired")).min(3, t("usernameMin")),
     }),
     email: Yup.string().when("$tab", {
       is: 2,
@@ -182,6 +187,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         showErrorToast(error?.response?.data?.message);
         setLoading(false);
       }
+    } else {
+      showErrorToast(t("enterOtp"));
     }
   };
 
@@ -219,10 +226,12 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   };
 
   useEffect(() => {
-    if (searchTextDebounce !== "") {
+    if (searchTextDebounce.length >= 3) {
       handleCheckUserName(
         `${AUTH.CHECK_USERNAME}?username=${searchTextDebounce}`
       );
+    } else {
+      setUserNameAvailable(null);
     }
   }, [searchTextDebounce]);
 
@@ -238,6 +247,9 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           hide();
           reset();
           setActiveTab(1);
+          setUserNameAvailable(null);
+          setPhoneNumber(null);
+          setCountryCode(963);
         }}
         title={
           activeTab === 1
@@ -258,6 +270,9 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                 onClick={() => {
                   setActiveTab(tab.id);
                   reset();
+                  setUserNameAvailable(null);
+                  setPhoneNumber(null);
+                  setCountryCode(963);
                 }}
                 className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
                   activeTab === tab.id
@@ -283,7 +298,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           >
             {activeTab === 1 && (
               <div>
-                <label className="block mb-2 text-md font-bold">
+                {/* <label className="block mb-2 text-md font-bold">
                   {t("countryCode")} & {t("phone")}
                 </label>
                 <PhoneInput
@@ -300,7 +315,46 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                     setPhoneNumber(phoneNumber);
                     setValue("phone", phoneNumber);
                   }}
-                />
+                /> */}
+
+                <div className="flex gap-3">
+                  <div>
+                    <label className="block mb-2 text-base text-black font-bold">
+                      {t("countryCode")}
+                    </label>
+                    <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                      <PhoneInput
+                        country={"sy"}
+                        enableSearch={true}
+                        containerClass="!w-full"
+                        inputClass="!hidden"
+                        buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                        dropdownClass="custom-dropdown"
+                        onChange={(value, country) => {
+                          setCountryCode(country?.dialCode);
+                        }}
+                      />
+                      <span className="ml-1">+{countryCode}</span>
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <label className="block mb-2 text-base text-black font-bold">
+                      {t("phone")}
+                    </label>
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      {...register("phone")}
+                      value={phoneNumber}
+                      onChange={(e) => {
+                        const onlyNums = e.target.value.replace(/\D/g, "");
+                        setPhoneNumber(onlyNums);
+                      }}
+                      className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                      placeholder={t("enterPhoneNo")}
+                    />
+                  </div>
+                </div>
                 {errors.phone && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.phone.message}
@@ -315,12 +369,30 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                   <label className="block mb-2 text-md font-bold">
                     {t("userName")}
                   </label>
-                  <input
-                    type="text"
-                    {...register("username")}
-                    onChange={(e) => setSearchTextDebounce(e.target.value)}
-                    className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      {...register("username")}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSearchTextDebounce(value);
+                        setValue("username", value, { shouldValidate: true });
+                      }}
+                      placeholder={t("enterUsername")}
+                      className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
+                    />
+                    {userNameAvailable?.data ? (
+                      userNameAvailable.data.available ? (
+                        <div className="absolute right-3 top-3">
+                          <img src={verified} alt="icon" />
+                        </div>
+                      ) : (
+                        <div className="absolute right-3 top-3">
+                          <i className="fa-solid fa-ban text-red-600" />
+                        </div>
+                      )
+                    ) : null}
+                  </div>
                   {userNameAvailable?.data?.available ? (
                     <p className="text-green-500 text-sm mt-1">
                       {userNameAvailable?.message}
@@ -343,6 +415,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                   <input
                     type="email"
                     {...register("email")}
+                    placeholder={t("enterEmailAdd")}
                     className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
                   />
                   {errors.email && (
@@ -361,7 +434,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                       {...register("password")}
                       type={toggle === true ? "password" : "text"}
                       id="password"
-                      className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
+                      placeholder={t("enterPassword")}
+                      className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                       autoComplete="off"
                     />
                     <i
@@ -388,7 +462,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                     <input
                       type={toggleConfirm === true ? "password" : "text"}
                       {...register("confirmPassword")}
-                      className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
+                      placeholder={t("enterConfirmPassword")}
+                      className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                     />
                     <i
                       className={

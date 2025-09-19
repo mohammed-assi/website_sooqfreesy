@@ -70,7 +70,9 @@ export const OtpVerificationModal = ({
                     onChange={(e) => handleChange(e.target.value, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     ref={(el) => (inputsRef.current[index] = el)}
-                    className="w-13 h-13 text-center text-[22px] font-medium border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+                    className={`w-13 h-13 font-semibold text-center text-[22px] border-2 rounded-lg focus:outline-none ${
+                      digit ? "border-primary text-primary" : "border-gray-300"
+                    }`}
                   />
                 ))}
               </div>
