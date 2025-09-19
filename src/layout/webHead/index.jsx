@@ -14,7 +14,10 @@ import signin from "../../assets/icon/signin.svg";
 import LoginModal from "../../components/auth/LoginModal";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
-import { showSuccessToast } from "../../utils/toastUtils";
+import {
+  showInfoToast,
+  showSuccessToast,
+} from "../../utils/toastUtils";
 import { clearUser } from "../../redux/slices/userSlice";
 import { ROUTE } from "../../config/constants";
 
@@ -33,7 +36,7 @@ export const WebHead = () => {
   const [searchValue, setSearchValue] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  console.log("userInfo", userInfo);
+  console.log("userInfo--->", userInfo);
 
   const popularSearches = [
     t("cars"),
@@ -303,7 +306,11 @@ export const WebHead = () => {
                 <button
                   onClick={() => {
                     if (accessToken) {
-                      navigate(ROUTE.CREATE_POST);
+                      if (userInfo?.is_phone_verified) {
+                        navigate(ROUTE.CREATE_POST);
+                      } else {
+                        showInfoToast(t("verifyPhoneNumber"));
+                      }
                     } else {
                       setShowLoginModal(true);
                     }

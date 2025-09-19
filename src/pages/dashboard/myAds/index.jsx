@@ -56,9 +56,15 @@ export const MyAds = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-6">
-        {allPosts?.map((item) => (
-          <ProductListCard key={item.id} item={item} imagePath={imagePath} />
-        ))}
+        {allPosts?.length > 0 ? (
+          allPosts.map((item) => (
+            <ProductListCard key={item.id} item={item} imagePath={imagePath} />
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500 font-medium py-6">
+            {t("noDataFound")}
+          </p>
+        )}
       </div>
     </div>
   );

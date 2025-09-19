@@ -48,14 +48,20 @@ export const MyWishlist = () => {
       <h1 className="main-heading">{t("wishlist")}</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-8">
-        {allPosts?.map((item) => (
-          <ProductCard
-            key={item.id}
-            item={item}
-            imagePath={imagePath}
-            handleLikeUnlikePost={handleLikeUnlikePost}
-          />
-        ))}
+        {allPosts?.length > 0 ? (
+          allPosts.map((item) => (
+            <ProductCard
+              key={item.id}
+              item={item}
+              imagePath={imagePath}
+              handleLikeUnlikePost={handleLikeUnlikePost}
+            />
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500 font-medium py-6">
+            {t('noDataFound')}
+          </p>
+        )}
       </div>
     </div>
   );

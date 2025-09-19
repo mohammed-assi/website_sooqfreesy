@@ -14,7 +14,7 @@ import signin from "../../../../assets/icon/signin.svg";
 import LoginModal from "../../../../components/auth/LoginModal";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../../redux/slices/authSlice";
-import { showSuccessToast } from "../../../../utils/toastUtils";
+import { showInfoToast, showSuccessToast } from "../../../../utils/toastUtils";
 import { clearUser } from "../../../../redux/slices/userSlice";
 import { ROUTE } from "../../../../config/constants";
 
@@ -236,11 +236,20 @@ export const DashboardHeader = () => {
                     </button>
                   )}
                 </div>
-                <Link to={ROUTE.CREATE_POST} className="custom-btn">
+                <button
+                  onClick={() => {
+                    if (userInfo?.is_phone_verified) {
+                      navigate(ROUTE.CREATE_POST);
+                    } else {
+                      showInfoToast(t("verifyPhoneNumber"));
+                    }
+                  }}
+                  className="custom-btn"
+                >
                   <span className="icon ">
                     <span>+</span> {t("postAdButton")}
                   </span>
-                </Link>
+                </button>
               </div>
             ) : (
               <div className="flex items-center gap-4">
