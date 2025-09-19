@@ -247,7 +247,7 @@ export const SellerProfile = () => {
                   <div className="absolute top-12 right-4 z-10">
                     <button
                       onClick={() => setShowReportListModal(true)}
-                      className="rounded-md shadow-md text-gray-700 p-4 flex items-center gap-2"
+                      className="rounded-md shadow-md text-gray-700 bg-white p-4 flex items-center gap-2"
                     >
                       <img src={reportUser} alt="userImg" className="w-6 h-6" />
                       {t("reportSeller")}
