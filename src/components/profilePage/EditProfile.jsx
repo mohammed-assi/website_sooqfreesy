@@ -319,7 +319,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
                     type="submit"
                     name="action"
                     value="username"
-                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                   >
                     {t("saveChangesButton")}
                   </button>
@@ -366,7 +366,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
                   <button
                     onClick={handleVerifyMailNumber}
                     type="button"
-                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                   >
                     {t("verifyEmailButton")}
                   </button>
@@ -409,7 +409,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
                   <button
                     onClick={handleVerifyMailNumber}
                     type="button"
-                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                   >
                     {t("verifyPhoneButton")}
                   </button>
@@ -431,7 +431,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
                 <button
                   onClick={() => setShowChangePassModal(true)}
                   type="button"
-                  className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+                  className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                 >
                   {t("changePasswordButton")}
                 </button>
@@ -444,7 +444,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
             <div className="w-4/5">
               <select
                 {...register("gender")}
-                className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none"
+                className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none select-filter"
               >
                 <option value={t("MALE")}>{t("male")}</option>
                 <option value={t("FEMALE")}>{t("female")}</option>

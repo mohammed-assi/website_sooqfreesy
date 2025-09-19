@@ -76,15 +76,15 @@ export const DashboardHeader = () => {
       >
         <div className="px-5 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-9 items-center">
               <Link to="/">
                 <img src={logo} alt="logo" />
               </Link>
               {location.pathname !== ROUTE.CREATE_POST && (
-                <div className="flex items-center gap-8 relative">
+                <div className="flex items-center gap-8 relative border-l-1 border-[#DDDDDD] pl-[50px]">
                   <Link
                     to="/"
-                    className="flex font-semibold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition"
+                    className="flex font-bold text-base gap-4 items-center px-5 py-[10px] border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition"
                   >
                     <i className="fa-solid fa-arrow-left" />
                     <p>{t("backSouqSyria")}</p>
