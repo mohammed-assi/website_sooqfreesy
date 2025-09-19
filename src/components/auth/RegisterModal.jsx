@@ -13,9 +13,12 @@ import { getRequest, postRequest } from "../../config/apiFunctions";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import useSearchDebounce from "../../utils/searchDebounce";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
+import { ROUTE } from "../../config/constants";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(1);
   const [countryCode, setCountryCode] = useState(963);
   const [phoneNumber, setPhoneNumber] = useState(null);
@@ -252,7 +255,10 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  reset();
+                }}
                 className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
                   activeTab === tab.id
                     ? "text-primary"
@@ -271,7 +277,10 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         </div>
 
         <div className="flex h-full justify-between flex-col pt-[50px]">
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-5"
+          >
             {activeTab === 1 && (
               <div>
                 <label className="block mb-2 text-md font-bold">
@@ -399,25 +408,31 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
               </>
             )}
             <div>
-            <div className="flex items-center gap-2 m-0">
-              <input
-                type="checkbox"
-                {...register("terms")}
-                id="terms"
-                className="accent-primary"
-              />
-              <label htmlFor="terms" className="text-sm">
-                {t("iAccept")}{" "}
-                <span className="text-primary cursor-pointer hover:underline">
-                  {t("termsAndConditions")}
-                </span>
-              </label>
-            </div>
-            {errors.terms && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.terms.message}
-              </p>
-            )}
+              <div className="flex items-center gap-2 m-0">
+                <input
+                  type="checkbox"
+                  {...register("terms")}
+                  id="terms"
+                  className="w-4 h-4 bg-gray-100 border-gray-300 rounded-sm checked:text-primary"
+                />
+                <label htmlFor="terms" className="text-sm">
+                  {t("iAccept")}{" "}
+                  <span
+                    onClick={() => {
+                      navigate(ROUTE.TERMS_CONDITIONS);
+                      hide();
+                    }}
+                    className="text-primary cursor-pointer hover:underline"
+                  >
+                    {t("termsAndConditions")}
+                  </span>
+                </label>
+              </div>
+              {errors.terms && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.terms.message}
+                </p>
+              )}
             </div>
 
             <LoadingButton

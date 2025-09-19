@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { getRequest, postRequest } from "../../config/apiFunctions";
 import { CUSTOMER, REPORT_LIST } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const ContactUs = () => {
   const { i18n, t } = useTranslation();
@@ -28,18 +29,24 @@ export const ContactUs = () => {
 
   const [countryCode, setCountryCode] = useState(963);
   const [reportList, setReportList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const {
     handleSubmit,
     register,
     setValue,
     reset,
+    control,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      phone: "", // start empty
+    },
   });
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const payload = {
       reportList_id: Number(data.help),
       os_platform: data.platform,
@@ -47,7 +54,7 @@ export const ContactUs = () => {
       username: data.fullName,
       email: data.email,
       country_code: `+${countryCode}`,
-      phone: data.phone,
+      phone: data.phone.replace(countryCode, ""),
     };
 
     try {
@@ -57,10 +64,13 @@ export const ContactUs = () => {
         setCountryCode(963);
         setValue("phone", "");
         reset();
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const getContactReportList = async (url) => {
@@ -93,9 +103,10 @@ export const ContactUs = () => {
             {...register("help")}
             className="w-full rounded-md p-3 bg-gray-100 focus:outline-none select-filter"
           >
+            <option value="">--{t("select")}--</option>
             {reportList?.map((item) => (
-              <option key={item.id} value={item.id}>
-                {i18n.language === "ar" ? item.arabic_name : item.name}
+              <option key={item.id} value={item?.id}>
+                {i18n.language === "ar" ? item?.arabic_name : item?.name}
               </option>
             ))}
           </select>
@@ -112,6 +123,7 @@ export const ContactUs = () => {
             {...register("platform")}
             className="w-full rounded-md p-3 bg-gray-100 focus:outline-none select-filter"
           >
+            <option value="">--{t("select")}--</option>
             <option value={t("iOS")}>{t("iOS")}</option>
             <option value={t("android")}>{t("android")}</option>
             <option value={t("desktopPC")}>{t("desktopPC")}</option>
@@ -159,19 +171,23 @@ export const ContactUs = () => {
           <label className="block mb-2 text-md font-bold">
             {t("countryCode")} & {t("phone")}
           </label>
-          <PhoneInput
-            country={"sy"}
-            enableSearch={true}
-            inputClass="!w-full !h-13 !bg-gray-100 !border-none !rounded !pl-12"
-            buttonClass="!bg-gray-100 !border-none !rounded-l"
-            dropdownClass="custom-dropdown"
-            onChange={(value, country) => {
-              const countryCode = country?.dialCode;
-              const phoneNumber = value.replace(countryCode, "");
-
-              setCountryCode(countryCode);
-              setValue("phone", phoneNumber);
-            }}
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <PhoneInput
+                country={"sy"}
+                enableSearch={true}
+                inputClass="!w-full !h-13 !bg-gray-100 !border-none !rounded !pl-12"
+                buttonClass="!bg-gray-100 !border-none !rounded-l"
+                dropdownClass="custom-dropdown"
+                value={field.value || ""}
+                onChange={(value, country) => {
+                  setCountryCode(country?.dialCode);
+                  field.onChange(value);
+                }}
+              />
+            )}
           />
           {errors.phone && (
             <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
@@ -192,12 +208,14 @@ export const ContactUs = () => {
           )}
         </div>
 
-        <button
+        <LoadingButton
           type="submit"
-          className="w-full py-4 bg-primary text-white font-semibold rounded-md hover:bg-primaryDark transition"
+          loading={loading}
+          disabled={loading}
+          className="bg-primary text-white text-base hover:bg-primaryDark h-[56px]"
         >
-          {t("Submit")}
-        </button>
+          {t("submit")}
+        </LoadingButton>
       </form>
     </div>
   );

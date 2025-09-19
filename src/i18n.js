@@ -257,6 +257,7 @@ const resources = {
       verifyPhoneNumber: "Verify your phone number to continue",
       noReviewsFound: "No Reviews Found",
       noDataFound: "No Data Found",
+      select: "Select",
     },
   },
   ar: {
@@ -508,6 +509,7 @@ const resources = {
       verifyPhoneNumber: "تحقق من رقم هاتفك للمتابعة",
       noReviewsFound: "لم يتم العثور على مراجعات",
       noDataFound: "لا توجد بيانات",
+      select: "اختر",
     },
   },
 };
