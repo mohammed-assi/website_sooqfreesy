@@ -58,7 +58,7 @@ export const MyAds = () => {
       <div className="grid grid-cols-1 gap-6">
         {allPosts?.length > 0 ? (
           allPosts.map((item) => (
-            <ProductListCard key={item.id} item={item} imagePath={imagePath} />
+            <ProductListCard key={item.id} item={item} imagePath={imagePath} showWishlist={false} />
           ))
         ) : (
           <p className="col-span-full text-center text-gray-500 font-medium py-6">

@@ -7,7 +7,7 @@ import profile from "../../../../assets/icon/profile.svg";
 import ads from "../../../../assets/icon/ads.svg";
 import wishlist from "../../../../assets/icon/wishlist.svg";
 import notification from "../../../../assets/icon/notification.svg";
-// import support from "../../../../assets/icon/support.svg";
+import support from "../../../../assets/icon/support.svg";
 import login from "../../../../assets/icon/login.svg";
 import logoutIcon from "../../../../assets/icon/logout.svg";
 import signin from "../../../../assets/icon/signin.svg";
@@ -170,16 +170,17 @@ export const DashboardHeader = () => {
                           <img src={notification} alt="icon" />
                           {t("notification")}
                         </li>
-                        {/* <li
-                        onClick={() => {
-                          setOpen(false);
-                          navigate(ROUTE.HELP_SUPPORT);
-                        }}
-                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg"
-                      >
-                        <img src={support} alt="icon" />
-                        {t("helpSupport")}
-                      </li> */}
+                        <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg">
+                          <button
+                            onClick={() => {
+                              navigate(ROUTE.HELP_SUPPORT);
+                              setOpen(false);
+                            }}
+                            className="flex items-center gap-3 "
+                          >
+                            <img src={support} alt="icon" /> {t("helpSupport")}
+                          </button>
+                        </li>
                       </ul>
 
                       <div className="border-t border-gray-200 p-2">
@@ -238,11 +239,12 @@ export const DashboardHeader = () => {
                 </div>
                 <button
                   onClick={() => {
-                    if (userInfo?.is_phone_verified) {
-                      navigate(ROUTE.CREATE_POST);
-                    } else {
-                      showInfoToast(t("verifyPhoneNumber"));
-                    }
+                    navigate(ROUTE.CREATE_POST);
+                    // if (userInfo?.is_phone_verified) {
+                    //   navigate(ROUTE.CREATE_POST);
+                    // } else {
+                    //   showInfoToast(t("verifyPhoneNumber"));
+                    // }
                   }}
                   className="custom-btn"
                 >

@@ -7,7 +7,12 @@ import heartFilled from "../../assets/icon/heartFilled.svg";
 import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 
-const ProductListCard = ({ item, imagePath, handleLikeUnlikePost }) => {
+const ProductListCard = ({
+  item,
+  imagePath,
+  handleLikeUnlikePost,
+  showWishlist,
+}) => {
   return (
     <div className="flex bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
       <div className="relative w-3/6">
@@ -27,16 +32,18 @@ const ProductListCard = ({ item, imagePath, handleLikeUnlikePost }) => {
             </SwiperSlide>
           ))}
         </Swiper>
-        <button
-          onClick={() => handleLikeUnlikePost(item)}
-          className="cursor-pointer absolute top-3 right-3 z-9"
-        >
-          {item.isWishlisted ? (
-            <img src={heartFilled} alt="icon" />
-          ) : (
-            <img src={wishlist} alt="icon" />
-          )}
-        </button>
+        {showWishlist && (
+          <button
+            onClick={() => handleLikeUnlikePost(item)}
+            className="cursor-pointer absolute top-3 right-3 z-9"
+          >
+            {item.isWishlisted ? (
+              <img src={heartFilled} alt="icon" />
+            ) : (
+              <img src={wishlist} alt="icon" />
+            )}
+          </button>
+        )}
       </div>
 
       <div className="w-3/6 p-4 relative">

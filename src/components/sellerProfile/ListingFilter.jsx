@@ -15,6 +15,7 @@ export const ListingFilter = ({
   filters,
   setModalFilter,
   allPosts,
+  handleLikeUnlikePost
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("listing");
@@ -82,6 +83,8 @@ export const ListingFilter = ({
                     key={item.id}
                     item={item}
                     imagePath={imagePath}
+                    handleLikeUnlikePost={handleLikeUnlikePost}
+                    showWishlist={true}
                   />
                 ))}
               </div>

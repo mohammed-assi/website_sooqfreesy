@@ -29,7 +29,7 @@ export const SideFilter = ({ allCategory, filters, handleChange }) => {
         <input
           type="text"
           value={filters?.location}
-          onChange={(e) => handleChange("location", e.target.value)} placeholder="Enter Area"
+          onChange={(e) => handleChange("location", e.target.value)}
           className="w-full h-[48px] bg-[#f5f5f5] rounded-lg px-3 py-2 text-sm"
         />
       </div>
@@ -41,20 +41,22 @@ export const SideFilter = ({ allCategory, filters, handleChange }) => {
           <button
             type="button"
             onClick={() => handleChange("type", "SALE")}
-            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${filters?.type === "SALE"
+            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${
+              filters?.type === "SALE"
                 ? "bg-primary text-white"
                 : "hover:bg-gray-100"
-              }`}
+            }`}
           >
             {t("forSale")}
           </button>
           <button
             type="button"
             onClick={() => handleChange("type", "RENT")}
-            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${filters?.type === "RENT"
+            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${
+              filters?.type === "RENT"
                 ? "bg-primary text-white"
                 : "hover:bg-gray-100"
-              }`}
+            }`}
           >
             {t("forRent")}
           </button>
@@ -112,8 +114,8 @@ export const SideFilter = ({ allCategory, filters, handleChange }) => {
             }}
             className="absolute top-0 w-full pointer-events-none appearance-none bg-transparent"
             style={{
-    zIndex: filters?.priceRange[0] === filters?.priceRange[1] ? 5 : 6, // bring forward if equal
-  }}
+              zIndex: filters?.priceRange[0] === filters?.priceRange[1] ? 5 : 6, // bring forward if equal
+            }}
           />
 
           {/* Max slider */}
@@ -130,18 +132,26 @@ export const SideFilter = ({ allCategory, filters, handleChange }) => {
             }}
             className="absolute top-0 w-full pointer-events-none appearance-none bg-transparent"
             style={{
-    zIndex:  filters?.priceRange[0] === filters?.priceRange[1] ? 6 : 5, // swap priority
-  }}
+              zIndex: filters?.priceRange[0] === filters?.priceRange[1] ? 6 : 5, // swap priority
+            }}
           />
         </div>
 
         <div className="flex justify-between text-sm mt-4 gap-5 w-full">
-          <div className="flex flex-col w-[50%] text-base font-bold">Min <span className="mt-1 h-[48px] bg-[#F5F5F5] flex items-center px-4 text-base font-normal rounded-md">£{filters?.priceRange[0]}</span></div>
-          <div className="flex flex-col w-[50%] text-base font-bold">Max<span className="mt-1 h-[48px] bg-[#F5F5F5] flex items-center px-4 text-base font-normal rounded-md">£{filters?.priceRange[1]}</span></div>
+          <div className="flex flex-col w-[50%] text-base font-bold">
+            {t('min')}{" "}
+            <span className="mt-1 h-[48px] bg-[#F5F5F5] flex items-center px-4 text-base font-normal rounded-md">
+              £{filters?.priceRange[0]}
+            </span>
+          </div>
+          <div className="flex flex-col w-[50%] text-base font-bold">
+            {t('max')}
+            <span className="mt-1 h-[48px] bg-[#F5F5F5] flex items-center px-4 text-base font-normal rounded-md">
+              £{filters?.priceRange[1]}
+            </span>
+          </div>
         </div>
       </div>
-
-
     </aside>
   );
 };

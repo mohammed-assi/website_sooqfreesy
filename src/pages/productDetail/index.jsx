@@ -127,8 +127,6 @@ export const ProductDetail = () => {
     getAllPostsCallBack();
   }, [accessToken]);
 
-  console.log("postDetailData", postDetailData);
-
   return (
     <div className="spacer-x">
       <div className="pt-15">
@@ -348,7 +346,7 @@ export const ProductDetail = () => {
                   className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
                 >
                   <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
-                  {postDetailData?.user?.phone}
+                  {postDetailData?.user?.phone || "7777777777"}
                 </button>
                 <button
                   onClick={() => setShowReviewModal(true)}
@@ -370,14 +368,20 @@ export const ProductDetail = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {allPosts?.map((car) => (
-              <ProductCard
-                key={car.id}
-                item={car}
-                imagePath={imagePath}
-                handleLikeUnlikePost={handleLikeUnlikePost}
-              />
-            ))}
+            {allPosts?.length > 0 ? (
+              allPosts?.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                  imagePath={imagePath}
+                  handleLikeUnlikePost={handleLikeUnlikePost}
+                />
+              ))
+            ) : (
+              <p className="col-span-full text-center text-gray-500 font-medium py-6">
+                {t("noDataFound")}
+              </p>
+            )}
           </div>
         </div>
       </div>

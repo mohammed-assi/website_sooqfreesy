@@ -7,6 +7,7 @@ import { postRequest } from "../../config/apiFunctions";
 import { CUSTOMER } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import { InfoModal } from "../../common/modal/InfoModal";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const ChangePassModal = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
   const [toggleNew, setToggleNew] = useState(true);
   const [toggleConfirm, setToggleConfirm] = useState(true);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handlepass = () => {
     setToggle(!toggle);
@@ -51,6 +53,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const payload = {
       currentPassword: data.password,
       newPassword: data.newPassword,
@@ -62,10 +65,16 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
         showSuccessToast(response?.data?.message);
         setShowInfoModal(true);
         reset();
+        setLoading(false);
+        setToggle(true);
+        setToggleNew(true);
+        setToggleConfirm(true);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   if (!isOpen) return null;
@@ -97,7 +106,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
                   {...register("password")}
                   type={toggle === true ? "password" : "text"}
                   id="password"
-                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                   autoComplete="off"
                 />
                 <i
@@ -125,7 +134,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
                   {...register("newPassword")}
                   type={toggleNew === true ? "password" : "text"}
                   id="newPassword"
-                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                   autoComplete="off"
                 />
                 <i
@@ -152,7 +161,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
                 <input
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
-                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                 />
                 <i
                   className={
@@ -170,12 +179,20 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
               )}
             </div>
 
-            <button
+            {/* <button
               type="submit"
               className="w-full mt-3 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
             >
               {t("saveButton")}
-            </button>
+            </button> */}
+            <LoadingButton
+              type="submit"
+              loading={loading}
+              disabled={loading}
+              className="bg-primary text-white text-base hover:bg-primaryDark h-[56px]"
+            >
+              {t("saveButton")}
+            </LoadingButton>
           </form>
         </div>
       </div>

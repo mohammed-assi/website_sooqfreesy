@@ -12,6 +12,7 @@ import { getRequest, postRequest } from "../../config/apiFunctions";
 import { CUSTOMER, POST, REPORT_LIST } from "../../config/endPoints";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import LoginModal from "../../components/auth/LoginModal";
 
 export const SellerProfile = () => {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ export const SellerProfile = () => {
   const { accessToken } = useSelector((state) => state.auth);
   const [showReportButton, setShowReportButton] = useState(false);
   const [showReportListModal, setShowReportListModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [sellerProfile, setSellerProfile] = useState({});
   const [sellerReviews, setSellerReviews] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
@@ -142,6 +144,28 @@ export const SellerProfile = () => {
     }
   };
 
+  const handleLikeUnlikePost = async (data) => {
+    if (accessToken) {
+      let url;
+      if (data?.isWishlisted) {
+        url = POST.UNLIKE;
+      } else {
+        url = POST.LIKE;
+      }
+      try {
+        const response = await getRequest(`${url}?listingId=${data?.id}`);
+        if (response?.data?.success && response?.data?.statusCode === 200) {
+          showSuccessToast(response?.data?.message);
+          getAllPostsCallBack();
+        }
+      } catch (error) {
+        showErrorToast(error?.response?.data?.message);
+      }
+    } else {
+      setShowLoginModal(true);
+    }
+  };
+
   useEffect(() => {
     getContactReportList(`${REPORT_LIST.CONTACT_US}?reportType=SELLER`);
   }, []);
@@ -201,9 +225,14 @@ export const SellerProfile = () => {
               </div>
 
               <div className="flex items-center gap-3">
-                <button className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition">
+                <button
+                  onClick={() =>
+                    (window.location.href = `tel:${sellerProfile?.user?.phone}`)
+                  }
+                  className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                >
                   <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
-                  {sellerProfile?.phone}
+                  {sellerProfile?.user?.phone || "7777777777"}
                 </button>
 
                 <div className="absolute top-5 right-4">
@@ -238,6 +267,7 @@ export const SellerProfile = () => {
           handleChange={handleChange}
           setModalFilter={setModalFilter}
           allPosts={allPosts}
+          handleLikeUnlikePost={handleLikeUnlikePost}
         />
       </div>
 
@@ -254,6 +284,12 @@ export const SellerProfile = () => {
           handleSubmit={handleSubmitSellerReport}
         />
       )}
+
+      <LoginModal
+        show={showLoginModal}
+        hide={() => setShowLoginModal(false)}
+        setShowLoginModal={setShowLoginModal}
+      />
     </>
   );
 };

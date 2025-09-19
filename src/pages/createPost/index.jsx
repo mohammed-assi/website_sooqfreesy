@@ -509,6 +509,7 @@ export const CreatePost = () => {
               selectedState={selectedState}
               selectedCountry={selectedCountry}
               setValue={setValue}
+              trigger={trigger}
             />
           )}
 

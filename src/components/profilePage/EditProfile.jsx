@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import useSearchDebounce from "../../utils/searchDebounce";
 import { OtpVerificationModal } from "../auth/OtpVerificationModal";
 import moment from "moment";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const EditProfile = ({ userInfo, imagePath }) => {
   const { t } = useTranslation();
@@ -62,6 +63,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
   const [userNameAvailable, setUserNameAvailable] = useState({});
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [code, setCode] = useState(["", "", "", ""]);
+  const [loading, setLoading] = useState(false);
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
@@ -187,6 +189,7 @@ export const EditProfile = ({ userInfo, imagePath }) => {
   };
 
   const onSubmit = async (data, e) => {
+    setLoading(true);
     const action = e.nativeEvent.submitter.value;
     let payload;
     if (action === "username") {
@@ -228,11 +231,14 @@ export const EditProfile = ({ userInfo, imagePath }) => {
               { keepErrors: true }
             );
           }
+          setLoading(false);
         }
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleCheckUserName = async (url) => {
@@ -484,14 +490,24 @@ export const EditProfile = ({ userInfo, imagePath }) => {
           </div>
           {(dirtyFields.gender || dirtyFields.dob) && (
             <div className="">
-              <button
+              {/* <button
                 type="submit"
                 name="action"
                 value="profile"
                 className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
               >
                 {t("saveChangesButton")}
-              </button>
+              </button> */}
+              <LoadingButton
+                type="submit"
+                name="action"
+                value="profile"
+                loading={loading}
+                disabled={loading}
+                className="bg-primary text-white text-base hover:bg-primaryDark h-[56px]"
+              >
+                {t("saveChangesButton")}
+              </LoadingButton>
             </div>
           )}
         </form>

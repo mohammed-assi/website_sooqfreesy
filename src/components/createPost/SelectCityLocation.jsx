@@ -23,7 +23,8 @@ export const SelectCityLocation = ({
   cities,
   selectedCountry,
   selectedState,
-  setValue
+  setValue,
+  trigger,
 }) => {
   const { t } = useTranslation();
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
@@ -57,7 +58,10 @@ export const SelectCityLocation = ({
               </label>
               <select
                 {...register("country")}
-                onChange={(e) => setValue("country", e.target.value)}
+                onChange={(e) => {
+                  setValue("country", e.target.value);
+                  trigger("country");
+                }}
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none"
               >
                 <option value="">Select Country</option>
@@ -81,7 +85,10 @@ export const SelectCityLocation = ({
               </label>
               <select
                 {...register("state")}
-                onChange={(e) => setValue("state", e.target.value)}
+                onChange={(e) => {
+                  setValue("state", e.target.value);
+                  trigger("state");
+                }}
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                 disabled={!selectedCountry}
               >
@@ -106,6 +113,10 @@ export const SelectCityLocation = ({
               </label>
               <select
                 {...register("city")}
+                onChange={(e) => {
+                  setValue("city", e.target.value);
+                  trigger("city");
+                }}
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none"
                 disabled={!selectedState}
               >
@@ -186,6 +197,7 @@ export const SelectCityLocation = ({
                           onChange(place.formatted_address);
                           setUserLocation(place.formatted_address);
                           setShowLocationValidation(false);
+                          trigger('location')
                         }
                       }}
                       defaultValue={value}

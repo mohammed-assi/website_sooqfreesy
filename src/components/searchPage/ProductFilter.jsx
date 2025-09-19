@@ -46,6 +46,7 @@ export default function ProductFilter({
                   item={item}
                   imagePath={imagePath}
                   handleLikeUnlikePost={handleLikeUnlikePost}
+                  showWishlist={true}
                 />
               ))}
             </div>

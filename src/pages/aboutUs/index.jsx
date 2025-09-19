@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getRequest } from "../../config/apiFunctions";
 import { CONTENT } from "../../config/endPoints";
+// import parse from "html-react-parser";
 
 export const AboutUs = () => {
   const { t } = useTranslation();
@@ -26,6 +27,9 @@ export const AboutUs = () => {
         <h1 className="main-heading">{t("aboutSouqSyria")}</h1>
       </div>
       <div className="pt-4 pb-20">
+        {/* {pageData?.map((item, i)=> (
+          <div key={i}>{parse(`${item?.description}`)}</div>
+        ))} */}
         <h3 className="font-bold text-xl pt-4">Lorem ipsum dolor sit amet?</h3>
         <p className="text-gray-700 py-1">
           Lorem ipsum dolor sit amet consectetur. Adipiscing elementum sed sem

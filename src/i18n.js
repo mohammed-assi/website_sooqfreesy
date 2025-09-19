@@ -258,6 +258,9 @@ const resources = {
       noReviewsFound: "No Reviews Found",
       noDataFound: "No Data Found",
       select: "Select",
+      logout: "Logout",
+      min: "Min",
+      max: "Max",
     },
   },
   ar: {
@@ -510,6 +513,9 @@ const resources = {
       noReviewsFound: "لم يتم العثور على مراجعات",
       noDataFound: "لا توجد بيانات",
       select: "اختر",
+      logout: "تسجيل الخروج",
+      min: "الحد الأدنى",
+      max: "الحد الأقصى",
     },
   },
 };
