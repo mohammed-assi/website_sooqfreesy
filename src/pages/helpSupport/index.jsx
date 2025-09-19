@@ -110,7 +110,7 @@ export const HelpSupport = () => {
         </div>
 
         {activeTab === "contact" && <ContactUs />}
-        {activeTab === "faq" && <Faq faqs={faqs} />}
+        {activeTab === "faq" && <Faq faqs={faqs} pageData={pageData}/>}
       </div>
     </div>
   );

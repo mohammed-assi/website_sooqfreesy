@@ -261,6 +261,7 @@ const resources = {
       logout: "Logout",
       min: "Min",
       max: "Max",
+      writeFeedback: "Write your feedback..."
     },
   },
   ar: {
@@ -516,6 +517,7 @@ const resources = {
       logout: "تسجيل الخروج",
       min: "الحد الأدنى",
       max: "الحد الأقصى",
+      writeFeedback: "اكتب ملاحظاتك..."
     },
   },
 };

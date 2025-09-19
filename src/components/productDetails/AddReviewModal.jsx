@@ -88,7 +88,7 @@ export const AddReviewModal = ({ onClose, postDetailData }) => {
             onChange={(e) => setFeedback(e.target.value)}
             rows={6}
             className="w-full bg-gray-100 rounded-lg p-3 text-sm mb-4 outline-none"
-            placeholder="Write your feedback..."
+            placeholder={t('writeFeedback')}
           />
 
           <LoadingButton
