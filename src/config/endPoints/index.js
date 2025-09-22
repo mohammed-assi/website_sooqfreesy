@@ -24,24 +24,38 @@ export const CUSTOMER = {
   UPDATE_PROFILE_INFO: `${BASEURL}/customer/update-custom-profile`,
   SEND_OTP: `${BASEURL}/customer/send-verification-otp`,
   VERIFY_OTP: `${BASEURL}/customer/verify-customer-otp`,
-  CATEGORY_LIST:`${BASEURL}/customer/category/get-all`,
-  GET_SUBCATEGORY:`${BASEURL}/customer/subcategory/get-by-category`,
-  GET_FORM_DATA:`${BASEURL}/customer/forms/get-by-cat-and-subcat`,
+  CATEGORY_LIST: `${BASEURL}/customer/category/get-all`,
+  GET_SUBCATEGORY: `${BASEURL}/customer/subcategory/get-by-category`,
+  GET_FORM_DATA: `${BASEURL}/customer/forms/get-by-cat-and-subcat`,
+  GET_ALL_SUBCATEGORY: `${BASEURL}/customer/subcategory/get-all`,
+  GET_NOTIFICATION_SETTNGS: `${BASEURL}/customer/notification-setting/get-all`,
+  UPDATE_SETTING: `${BASEURL}/customer/notification-setting/update`,
+  GET_SELLER_PROFILE: `${BASEURL}/customer/seller-profile`,
+  GET_SELLER_REVIEWS: `${BASEURL}/customer/reviews/get-seller-reviews`,
+  CREATE_REVIEW: `${BASEURL}/customer/reviews/create`,
 
-  GET_ALL_SUBCATEGORY:`${BASEURL}/customer/subcategory/get-all`,
+  GET_REVIEWS: `${BASEURL}/customer/reviews/get-customer-reviews`,
 };
 
 export const REPORT_LIST = {
   CONTACT_US: `${BASEURL}/report/report-listing`,
+
+  REPORT_SELLER: `${BASEURL}/report/create-seller-report`,
+  REPORT_POST: `${BASEURL}/report/create-post-report`,
 };
 
 export const POST = {
   CREATE: `${BASEURL}/post/create-post`,
   GET_ALL: `${BASEURL}/post/get-all`,
   GET_DETAILS: `${BASEURL}/post/get-post-by-id`,
-
   LIKE: `${BASEURL}/post/wishlist/add-item`,
   UNLIKE: `${BASEURL}/post/wishlist/remove-item`,
   GET_WISHLIST: `${BASEURL}/post/wishlist/get-all`,
-  GET_MYADS: `${BASEURL}/post/get-customer-posts`
-}
+  GET_MYADS: `${BASEURL}/post/get-customer-posts`,
+
+  SELLER_POST: `${BASEURL}/post/get-seller-posts`,
+};
+
+export const CONTENT = {
+  GET: `${BASEURL}/content/get-by-type`,
+};

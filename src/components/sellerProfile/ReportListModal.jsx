@@ -1,48 +1,48 @@
-import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-const reasons = [
-  "Seller is threatening me",
-  "Seller is insulting me",
-  "Inappropriate profile image",
-  "Fraud",
-  "Spam",
-  "Other",
-];
-
-const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
-  const [selectedReason, setSelectedReason] = useState("");
-  const [customReason, setCustomReason] = useState("");
+const ReportListModal = ({
+  isOpen,
+  onClose,
+  setShowReportButton,
+  reportList,
+  setReportId, 
+  reportId,
+  setCustomReason,
+  customReason,
+  handleSubmit
+}) => {
+  const { i18n, t } = useTranslation();
 
   if (!isOpen) return null;
-
-  const handleSubmit = () => {
-    setShowReportButton(false);
-    onClose();
-  };
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
-        <h2 className="font-bold text-xl">Report Seller</h2>
+        <h2 className="font-bold text-xl">{t("reportSeller")}</h2>
 
         <div className="space-y-2">
-          {reasons.map((reason, idx) => (
-            <label key={idx} className="flex items-center gap-3 py-1 cursor-pointer">
+          {reportList.map((item, idx) => (
+            <label
+              key={idx}
+              className="flex items-center gap-3 py-1 cursor-pointer"
+            >
               <input
                 type="radio"
                 name="reportReason"
-                value={reason}
-                checked={selectedReason === reason}
-                onChange={(e) => setSelectedReason(e.target.value)}
+                value={item.id}
+                checked={reportId === item.id}
+                onChange={() => setReportId(item.id)}
                 className="accent-cyan-500"
               />
-              <span className="text-gray-700">{reason}</span>
+              <span className="text-gray-700">
+                {i18n.language === "ar" ? item.arabic_name : item.name}
+              </span>
             </label>
           ))}
         </div>
 
         <textarea
-          placeholder="Type your reason..."
+          placeholder={t("yourReason")}
           value={customReason}
           onChange={(e) => setCustomReason(e.target.value)}
           className="w-full border-b border-gray-600 p-2 mt-4 focus:outline-none"
@@ -53,7 +53,7 @@ const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
             onClick={handleSubmit}
             className="w-full px-5 py-2 bg-primary text-white rounded-md hover:bg-primaryDark transition"
           >
-            Submit
+            {t("submit")}
           </button>
           <button
             onClick={() => {
@@ -62,7 +62,7 @@ const ReportListModal = ({ isOpen, onClose, setShowReportButton }) => {
             }}
             className="w-full px-5 py-2 border border-primary text-cyan-500 rounded-md hover:bg-primary hover:text-white transition"
           >
-            Cancel
+            {t("cancelButton")}
           </button>
         </div>
       </div>

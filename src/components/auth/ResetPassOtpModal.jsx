@@ -8,6 +8,7 @@ import { AuthConfirmationModal } from "../../common/modal/AuthConfirmationModal"
 import { postRequest } from "../../config/apiFunctions";
 import { AUTH } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const ResetPassOtpModal = ({
   show,
@@ -15,6 +16,7 @@ export const ResetPassOtpModal = ({
   setShowLoginModal,
   userEmail,
   handleResend,
+  timer,
 }) => {
   const { t } = useTranslation();
   const inputsRef = useRef([]);
@@ -22,6 +24,7 @@ export const ResetPassOtpModal = ({
   const [toggle, setToggle] = useState(true);
   const [toggleConfirm, setToggleConfirm] = useState(true);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const schema = Yup.object().shape({
     password: Yup.string()
@@ -79,6 +82,7 @@ export const ResetPassOtpModal = ({
   const onSubmit = async (data) => {
     const fullCode = code.join("");
     if (fullCode.length === 4) {
+      setLoading(true);
       const payload = {
         email: userEmail,
         otp: fullCode,
@@ -90,10 +94,15 @@ export const ResetPassOtpModal = ({
           showSuccessToast(response?.data?.message);
           reset();
           setShowConfirmationModal(true);
+          setLoading(false);
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
+        setLoading(false);
       }
+    } else {
+      showErrorToast(t("enterOtp"));
+      setLoading(false);
     }
   };
 
@@ -129,19 +138,28 @@ export const ResetPassOtpModal = ({
                   onChange={(e) => handleChange(e.target.value, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   ref={(el) => (inputsRef.current[index] = el)}
-                  className="w-12 h-12 text-center text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary"
+                  className={`w-13 h-13 font-semibold text-center text-[22px] border-2 rounded-lg focus:outline-none ${
+                    digit ? "border-primary text-primary" : "border-gray-300"
+                  }`}
                 />
               ))}
             </div>
             <p className="text-center font-bold text-sm text-gray-500 mt-3">
-              {t("Didn’t received OTP?")}{" "}
-              <button
-                type="button"
-                onClick={handleResend}
-                className="text-primary hover:underline cursor-pointer"
-              >
-                {t("Resend it")}
-              </button>
+              {t("didntReceive")}{" "}
+              {timer > 0 ? (
+                <span className="text-gray-400">
+                  {t("resendIn")} 00:{timer < 10 ? `0${timer}` : timer}
+                </span>
+              ) : (
+                <button
+                  onClick={handleResend}
+                  type="button"
+                  disabled={loading}
+                  className="text-primary hover:underline cursor-pointer disabled:opacity-50"
+                >
+                  {t("Resend it")}
+                </button>
+              )}
             </p>
 
             <div className="pt-3">
@@ -153,7 +171,8 @@ export const ResetPassOtpModal = ({
                   {...register("password")}
                   type={toggle === true ? "password" : "text"}
                   id="password"
-                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  placeholder={t("enterNewPass")}
+                  className="w-full h-[48px] rounded px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                   autoComplete="off"
                 />
                 <i
@@ -180,7 +199,8 @@ export const ResetPassOtpModal = ({
                 <input
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
-                  className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                  placeholder={t("reenterNewPass")}
+                  className="w-full h-[48px] rounded px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                 />
                 <i
                   className={
@@ -198,12 +218,14 @@ export const ResetPassOtpModal = ({
               )}
             </div>
 
-            <button
+            <LoadingButton
               type="submit"
-              className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition"
+              loading={loading}
+              disabled={loading}
+              className="bg-primary h-[56px] text-white hover:bg-primaryDark"
             >
               {t("submit")}
-            </button>
+            </LoadingButton>
           </form>
         </div>
       </AuthModal>

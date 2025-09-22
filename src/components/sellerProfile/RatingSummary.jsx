@@ -8,7 +8,7 @@ const RatingSummary = ({ average, totalReviews, breakdown }) => {
 
   return (
     <div className="w-full">
-      <h2 className="text-xl font-semibold mb-2">
+      <h2 className="text-xl font-bold mb-2">
         {t("ratings")}{" "}
         <span className="text-sm text-gray-500 mb-6">
           ({t('basedOn')} {totalReviews} {t("reviews")})
@@ -17,7 +17,7 @@ const RatingSummary = ({ average, totalReviews, breakdown }) => {
 
       <div className="flex items-center gap-6 py-3">
         <div className="text-center">
-          <p className="text-4xl font-bold">{average.toFixed(1)}</p>
+          <p className="text-[56px] font-bold">{average.toFixed(1)}</p>
           <RatingStar starValue={4.5} />
         </div>
 

@@ -80,7 +80,7 @@ export const Banner = () => {
             <Link
               to={category.slug}
               key={category.id}
-              className="flex flex-col items-center justify-center border border-gray-300 rounded-xl p-6 hover:shadow-lg hover:border-none transition group"
+              className="flex flex-col items-center justify-center border bg-white border-gray-300 rounded-xl p-6 hover:shadow-lg hover:border-none transition group"
             >
               <img
                 src={category.icon}

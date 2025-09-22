@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import { useSelector } from "react-redux";
 import LoginModal from "../../components/auth/LoginModal";
+import { ScreenLoader } from "../../utils/screenLoader";
 
 export const ProductPage = () => {
   const location = useLocation();
@@ -14,6 +15,7 @@ export const ProductPage = () => {
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [toggleGrid, setToggleGrid] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
@@ -47,15 +49,19 @@ export const ProductPage = () => {
   };
 
   const getAllPosts = async (url) => {
+    setLoading(true);
     try {
       const response = await getRequest(url);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         setAllPosts(response?.data?.data?.posts);
         setTotalCounts(response?.data?.data?.totalCount);
+        setLoading(false);
       }
     } catch (err) {
       console.error("Error fetching posts:", err);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const getAllSubcategory = async (url) => {
@@ -160,34 +166,40 @@ export const ProductPage = () => {
   console.log("filtersModal", filtersModal);
 
   return (
-    <div className="spacer-x">
-      <SearchTopFilter
-        categories={allSubCategory}
-        toggleGrid={toggleGrid}
-        setToggleGrid={setToggleGrid}
-        handleSelectSubcatIds={handleSelectSubcatIds}
-        subcategoryIds={subcategoryIds}
-        setFiltersModal={setFiltersModal}
-        searchText={searchText}
-      />
-      <ProductFilter
-        toggleGrid={toggleGrid}
-        allPosts={allPosts}
-        imagePath={imagePath}
-        setCurrentPage={setCurrentPage}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        allCategory={allCategory}
-        handleChange={handleChange}
-        filters={filters}
-        handleLikeUnlikePost={handleLikeUnlikePost}
-      />
+    <>
+      {loading ? (
+        <ScreenLoader />
+      ) : (
+        <div className="spacer-x">
+          <SearchTopFilter
+            categories={allSubCategory}
+            toggleGrid={toggleGrid}
+            setToggleGrid={setToggleGrid}
+            handleSelectSubcatIds={handleSelectSubcatIds}
+            subcategoryIds={subcategoryIds}
+            setFiltersModal={setFiltersModal}
+            searchText={searchText}
+          />
+          <ProductFilter
+            toggleGrid={toggleGrid}
+            allPosts={allPosts}
+            imagePath={imagePath}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            allCategory={allCategory}
+            handleChange={handleChange}
+            filters={filters}
+            handleLikeUnlikePost={handleLikeUnlikePost}
+          />
 
-      <LoginModal
-        show={showLoginModal}
-        hide={() => setShowLoginModal(false)}
-        setShowLoginModal={setShowLoginModal}
-      />
-    </div>
+          <LoginModal
+            show={showLoginModal}
+            hide={() => setShowLoginModal(false)}
+            setShowLoginModal={setShowLoginModal}
+          />
+        </div>
+      )}
+    </>
   );
 };

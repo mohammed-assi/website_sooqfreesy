@@ -26,7 +26,10 @@ export const Router = () => {
         <Route path="/" element={<HomePage />} />
         <Route path={ROUTE.PRODUCT_PAGE} element={<ProductPage />} />
         <Route path={`${ROUTE.PRODUCT_PAGE}/:id`} element={<ProductDetail />} />
-        <Route path={ROUTE.SELLER_PROFILE} element={<SellerProfile />} />
+        <Route
+          path={`${ROUTE.SELLER_PROFILE}/:id`}
+          element={<SellerProfile />}
+        />
         <Route path={ROUTE.ABOUT_US} element={<AboutUs />} />
         <Route path={ROUTE.TERMS_CONDITIONS} element={<TermConditions />} />
         <Route path={ROUTE.PRIVACY_POLICY} element={<PrivacyPolicy />} />

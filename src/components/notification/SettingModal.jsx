@@ -1,14 +1,66 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ToggleButton } from "../../common/toogleButton/ToggleButton";
+import { postRequest } from "../../config/apiFunctions";
+import { CUSTOMER } from "../../config/endPoints";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
-const SettingModal = ({ isOpen, onClose }) => {
+const SettingModal = ({
+  isOpen,
+  onClose,
+  settingData,
+  getNotificationSettingDataCallback,
+}) => {
   const { t } = useTranslation();
+  const [settings, setSettings] = useState(settingData);
+
+  const handleToggle = async (field) => {
+    const updatedSettings = { ...settings, [field]: !settings[field] };
+    setSettings(updatedSettings);
+
+    let payload;
+    if (field === "ads_information") {
+      payload = { ads_information: updatedSettings.ads_information };
+    }
+    if (field === "allow_account_actions") {
+      payload = {
+        allow_account_actions: updatedSettings.allow_account_actions,
+      };
+    }
+    if (field === "hide_contact_details") {
+      payload = { hide_contact_details: updatedSettings.hide_contact_details };
+    }
+    if (field === "offers_notifications") {
+      payload = { offers_notifications: updatedSettings.offers_notifications };
+    }
+    if (field === "view_general_info") {
+      payload = { view_general_info: updatedSettings.view_general_info };
+    }
+    try {
+      const response = await postRequest(CUSTOMER.UPDATE_SETTING, payload);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        showSuccessToast(response?.data?.message);
+        onClose();
+        getNotificationSettingDataCallback();
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && settingData) {
+      setSettings(settingData);
+    }
+  }, [isOpen, settingData]);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="relative w-full max-w-md rounded-lg bg-white shadow-lg px-5 py-4">
         <div className="flex items-center justify-between border-b border-gray-200 py-4 ">
-          <h2 className="text-2xl font-bold">{t("notificationSettings")}</h2>
+          <h2 className="text-xl font-bold">{t("notificationSettings")}</h2>
           <button
             onClick={onClose}
             className="absolute top-8 right-6 text-gray-400 hover:text-gray-600"
@@ -21,42 +73,23 @@ const SettingModal = ({ isOpen, onClose }) => {
           <div>
             <h3 className="font-bold text-xl mb-4">{t("aboutMyAccount")}</h3>
 
-            <div className="flex items-center justify-between py-5 border-b border-gray-200">
-              <span className="text-sm text-gray-700">
-                {t("hideContactDetails")}
-              </span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-cyan-500 transition"></div>
-                <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transition"></div>
-              </label>
-            </div>
+            <ToggleButton
+              label={t("hideContactDetails")}
+              checked={settings.hide_contact_details}
+              onChange={() => handleToggle("hide_contact_details")}
+            />
 
-            <div className="flex items-center justify-between py-5 border-b border-gray-200">
-              <span className="text-sm text-gray-700">
-                {t("otheruserAction")}
-              </span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  defaultChecked
-                />
-                <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-cyan-500 transition"></div>
-                <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transition"></div>
-              </label>
-            </div>
+            <ToggleButton
+              label={t("otheruserAction")}
+              checked={settings.allow_account_actions}
+              onChange={() => handleToggle("allow_account_actions")}
+            />
 
-            <div className="flex items-center justify-between py-5 border-b border-gray-200">
-              <span className="text-sm text-gray-700">
-                {t("viewGeneralInfo")}
-              </span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-cyan-500 transition"></div>
-                <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transition"></div>
-              </label>
-            </div>
+            <ToggleButton
+              label={t("viewGeneralInfo")}
+              checked={settings.view_general_info}
+              onChange={() => handleToggle("view_general_info")}
+            />
           </div>
 
           <div>
@@ -64,35 +97,17 @@ const SettingModal = ({ isOpen, onClose }) => {
               {t("otherNotifications")}
             </h3>
 
-            <div className="flex items-center justify-between py-5 border-b border-gray-200">
-              <span className="text-sm text-gray-700">
-                {t("offersNotifications")}
-              </span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  defaultChecked
-                />
-                <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-cyan-500 transition"></div>
-                <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transition"></div>
-              </label>
-            </div>
+            <ToggleButton
+              label={t("offersNotifications")}
+              checked={settings.offers_notifications}
+              onChange={() => handleToggle("offers_notifications")}
+            />
 
-            <div className="flex items-center justify-between py-5">
-              <span className="text-sm text-gray-700">
-                {t("informationAboutads")}
-              </span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  defaultChecked
-                />
-                <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-cyan-500 transition"></div>
-                <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-5 transition"></div>
-              </label>
-            </div>
+            <ToggleButton
+              label={t("informationAboutads")}
+              checked={settings.ads_information}
+              onChange={() => handleToggle("ads_information")}
+            />
           </div>
         </div>
       </div>

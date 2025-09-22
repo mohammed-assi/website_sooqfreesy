@@ -7,14 +7,14 @@ import profile from "../../../../assets/icon/profile.svg";
 import ads from "../../../../assets/icon/ads.svg";
 import wishlist from "../../../../assets/icon/wishlist.svg";
 import notification from "../../../../assets/icon/notification.svg";
-// import support from "../../../../assets/icon/support.svg";
+import support from "../../../../assets/icon/support.svg";
 import login from "../../../../assets/icon/login.svg";
 import logoutIcon from "../../../../assets/icon/logout.svg";
 import signin from "../../../../assets/icon/signin.svg";
 import LoginModal from "../../../../components/auth/LoginModal";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../../redux/slices/authSlice";
-import { showSuccessToast } from "../../../../utils/toastUtils";
+import { showInfoToast, showSuccessToast } from "../../../../utils/toastUtils";
 import { clearUser } from "../../../../redux/slices/userSlice";
 import { ROUTE } from "../../../../config/constants";
 
@@ -76,15 +76,15 @@ export const DashboardHeader = () => {
       >
         <div className="px-5 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-9 items-center">
               <Link to="/">
                 <img src={logo} alt="logo" />
               </Link>
               {location.pathname !== ROUTE.CREATE_POST && (
-                <div className="flex items-center gap-8 relative">
+                <div className="flex items-center gap-8 relative border-l-1 border-[#DDDDDD] pl-[50px]">
                   <Link
                     to="/"
-                    className="flex font-semibold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition"
+                    className="flex font-bold text-base gap-4 items-center px-5 py-[10px] border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition"
                   >
                     <i className="fa-solid fa-arrow-left" />
                     <p>{t("backSouqSyria")}</p>
@@ -170,16 +170,17 @@ export const DashboardHeader = () => {
                           <img src={notification} alt="icon" />
                           {t("notification")}
                         </li>
-                        {/* <li
-                        onClick={() => {
-                          setOpen(false);
-                          navigate(ROUTE.HELP_SUPPORT);
-                        }}
-                        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg"
-                      >
-                        <img src={support} alt="icon" />
-                        {t("helpSupport")}
-                      </li> */}
+                        <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg">
+                          <button
+                            onClick={() => {
+                              navigate(ROUTE.HELP_SUPPORT);
+                              setOpen(false);
+                            }}
+                            className="flex items-center gap-3 "
+                          >
+                            <img src={support} alt="icon" /> {t("helpSupport")}
+                          </button>
+                        </li>
                       </ul>
 
                       <div className="border-t border-gray-200 p-2">
@@ -236,11 +237,21 @@ export const DashboardHeader = () => {
                     </button>
                   )}
                 </div>
-                <Link to={ROUTE.CREATE_POST} className="custom-btn">
+                <button
+                  onClick={() => {
+                    // navigate(ROUTE.CREATE_POST);
+                    if (userInfo?.is_phone_verified && userInfo?.username) {
+                      navigate(ROUTE.CREATE_POST);
+                    } else {
+                      showInfoToast(t("verifyPhoneNumber"));
+                    }
+                  }}
+                  className="custom-btn"
+                >
                   <span className="icon ">
                     <span>+</span> {t("postAdButton")}
                   </span>
-                </Link>
+                </button>
               </div>
             ) : (
               <div className="flex items-center gap-4">

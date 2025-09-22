@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../../redux/slices/authSlice";
 import axios from "axios";
 import { setUser } from "../../redux/slices/userSlice";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 function LoginModal({ show, hide, setShowLoginModal }) {
   const { t } = useTranslation();
@@ -27,6 +28,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [code, setCode] = useState(["", "", "", ""]);
+  const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(0);
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -52,7 +55,6 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   const {
     handleSubmit,
     register,
-    setValue,
     reset,
     formState: { errors },
   } = useForm({
@@ -75,6 +77,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     let payload, apiUrl;
     if (activeTab === 1) {
       payload = {
@@ -112,15 +115,20 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           showSuccessToast(response?.data?.message);
           hide();
           reset();
+          setLoading(false);
+          setPhoneNumber(null);
         }
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleVerifiyOtp = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const fullCode = code.join("");
     if (fullCode.length === 4) {
       const payload = {
@@ -146,32 +154,53 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           reset();
           setCode(["", "", "", ""]);
           setShowOtpModal(false);
+          setLoading(false);
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
+        setLoading(false);
       }
+    } else {
+      showErrorToast(t("enterOtp"));
+      setLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
+    if (timer > 0) return;
+    setLoading(true);
+
     const payload = {
       country_code: `+${countryCode}`,
       phone: phoneNumber,
     };
+
     try {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
-      console.log("response", response);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
+        setTimer(30);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     reset();
   }, [t]);
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   return (
     <>
@@ -181,6 +210,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           hide();
           reset();
           setActiveTab(1);
+          setPhoneNumber(null);
+          setCountryCode(963);
         }}
         title={
           activeTab === 1 ? t("loginTitleByPhone") : t("loginTitleByUsername")
@@ -191,16 +222,18 @@ function LoginModal({ show, hide, setShowLoginModal }) {
             : t("loginSubtitleByUsername")
         }
       >
-        <div className="flex justify-center pt-6 px-8 border-b border-gray-200">
-          <div className="flex gap-6">
+        <div className="flex justify-center border-b border-gray-200">
+          <div className="flex w-full">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => {
                   setActiveTab(tab.id);
                   reset();
+                  setPhoneNumber(null);
+                  setCountryCode(963);
                 }}
-                className={`relative pb-2 px-6 text-lg font-semibold transition-colors ${
+                className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
                   activeTab === tab.id
                     ? "text-primary"
                     : "text-gray-600 hover:text-primary"
@@ -217,17 +250,14 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           </div>
         </div>
 
-        <div className="px-10 py-8">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="pt-[50px] flex flex-col justify-between h-full">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {activeTab === 1 && (
               <div>
-                <label className="block mb-2 text-md font-bold">
-                  {t("countryCode")} & {t("phone")}
-                </label>
-                <PhoneInput
+                {/* <PhoneInput
                   country={"sy"}
                   enableSearch={true}
-                  inputClass="!w-full !h-11 !bg-gray-100 !border-none !rounded !pl-12"
+                  inputClass="!w-full !h-[48px] !bg-gray-100 !border-none !rounded !pl-12"
                   buttonClass="!bg-gray-100 !border-none !rounded-l"
                   dropdownClass="custom-dropdown"
                   onChange={(value, country) => {
@@ -238,7 +268,45 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                     setPhoneNumber(phoneNumber);
                     setValue("phone", phoneNumber);
                   }}
-                />
+                /> */}
+                <div className="flex gap-3">
+                  <div>
+                    <label className="block mb-2 text-base text-black font-bold">
+                      {t("countryCode")}
+                    </label>
+                    <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                      <PhoneInput
+                        country={"sy"}
+                        enableSearch={true}
+                        containerClass="!w-full"
+                        inputClass="!hidden"
+                        buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                        dropdownClass="custom-dropdown"
+                        onChange={(value, country) => {
+                          setCountryCode(country?.dialCode);
+                        }}
+                      />
+                      <span className="ml-1">+{countryCode}</span>
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <label className="block mb-2 text-base text-black font-bold">
+                      {t("phone")}
+                    </label>
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      {...register("phone")}
+                      value={phoneNumber}
+                      onChange={(e) => {
+                        const onlyNums = e.target.value.replace(/\D/g, "");
+                        setPhoneNumber(onlyNums);
+                      }}
+                      className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                      placeholder={t("enterPhoneNo")}
+                    />
+                  </div>
+                </div>
                 {errors.phone && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.phone.message}
@@ -250,13 +318,14 @@ function LoginModal({ show, hide, setShowLoginModal }) {
             {activeTab === 2 && (
               <>
                 <div>
-                  <label className="block mb-2 text-md font-bold">
+                  <label className="block mb-2 text-base text-black font-bold">
                     {t("userName")}
                   </label>
                   <input
                     type="text"
                     {...register("username")}
-                    className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                    placeholder={t("enterUsername")}
+                    className="w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none"
                   />
                   {errors.username && (
                     <p className="text-red-500 text-sm mt-1">
@@ -265,7 +334,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                   )}
                 </div>
                 <div>
-                  <label className="block mb-2 text-md font-bold">
+                  <label className="block mb-2 text-base text-black font-bold">
                     {t("password")}
                   </label>
                   <div className="input-icon-grp">
@@ -273,8 +342,9 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                       {...register("password")}
                       type={toggle === true ? "password" : "text"}
                       id="password"
-                      className="w-full rounded px-3 py-2 bg-gray-100 focus:outline-none"
+                      className="w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
                       autoComplete="off"
+                      placeholder={t("enterPassword")}
                     />
                     <i
                       className={
@@ -300,18 +370,30 @@ function LoginModal({ show, hide, setShowLoginModal }) {
               </>
             )}
 
-            <button
+            {/* <button
               type="submit"
               className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition"
             >
               {t("login")}
-            </button>
+            </button> */}
+            <LoadingButton
+              type="submit"
+              loading={loading}
+              disabled={loading}
+              className="bg-primary text-white text-base hover:bg-primaryDark h-[56px]"
+            >
+              {t("login")}
+            </LoadingButton>
           </form>
 
-          <p className="text-center font-bold text-sm text-gray-500 mt-6">
+          <p className="text-center font-bold text-sm text-gray-500 mb-7">
             {t("newto")}{" "}
             <button
-              onClick={handleOpenRegisterModal}
+              onClick={() => {
+                handleOpenRegisterModal();
+                reset();
+                setActiveTab(1);
+              }}
               className="text-primary hover:underline cursor-pointer"
             >
               {t("createAcc")}
@@ -347,6 +429,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
         setCode={setCode}
         handleSubmit={handleVerifiyOtp}
         handleResend={handleResendOtp}
+        loading={loading}
+        timer={timer}
       />
     </>
   );

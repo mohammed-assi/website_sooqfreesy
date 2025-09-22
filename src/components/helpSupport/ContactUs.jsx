@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { getRequest, postRequest } from "../../config/apiFunctions";
 import { CUSTOMER, REPORT_LIST } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const ContactUs = () => {
   const { i18n, t } = useTranslation();
@@ -20,7 +21,10 @@ export const ContactUs = () => {
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         t("validEmail")
       ),
-    phone: yup.string().required(t("userPhoneRequired")),
+    phone: yup
+      .string()
+      .required(t("userPhoneRequired"))
+      .min(10, t("phoneInvalid")),
     description: yup.string().required(t("descriptionRequired")),
     platform: yup.string().required(t("platformRequired")),
     help: yup.string().required(t("fieldRequired")),
@@ -28,6 +32,7 @@ export const ContactUs = () => {
 
   const [countryCode, setCountryCode] = useState(963);
   const [reportList, setReportList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const {
     handleSubmit,
@@ -37,9 +42,13 @@ export const ContactUs = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      phone: "",
+    },
   });
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const payload = {
       reportList_id: Number(data.help),
       os_platform: data.platform,
@@ -57,10 +66,13 @@ export const ContactUs = () => {
         setCountryCode(963);
         setValue("phone", "");
         reset();
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const getContactReportList = async (url) => {
@@ -84,18 +96,19 @@ export const ContactUs = () => {
 
   return (
     <div className="pb-8">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-[60%]">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-[60%]">
         <div className="">
           <label className="block mb-2 text-md font-bold">
             {t("needHelpWith")}
           </label>
           <select
             {...register("help")}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            className="w-full rounded-md p-3 bg-gray-100 focus:outline-none select-filter"
           >
+            <option value="">--{t("select")}--</option>
             {reportList?.map((item) => (
-              <option key={item.id} value={item.id}>
-                {i18n.language === "ar" ? item.arabic_name : item.name}
+              <option key={item.id} value={item?.id}>
+                {i18n.language === "ar" ? item?.arabic_name : item?.name}
               </option>
             ))}
           </select>
@@ -110,8 +123,9 @@ export const ContactUs = () => {
           </label>
           <select
             {...register("platform")}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            className="w-full rounded-md p-3 bg-gray-100 focus:outline-none select-filter"
           >
+            <option value="">--{t("select")}--</option>
             <option value={t("iOS")}>{t("iOS")}</option>
             <option value={t("android")}>{t("android")}</option>
             <option value={t("desktopPC")}>{t("desktopPC")}</option>
@@ -132,7 +146,8 @@ export const ContactUs = () => {
             type="text"
             {...register("description")}
             rows={4}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            placeholder={t("enterDescription")}
+            className="w-full rounded-md resize-none h-[100px] p-3 bg-gray-100 focus:outline-none"
           />
           {errors.description && (
             <p className="text-red-500 text-sm mt-1">
@@ -142,11 +157,14 @@ export const ContactUs = () => {
         </div>
 
         <div>
-          <label className="block mb-2 text-md font-bold">{t("name")}</label>
+          <label className="block mb-2 text-md font-bold">
+            {t("fullName")}
+          </label>
           <input
             type="text"
             {...register("fullName")}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            placeholder={t("enterFullName")}
+            className="w-full rounded-md p-3 bg-gray-100 focus:outline-none"
           />
           {errors.fullName && (
             <p className="text-red-500 text-sm mt-1">
@@ -156,23 +174,64 @@ export const ContactUs = () => {
         </div>
 
         <div>
-          <label className="block mb-2 text-md font-bold">
+          {/* <label className="block mb-2 text-md font-bold">
             {t("countryCode")} & {t("phone")}
           </label>
-          <PhoneInput
-            country={"sy"}
-            enableSearch={true}
-            inputClass="!w-full !h-13 !bg-gray-100 !border-none !rounded !pl-12"
-            buttonClass="!bg-gray-100 !border-none !rounded-l"
-            dropdownClass="custom-dropdown"
-            onChange={(value, country) => {
-              const countryCode = country?.dialCode;
-              const phoneNumber = value.replace(countryCode, "");
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <PhoneInput
+                country={"sy"}
+                enableSearch={true}
+                inputClass="!w-full !h-13 !bg-gray-100 !border-none !rounded !pl-12"
+                buttonClass="!bg-gray-100 !border-none !rounded-l"
+                dropdownClass="custom-dropdown"
+                value={field.value || ""}
+                onChange={(value, country) => {
+                  setCountryCode(country?.dialCode);
+                  field.onChange(value);
+                }}
+              />
+            )}
+          /> */}
 
-              setCountryCode(countryCode);
-              setValue("phone", phoneNumber);
-            }}
-          />
+          <div className="flex gap-3">
+            <div>
+              <label className="block mb-2 text-base text-black font-bold">
+                {t("countryCode")}
+              </label>
+              <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                <PhoneInput
+                  country={"sy"}
+                  enableSearch={true}
+                  containerClass="!w-full"
+                  inputClass="!hidden"
+                  buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                  dropdownClass="custom-dropdown"
+                  onChange={(value, country) => {
+                    setCountryCode(country?.dialCode);
+                  }}
+                />
+                <span className="ml-1">+{countryCode}</span>
+              </div>
+            </div>
+            <div className="w-full">
+              <label className="block mb-2 text-base text-black font-bold">
+                {t("phone")}
+              </label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                {...register("phone")}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/\D/g, "");
+                }}
+                className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                placeholder={t("enterPhoneNo")}
+              />
+            </div>
+          </div>
           {errors.phone && (
             <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
           )}
@@ -185,19 +244,22 @@ export const ContactUs = () => {
           <input
             type="text"
             {...register("email")}
-            className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+            placeholder={t("enterEmailAdd")}
+            className="w-full rounded-md p-3 bg-gray-100 focus:outline-none"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
 
-        <button
+        <LoadingButton
           type="submit"
-          className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
+          loading={loading}
+          disabled={loading}
+          className="bg-primary text-white text-base hover:bg-primaryDark h-[56px]"
         >
-          {t("Submit")}
-        </button>
+          {t("submit")}
+        </LoadingButton>
       </form>
     </div>
   );

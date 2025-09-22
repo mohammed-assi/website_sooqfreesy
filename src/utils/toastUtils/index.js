@@ -16,3 +16,7 @@ export const showSuccessToast = (message, options = {}) => {
 export const showErrorToast = (message, options = {}) => {
   toast.error(message, { ...defaultOptions, ...options });
 };
+
+export const showInfoToast = (message, options = {}) => {
+  toast.info(message, { ...defaultOptions, ...options });
+};
