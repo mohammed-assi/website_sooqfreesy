@@ -32,6 +32,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const [searchTextDebounce, setSearchTextDebounce] = useSearchDebounce();
   const [userNameAvailable, setUserNameAvailable] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(0);
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -189,10 +190,12 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
       }
     } else {
       showErrorToast(t("enterOtp"));
+      setLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
+    if (timer > 0) return;
     setLoading(true);
     let payload;
     if (activeTab === 1) {
@@ -211,6 +214,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
         setLoading(false);
+        setTimer(30);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
@@ -239,6 +243,16 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     reset();
   }, [t]);
 
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
+
   return (
     <>
       <AuthModal
@@ -250,6 +264,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           setUserNameAvailable(null);
           setPhoneNumber(null);
           setCountryCode(963);
+          setUserNameAvailable({});
         }}
         title={
           activeTab === 1
@@ -273,6 +288,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                   setUserNameAvailable(null);
                   setPhoneNumber(null);
                   setCountryCode(963);
+                  setUserNameAvailable({});
                 }}
                 className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
                   activeTab === tab.id
@@ -526,6 +542,9 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
               onClick={() => {
                 hide();
                 showLoginModal();
+                reset();
+                setUserNameAvailable({});
+                setActiveTab(1);
               }}
               className="text-primary hover:underline cursor-pointer"
             >
@@ -545,6 +564,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         handleSubmit={handleVerifiyOtp}
         handleResend={handleResendOtp}
         loading={loading}
+        timer={timer}
       />
 
       {showConfirmationModal && (

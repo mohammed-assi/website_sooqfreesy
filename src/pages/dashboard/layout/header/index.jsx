@@ -239,12 +239,12 @@ export const DashboardHeader = () => {
                 </div>
                 <button
                   onClick={() => {
-                    navigate(ROUTE.CREATE_POST);
-                    // if (userInfo?.is_phone_verified) {
-                    //   navigate(ROUTE.CREATE_POST);
-                    // } else {
-                    //   showInfoToast(t("verifyPhoneNumber"));
-                    // }
+                    // navigate(ROUTE.CREATE_POST);
+                    if (userInfo?.is_phone_verified && userInfo?.username) {
+                      navigate(ROUTE.CREATE_POST);
+                    } else {
+                      showInfoToast(t("verifyPhoneNumber"));
+                    }
                   }}
                   className="custom-btn"
                 >

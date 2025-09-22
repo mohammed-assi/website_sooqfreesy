@@ -141,13 +141,13 @@ export const SideFilter = ({ allCategory, filters, handleChange }) => {
           <div className="flex flex-col w-[50%] text-base font-bold">
             {t('min')}{" "}
             <span className="mt-1 h-[48px] bg-[#F5F5F5] flex items-center px-4 text-base font-normal rounded-md">
-              £{filters?.priceRange[0]}
+              ${filters?.priceRange[0]}
             </span>
           </div>
           <div className="flex flex-col w-[50%] text-base font-bold">
             {t('max')}
             <span className="mt-1 h-[48px] bg-[#F5F5F5] flex items-center px-4 text-base font-normal rounded-md">
-              £{filters?.priceRange[1]}
+              ${filters?.priceRange[1]}
             </span>
           </div>
         </div>

@@ -342,7 +342,7 @@ export const ProductDetail = () => {
 
                 <div className="flex justify-between items-center">
                   <h2 className="main-heading text-primary">
-                    £{postDetailData?.price}
+                    ${postDetailData?.price}
                   </h2>
                   <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
                     {postDetailData?.subCategoryName}

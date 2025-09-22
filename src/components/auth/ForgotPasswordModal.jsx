@@ -23,6 +23,7 @@ function ForgotPasswordModal({
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(0);
 
   const schema = Yup.object().shape({
     email: Yup.string()
@@ -75,6 +76,7 @@ function ForgotPasswordModal({
   };
 
   const handleResendOtp = async () => {
+    if (timer > 0) return;
     setLoading(true);
     const payload = {
       email: userEmail,
@@ -85,6 +87,7 @@ function ForgotPasswordModal({
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
         setLoading(false);
+        setTimer(30);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
@@ -95,6 +98,16 @@ function ForgotPasswordModal({
   useEffect(() => {
     reset();
   }, [t]);
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   return (
     <>
@@ -154,6 +167,7 @@ function ForgotPasswordModal({
         userEmail={userEmail}
         setShowLoginModal={setShowLoginModal}
         handleResend={handleResendOtp}
+        timer={timer}
       />
 
       {showConfirmationModal && (

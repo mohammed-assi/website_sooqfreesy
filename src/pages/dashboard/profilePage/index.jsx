@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import defaultUser from "../../../assets/icon/defaultUser.svg";
 import RatingStar from "../../../common/ratingStar/RatingStar";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,9 @@ import { SellerReviews } from "../../../components/sellerProfile/SellerReviews";
 import { useSelector } from "react-redux";
 import moment from "moment/moment";
 import { ScreenLoader } from "../../../utils/screenLoader";
+import { getRequest } from "../../../config/apiFunctions";
+import { showErrorToast } from "../../../utils/toastUtils";
+import { CUSTOMER } from "../../../config/endPoints";
 
 export const ProfilePage = () => {
   const { t } = useTranslation();
@@ -15,6 +18,7 @@ export const ProfilePage = () => {
   const { userInfo } = useSelector((state) => state.user);
   const [activeTab, setActiveTab] = useState("editProfile");
   const [loading, setLoading] = useState(false);
+  const [reviewsList, setReviewsList] = useState({});
 
   const tabs = [
     { id: "editProfile", label: t("editProfile") },
@@ -28,6 +32,31 @@ export const ProfilePage = () => {
     2: 5,
     1: 5,
   };
+
+  const getReviewsData = async (url) => {
+    setLoading(true);
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setReviewsList(response?.data?.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+      setLoading(false);
+    }
+    setLoading(false);
+  };
+
+  const getReviewsCallback = () => {
+    getReviewsData(CUSTOMER.GET_REVIEWS);
+  };
+
+  useEffect(() => {
+    getReviewsCallback();
+  }, []);
+  
+  console.log("reviewsList", reviewsList);
 
   return (
     <>
@@ -84,7 +113,11 @@ export const ProfilePage = () => {
           </div>
 
           {activeTab === "editProfile" && (
-            <EditProfile userInfo={userInfo} imagePath={imagePath} setContentLoading={setLoading} />
+            <EditProfile
+              userInfo={userInfo}
+              imagePath={imagePath}
+              setContentLoading={setLoading}
+            />
           )}
           {activeTab === "reviews" && (
             <div className="pt-4">
@@ -97,7 +130,7 @@ export const ProfilePage = () => {
                 />
               </div>
               <div className="pt-4">
-                <SellerReviews />
+                <SellerReviews sellerReviews={reviewsList} imagePath={imagePath} />
               </div>
             </div>
           )}

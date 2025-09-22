@@ -108,6 +108,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
                   id="password"
                   className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
                   autoComplete="off"
+                  placeholder={t('enterPassword')}
                 />
                 <i
                   className={
@@ -136,6 +137,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
                   id="newPassword"
                   className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
                   autoComplete="off"
+                  placeholder={t('enterNewPass')}
                 />
                 <i
                   className={
@@ -162,6 +164,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
                   className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
+                  placeholder={t('enterConfirmPassword')}
                 />
                 <i
                   className={

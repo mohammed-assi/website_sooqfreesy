@@ -21,7 +21,10 @@ export const ContactUs = () => {
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         t("validEmail")
       ),
-    phone: yup.string().required(t("userPhoneRequired")),
+    phone: yup
+      .string()
+      .required(t("userPhoneRequired"))
+      .min(10, t("phoneInvalid")),
     description: yup.string().required(t("descriptionRequired")),
     platform: yup.string().required(t("platformRequired")),
     help: yup.string().required(t("fieldRequired")),
@@ -36,12 +39,11 @@ export const ContactUs = () => {
     register,
     setValue,
     reset,
-    control,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      phone: "", // start empty
+      phone: "",
     },
   });
 
@@ -54,7 +56,7 @@ export const ContactUs = () => {
       username: data.fullName,
       email: data.email,
       country_code: `+${countryCode}`,
-      phone: data.phone.replace(countryCode, ""),
+      phone: data.phone,
     };
 
     try {
@@ -144,6 +146,7 @@ export const ContactUs = () => {
             type="text"
             {...register("description")}
             rows={4}
+            placeholder={t("enterDescription")}
             className="w-full rounded-md resize-none h-[100px] p-3 bg-gray-100 focus:outline-none"
           />
           {errors.description && (
@@ -154,10 +157,13 @@ export const ContactUs = () => {
         </div>
 
         <div>
-          <label className="block mb-2 text-md font-bold">{t("name")}</label>
+          <label className="block mb-2 text-md font-bold">
+            {t("fullName")}
+          </label>
           <input
             type="text"
             {...register("fullName")}
+            placeholder={t("enterFullName")}
             className="w-full rounded-md p-3 bg-gray-100 focus:outline-none"
           />
           {errors.fullName && (
@@ -168,7 +174,7 @@ export const ContactUs = () => {
         </div>
 
         <div>
-          <label className="block mb-2 text-md font-bold">
+          {/* <label className="block mb-2 text-md font-bold">
             {t("countryCode")} & {t("phone")}
           </label>
           <Controller
@@ -188,7 +194,44 @@ export const ContactUs = () => {
                 }}
               />
             )}
-          />
+          /> */}
+
+          <div className="flex gap-3">
+            <div>
+              <label className="block mb-2 text-base text-black font-bold">
+                {t("countryCode")}
+              </label>
+              <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                <PhoneInput
+                  country={"sy"}
+                  enableSearch={true}
+                  containerClass="!w-full"
+                  inputClass="!hidden"
+                  buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                  dropdownClass="custom-dropdown"
+                  onChange={(value, country) => {
+                    setCountryCode(country?.dialCode);
+                  }}
+                />
+                <span className="ml-1">+{countryCode}</span>
+              </div>
+            </div>
+            <div className="w-full">
+              <label className="block mb-2 text-base text-black font-bold">
+                {t("phone")}
+              </label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                {...register("phone")}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/\D/g, "");
+                }}
+                className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                placeholder={t("enterPhoneNo")}
+              />
+            </div>
+          </div>
           {errors.phone && (
             <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
           )}
@@ -201,6 +244,7 @@ export const ContactUs = () => {
           <input
             type="text"
             {...register("email")}
+            placeholder={t("enterEmailAdd")}
             className="w-full rounded-md p-3 bg-gray-100 focus:outline-none"
           />
           {errors.email && (

@@ -301,7 +301,7 @@ export const WebHead = () => {
                 <button
                   onClick={() => {
                     if (accessToken) {
-                      if (userInfo?.is_phone_verified) {
+                      if (userInfo?.is_phone_verified && userInfo?.username) {
                         navigate(ROUTE.CREATE_POST);
                       } else {
                         showInfoToast(t("verifyPhoneNumber"));

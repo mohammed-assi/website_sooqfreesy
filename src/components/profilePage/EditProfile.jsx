@@ -22,22 +22,26 @@ import LoadingButton from "../../common/loadingButton/LoadingButton";
 export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const { t } = useTranslation();
   const schema = yup.object().shape({
-    fullName: yup.string(),
+    fullName: yup.string().min(3, t("usernameMin")),
     // .required(t("usernameRequired"))
     email: yup
       .string()
-      // .required(t("emailRequired"))
-      .email(t("validEmail"))
-      .matches(
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        t("validEmail")
-      ),
+      .notRequired()
+      .nullable()
+      .test("is-valid-email", t("validEmail"), (value) => {
+        if (!value) return true;
+        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+      }),
     phone: yup
       .string()
       // .required(t("userPhoneRequired"))
       .min(10, t("phoneInvalid")),
-    gender: yup.string().required(t("genderRequired")),
-    dob: yup.date().required(t("dobRequired")),
+    gender: yup.string()
+    // .required(t("genderRequired"))
+    ,
+    dob: yup.date()
+    // .required(t("dobRequired"))
+    ,
   });
 
   const {
@@ -45,7 +49,6 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     handleSubmit,
     control,
     setValue,
-    watch,
     reset,
     formState: { errors, dirtyFields },
   } = useForm({
@@ -64,6 +67,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [code, setCode] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [activeTab, setactiveTab] = useState(1);
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
@@ -103,6 +109,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
 
   const handleVerifiyOtp = async (e) => {
     e.preventDefault();
+    setVerifyLoading(true);
     const fullCode = code.join("");
     if (fullCode.length === 4) {
       const payload = {
@@ -134,21 +141,31 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               if (res?.data?.statusCode === 200) {
                 dispatch(setUser(res?.data?.data));
               }
+              setVerifyLoading(false);
             }
           } catch (error) {
             showErrorToast(error?.response?.data?.message);
+            setVerifyLoading(false);
           }
           showSuccessToast(response?.data?.message);
           setCode(["", "", "", ""]);
           setShowOtpModal(false);
+          setVerifyLoading(false);
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
+        setVerifyLoading(false);
       }
+    } else {
+      showErrorToast(t("enterOtp"));
+      setLoading(false);
+      setVerifyLoading(false);
     }
+    setVerifyLoading(false);
   };
 
   const handleResendOtp = async () => {
+    if (timer > 0) return;
     let payload;
     if (phoneNumber) {
       payload = {
@@ -164,23 +181,29 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
+        setTimer(30);
+        setCode(["", "", "", ""]);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
     }
   };
 
-  const handleVerifyMailNumber = async () => {
+  const handleVerifyMailNumber = async (type) => {
     let payload;
-    if (phoneNumber) {
+    if (type === "phone" && phoneNumber?.length > 0) {
       payload = {
         country_code: `+${countryCode}`,
         phone: phoneNumber,
       };
-    } else {
+      setactiveTab(1)
+    } else if (type === "email" && userMail?.length > 0) {
       payload = {
         email: userMail,
       };
+      setactiveTab(2)
+    } else {
+      return;
     }
     try {
       const response = await postRequest(CUSTOMER.SEND_OTP, payload);
@@ -237,6 +260,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
             );
           }
           setLoading(false);
+          setUserNameAvailable({})
         }
       }
     } catch (error) {
@@ -254,10 +278,12 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   };
 
   useEffect(() => {
-    if (searchTextDebounce !== "") {
+    if (searchTextDebounce.length >= 3) {
       handleCheckUserName(
         `${AUTH.CHECK_USERNAME}?username=${searchTextDebounce}`
       );
+    } else {
+      setUserNameAvailable(null);
     }
   }, [searchTextDebounce]);
 
@@ -268,21 +294,36 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   }, [userInfo]);
 
   useEffect(() => {
-    if (userInfo) {
+    if (userInfo?.email) {
       setValue("email", userInfo?.email);
+    }
+    if (userInfo?.username) {
       setValue("fullName", userInfo?.username);
+    }
+    if (userInfo?.gender) {
       setValue("gender", userInfo?.gender);
+    }
+    if (userInfo?.dob) {
       setValue("dob", userInfo?.dob);
+    }
 
-      if (userInfo.phone && userInfo.country_code) {
-        const cleanCode = userInfo.country_code.replace("+", "");
-        const fullNumber = `${cleanCode}${userInfo.phone}`;
-        setValue("phone", fullNumber);
-        setCountryCode(cleanCode);
-        setPhoneNumber(userInfo.phone);
-      }
+    if (userInfo?.phone && userInfo?.country_code) {
+      const cleanCode = userInfo?.country_code.replace("+", "");
+      setValue("phone", userInfo?.phone);
+      setCountryCode(cleanCode);
+      setPhoneNumber(userInfo?.phone);
     }
   }, [userInfo, setValue]);
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   return (
     <div className="pt-4">
@@ -322,6 +363,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 type="text"
                 {...register("fullName")}
                 onChange={(e) => setSearchTextDebounce(e.target.value)}
+                placeholder={t("enterUsername")}
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none"
               />
               {userNameAvailable?.data?.available && (
@@ -361,6 +403,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 {...register("email")}
                 onChange={(e) => setUserMail(e.target.value)}
                 disabled={userInfo?.is_email_verified}
+                placeholder={t("enterEmailAdd")}
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none"
               />
               {errors.email && (
@@ -375,7 +418,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               ) : (
                 <div className="absolute right-0 top-0">
                   <button
-                    onClick={handleVerifyMailNumber}
+                    onClick={()=>handleVerifyMailNumber("email")}
                     type="button"
                     className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                   >
@@ -389,38 +432,57 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
           <div className="flex gap-10 items-center pb-6">
             <label className="text-gray-700 w-1/5">{t("phoneNofield")}</label>
             <div className="w-4/5 relative">
-              <PhoneInput
-                country={"sy"}
-                enableSearch={true}
-                disabled={userInfo?.is_phone_verified}
-                inputClass="!w-full !h-12 !bg-gray-100 !border-none !rounded !pl-12"
-                buttonClass="!bg-gray-100 !border-none !rounded-l"
-                dropdownClass="custom-dropdown"
-                value={watch("phone")}
-                onChange={(value, country) => {
-                  const countryCode = country?.dialCode;
-                  const phoneNumber = value.replace(countryCode, "");
-
-                  setCountryCode(countryCode);
-                  setPhoneNumber(phoneNumber);
-                  setValue("phone", value);
-                }}
-              />
+              <div className="flex gap-3">
+                <div>
+                  <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                    <PhoneInput
+                      country={"sy"}
+                      value={`+${countryCode}${phoneNumber}`}
+                      enableSearch={true}
+                      containerClass="!w-full"
+                      inputClass="!hidden"
+                      buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                      dropdownClass="custom-dropdown"
+                      onChange={(value, country) => {
+                        setCountryCode(country?.dialCode);
+                      }}
+                    />
+                    <span className="ml-1">+{countryCode}</span>
+                  </div>
+                </div>
+                <div className="w-full">
+                  <input
+                    type="tel"
+                    inputMode="numeric"
+                    {...register("phone")}
+                    value={phoneNumber}
+                    onChange={(e) => {
+                      const onlyNums = e.target.value.replace(/\D/g, "");
+                      setPhoneNumber(onlyNums);
+                    }}
+                    className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                    placeholder={t("enterPhoneNo")}
+                  />
+                </div>
+              </div>
               {errors.phone && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.phone.message}
                 </p>
               )}
-              {userInfo?.is_phone_verified ? (
-                <div className="absolute right-3 top-3">
-                  <img src={verified} alt="icon" />
-                </div>
-              ) : (
-                <div className="absolute right-0 top-0">
+              {userInfo?.is_phone_verified &&
+                phoneNumber === userInfo.phone && (
+                  <div className="absolute right-3 top-3">
+                    <img src={verified} alt="verified icon" />
+                  </div>
+                )}
+
+              {phoneNumber !== userInfo?.phone && phoneNumber?.length > 0 && (
+                <div className="absolute right-0 top-0 h-full">
                   <button
-                    onClick={handleVerifyMailNumber}
+                    onClick={() => handleVerifyMailNumber("phone")}
                     type="button"
-                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
+                    className="h-full px-4 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                   >
                     {t("verifyPhoneButton")}
                   </button>
@@ -457,6 +519,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 {...register("gender")}
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none select-filter"
               >
+                <option value="">--{t("select")}--</option>
                 <option value={t("MALE")}>{t("male")}</option>
                 <option value={t("FEMALE")}>{t("female")}</option>
               </select>
@@ -483,6 +546,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                     showYearDropdown
                     scrollableYearDropdown
                     yearDropdownItemNumber={70}
+                    placeholderText={t("selectDate")}
                   />
                 )}
               />
@@ -525,12 +589,14 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
       <OtpVerificationModal
         show={showOtpModal}
         hide={() => setShowOtpModal(false)}
-        activeTab={phoneNumber ? 1 : 2}
-        text={phoneNumber ? phoneNumber : userMail}
+        activeTab={activeTab}
+        text={activeTab === 1 ? phoneNumber : userMail}
         code={code}
         setCode={setCode}
         handleSubmit={handleVerifiyOtp}
         handleResend={handleResendOtp}
+        loading={verifyLoading}
+        timer={timer}
       />
     </div>
   );

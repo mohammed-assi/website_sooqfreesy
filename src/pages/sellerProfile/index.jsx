@@ -200,7 +200,7 @@ export const SellerProfile = () => {
     getSellerReview(`${CUSTOMER.GET_SELLER_REVIEWS}?seller_id=${id}`);
   }, [id]);
 
-  console.log("allPosts", allPosts);
+  console.log("sellerProfile", sellerProfile);
   console.log("modalFilter", modalFilter);
 
   return (
@@ -245,12 +245,12 @@ export const SellerProfile = () => {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() =>
-                      (window.location.href = `tel:${sellerProfile?.user?.phone}`)
+                      (window.location.href = `tel:${sellerProfile?.phone}`)
                     }
                     className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
                   >
                     <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
-                    {sellerProfile?.user?.phone || "7777777777"}
+                    {sellerProfile?.phone || "7777777777"}
                   </button>
 
                   <div className="absolute top-5 right-4">

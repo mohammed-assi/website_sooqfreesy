@@ -29,6 +29,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [code, setCode] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(0);
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -39,10 +40,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
     phone: Yup.string().when("$tab", {
       is: 1,
       then: (schema) =>
-        schema
-          .required(t("userPhoneRequired"))
-          .min(10, t("phoneInvalid"))
-          .max(12, t("phoneInvalid")),
+        schema.required(t("userPhoneRequired")).min(10, t("phoneInvalid")),
     }),
     username: Yup.string().when("$tab", {
       is: 2,
@@ -118,12 +116,14 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           hide();
           reset();
           setLoading(false);
+          setPhoneNumber(null);
         }
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
       setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleVerifiyOtp = async (e) => {
@@ -162,24 +162,28 @@ function LoginModal({ show, hide, setShowLoginModal }) {
       }
     } else {
       showErrorToast(t("enterOtp"));
+      setLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
+    if (timer > 0) return;
     setLoading(true);
+
     const payload = {
       country_code: `+${countryCode}`,
       phone: phoneNumber,
     };
+
     try {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
-      console.log("response", response);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
-        setLoading(false);
+        setTimer(30);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -187,6 +191,16 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   useEffect(() => {
     reset();
   }, [t]);
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   return (
     <>
@@ -375,7 +389,11 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           <p className="text-center font-bold text-sm text-gray-500 mb-7">
             {t("newto")}{" "}
             <button
-              onClick={handleOpenRegisterModal}
+              onClick={() => {
+                handleOpenRegisterModal();
+                reset();
+                setActiveTab(1);
+              }}
               className="text-primary hover:underline cursor-pointer"
             >
               {t("createAcc")}
@@ -412,6 +430,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
         handleSubmit={handleVerifiyOtp}
         handleResend={handleResendOtp}
         loading={loading}
+        timer={timer}
       />
     </>
   );

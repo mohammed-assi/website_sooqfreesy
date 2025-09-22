@@ -61,7 +61,7 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
       <Link to={`${ROUTE.PRODUCT_PAGE}/${item?.id}`}>
         <div className="py-4 space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-lg font-bold">£{item?.price}</p>
+            <p className="text-lg font-bold">${item?.price}</p>
             <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
               {item?.sub_categoryName}
             </span>

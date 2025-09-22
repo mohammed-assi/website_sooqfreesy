@@ -13,6 +13,7 @@ export const OtpVerificationModal = ({
   setCode,
   handleResend,
   loading,
+  timer,
 }) => {
   const { t } = useTranslation();
   const inputsRef = useRef([]);
@@ -88,13 +89,20 @@ export const OtpVerificationModal = ({
             </form>
 
             <p className="text-center font-bold text-sm mt-10 text-gray-500 mt-6">
-              {t("Didn’t received OTP?")}{" "}
-              <button
-                onClick={handleResend}
-                className="text-primary hover:underline cursor-pointer"
-              >
-                {t("Resend it")}
-              </button>
+              {t("didntReceive")}{" "}
+              {timer > 0 ? (
+                <span className="text-gray-400">
+                  {t("resendIn")} 00:{timer < 10 ? `0${timer}` : timer}
+                </span>
+              ) : (
+                <button
+                  onClick={handleResend}
+                  disabled={loading}
+                  className="text-primary hover:underline cursor-pointer disabled:opacity-50"
+                >
+                  {t("Resend it")}
+                </button>
+              )}
             </p>
           </div>
         </div>

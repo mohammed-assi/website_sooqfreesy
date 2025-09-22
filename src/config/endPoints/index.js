@@ -33,6 +33,8 @@ export const CUSTOMER = {
   GET_SELLER_PROFILE: `${BASEURL}/customer/seller-profile`,
   GET_SELLER_REVIEWS: `${BASEURL}/customer/reviews/get-seller-reviews`,
   CREATE_REVIEW: `${BASEURL}/customer/reviews/create`,
+
+  GET_REVIEWS: `${BASEURL}/customer/reviews/get-customer-reviews`,
 };
 
 export const REPORT_LIST = {
