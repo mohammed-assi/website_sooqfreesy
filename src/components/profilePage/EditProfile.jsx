@@ -36,12 +36,10 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
       .string()
       // .required(t("userPhoneRequired"))
       .min(10, t("phoneInvalid")),
-    gender: yup.string()
+    gender: yup.string(),
     // .required(t("genderRequired"))
-    ,
-    dob: yup.date()
+    dob: yup.date(),
     // .required(t("dobRequired"))
-    ,
   });
 
   const {
@@ -120,15 +118,17 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
         const response = await postRequest(CUSTOMER.VERIFY_OTP, payload);
         if (response?.data?.success && response?.data?.statusCode === 200) {
           let payLoad;
-          if (userMail) {
+          if (activeTab === 2) {
             payLoad = {
               newEmail: userMail,
             };
-          } else {
+          } else if (activeTab === 1) {
             payLoad = {
               country_code: `+${countryCode}`,
               newPhoneNumber: phoneNumber,
             };
+          } else {
+            return;
           }
           try {
             const response = await postRequest(
@@ -196,12 +196,12 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
         country_code: `+${countryCode}`,
         phone: phoneNumber,
       };
-      setactiveTab(1)
+      setactiveTab(1);
     } else if (type === "email" && userMail?.length > 0) {
       payload = {
         email: userMail,
       };
-      setactiveTab(2)
+      setactiveTab(2);
     } else {
       return;
     }
@@ -260,7 +260,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
             );
           }
           setLoading(false);
-          setUserNameAvailable({})
+          setUserNameAvailable({});
         }
       }
     } catch (error) {
@@ -296,6 +296,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   useEffect(() => {
     if (userInfo?.email) {
       setValue("email", userInfo?.email);
+      setUserMail(userInfo?.email);
     }
     if (userInfo?.username) {
       setValue("fullName", userInfo?.username);
@@ -401,8 +402,8 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               <input
                 type="email"
                 {...register("email")}
+                defaultValue={userInfo?.email}
                 onChange={(e) => setUserMail(e.target.value)}
-                disabled={userInfo?.is_email_verified}
                 placeholder={t("enterEmailAdd")}
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none"
               />
@@ -411,14 +412,15 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                   {errors.email.message}
                 </p>
               )}
-              {userInfo?.is_email_verified ? (
+              {userInfo?.is_email_verified && userMail === userInfo?.email && (
                 <div className="absolute right-3 top-3">
-                  <img src={verified} alt="icon" />
+                  <img src={verified} alt="verified icon" />
                 </div>
-              ) : (
+              )}
+              {userMail !== userInfo?.email && userMail?.length > 0 && (
                 <div className="absolute right-0 top-0">
                   <button
-                    onClick={()=>handleVerifyMailNumber("email")}
+                    onClick={() => handleVerifyMailNumber("email")}
                     type="button"
                     className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                   >
@@ -506,7 +508,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                   type="button"
                   className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                 >
-                  {t("changePasswordButton")}
+                  {userInfo?.is_password_set
+                    ? t("changePasswordButton")
+                    : t("createPassword")}
                 </button>
               </div>
             </div>
@@ -584,6 +588,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
       <ChangePassModal
         isOpen={showChangePassModal}
         onClose={() => setShowChangePassModal(false)}
+        userInfo={userInfo}
       />
 
       <OtpVerificationModal

@@ -15,6 +15,7 @@ export default function ProductFilter({
   handleChange,
   filters,
   handleLikeUnlikePost,
+  setSearchTextDebounce,
 }) {
   const { t } = useTranslation();
   return (
@@ -24,6 +25,7 @@ export default function ProductFilter({
           allCategory={allCategory}
           handleChange={handleChange}
           filters={filters}
+          setSearchTextDebounce={setSearchTextDebounce}
         />
 
         <main className="lg:col-span-3">

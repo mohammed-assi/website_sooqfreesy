@@ -143,8 +143,10 @@ export const ProductDetail = () => {
         <div className="spacer-x">
           <div className="pt-15">
             <div className="text-sm text-gray-500 mb-2">
-              {t("home")} <span className="mx-1">{">"}</span>{" "}
-              {t("productDetails")}
+              <Link className="hover:text-primary" to={ROUTE.ROOT}>
+                {t("home")}
+              </Link>{" "}
+              <span className="mx-1">{">"}</span> {t("productDetails")}
             </div>
 
             <h1 className="main-heading">{postDetailData?.title}</h1>
@@ -461,7 +463,9 @@ export const ProductDetail = () => {
                       <h3 className="text-xl font-bold">
                         {postDetailData?.user?.username}
                       </h3>
-                      <RatingStar starValue={4.5} />
+                      <div className="flex gap-2">
+                        <RatingStar starValue={4.5} /> <p>(4.5)</p>
+                      </div>
                       <p className="text-sm text-gray-500 py-2">
                         {t("memberSince")}{" "}
                         {moment(postDetailData?.user?.created_at).format(

@@ -8,12 +8,16 @@ import { CUSTOMER } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import { InfoModal } from "../../common/modal/InfoModal";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/slices/userSlice";
 
-export const ChangePassModal = ({ isOpen, onClose }) => {
+export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
   const { t } = useTranslation();
 
   const schema = Yup.object().shape({
-    password: Yup.string().required(t("userPasswordRequired")),
+    password: userInfo?.is_password_set
+      ? Yup.string().required(t("userPasswordRequired"))
+      : Yup.string().notRequired(),
     newPassword: Yup.string()
       .required(t("userNewPasswordRequired"))
       .matches(
@@ -34,6 +38,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
     resolver: yupResolver(schema),
   });
 
+  const dispatch = useDispatch();
   const [toggle, setToggle] = useState(true);
   const [toggleNew, setToggleNew] = useState(true);
   const [toggleConfirm, setToggleConfirm] = useState(true);
@@ -54,14 +59,21 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+
     const payload = {
-      currentPassword: data.password,
+      ...(userInfo?.is_password_set && { currentPassword: data.password }),
       newPassword: data.newPassword,
     };
 
     try {
       const response = await postRequest(CUSTOMER.UPDATE_PASSWORD, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
+        dispatch(
+          setUser({
+            ...userInfo,
+            is_password_set: true,
+          })
+        );
         showSuccessToast(response?.data?.message);
         setShowInfoModal(true);
         reset();
@@ -83,7 +95,11 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="relative w-full max-w-lg rounded-lg bg-white shadow-lg px-5 py-4">
         <div className="flex items-center justify-between border-b border-gray-200 py-4 ">
-          <h2 className="text-xl font-bold">{t("changePassword")}</h2>
+          <h2 className="text-xl font-bold">
+            {userInfo?.is_password_set
+              ? t("changePassword")
+              : t("createPassword")}
+          </h2>
           <button
             onClick={() => {
               onClose();
@@ -97,34 +113,36 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
 
         <div className="py-4 space-y-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div>
-              <label className="block mb-2 text-base font-bold">
-                {t("password")}
-              </label>
-              <div className="input-icon-grp">
-                <input
-                  {...register("password")}
-                  type={toggle === true ? "password" : "text"}
-                  id="password"
-                  className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
-                  autoComplete="off"
-                  placeholder={t('enterPassword')}
-                />
-                <i
-                  className={
-                    toggle === true
-                      ? "fa-regular fa-eye-slash show-pass"
-                      : "fa-regular fa-eye show-pass"
-                  }
-                  onClick={handlepass}
-                />
+            {userInfo?.is_password_set && (
+              <div>
+                <label className="block mb-2 text-base font-bold">
+                  {t("password")}
+                </label>
+                <div className="input-icon-grp">
+                  <input
+                    {...register("password")}
+                    type={toggle === true ? "password" : "text"}
+                    id="password"
+                    className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
+                    autoComplete="off"
+                    placeholder={t("enterPassword")}
+                  />
+                  <i
+                    className={
+                      toggle === true
+                        ? "fa-regular fa-eye-slash show-pass"
+                        : "fa-regular fa-eye show-pass"
+                    }
+                    onClick={handlepass}
+                  />
+                </div>
+                {errors.password && (
+                  <p className="text-red-500 text-sm">
+                    {errors.password?.message}
+                  </p>
+                )}
               </div>
-              {errors.password && (
-                <p className="text-red-500 text-sm">
-                  {errors.password?.message}
-                </p>
-              )}
-            </div>
+            )}
 
             <div>
               <label className="block mb-2 text-base font-bold">
@@ -137,7 +155,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
                   id="newPassword"
                   className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
                   autoComplete="off"
-                  placeholder={t('enterNewPass')}
+                  placeholder={t("enterNewPass")}
                 />
                 <i
                   className={
@@ -164,7 +182,7 @@ export const ChangePassModal = ({ isOpen, onClose }) => {
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
                   className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
-                  placeholder={t('enterConfirmPassword')}
+                  placeholder={t("enterConfirmPassword")}
                 />
                 <i
                   className={

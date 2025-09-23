@@ -53,7 +53,7 @@ const resources = {
       phoneNumber: "Phone Number:",
       email: "Email:",
       address: "Address:",
-      copyRight: "© 2025 SouqSyria, (All rights reserved)",
+      copyRight: "SouqSyria, (All rights reserved)",
 
       loginTitleByPhone: "Login by Phone",
       loginSubtitleByPhone: "Login account by your registered phone number.",
@@ -202,8 +202,10 @@ const resources = {
       placeYourAd: "Where should we place your ad?",
       nearbyLocation: "Nearby Location",
       buildingStreetName: "Building or Street Name",
+      enterbuildingStreetName: "Enter building or street name",
       optional: "optional",
       apartmentVillaNumber: "Apartment or Villa Number",
+      enterapartmentVillaNumber: "Enter apartment or villa number",
       locationRequired: "Nearby location is required",
       postAd: "Post Ad",
       imagesPost: "Ad Images for your post",
@@ -286,6 +288,10 @@ const resources = {
       enterDescription: "Enter description here",
       enterFullName: "Enter full name",
       selectDate: "Select date",
+
+      enterNearbyLocation: "Enter location",
+      createPassword: "Create password",
+      hello: "Hello",
     },
   },
   ar: {
@@ -337,7 +343,7 @@ const resources = {
       phoneNumber: "رقم الهاتف:",
       email: "البريد الإلكتروني:",
       address: "العنوان:",
-      copyRight: "© 2025 سوق سوريا، جميع الحقوق محفوظة",
+      copyRight: "سوق سوريا، جميع الحقوق محفوظة",
 
       loginTitleByPhone: "تسجيل الدخول عبر الهاتف",
       loginSubtitleByPhone: "سجّل الدخول باستخدام رقم هاتفك المسجّل.",
@@ -485,6 +491,8 @@ const resources = {
       buildingStreetName: "اسم المبنى أو الشارع",
       optional: "اختياري",
       apartmentVillaNumber: "رقم الشقة أو الفيلا",
+      enterbuildingStreetName: "أدخل اسم المبنى أو الشارع",
+      enterapartmentVillaNumber: "أدخل رقم الشقة أو الفيلا",
       locationRequired: "الموقع القريب مطلوب",
       postAd: "نشر إعلان",
       imagesPost: "صور الإعلان الخاص بك",
