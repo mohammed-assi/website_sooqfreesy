@@ -25,6 +25,8 @@ export const ProfilePage = () => {
     { id: "reviews", label: t("ratingReviews") },
   ];
 
+  console.log('userInfo', userInfo);
+
   const breakdown = {
     5: 80,
     4: 20,
@@ -79,7 +81,7 @@ export const ProfilePage = () => {
                 />
                 <div>
                   <h3 className="text-2xl font-bold pb-3">
-                    {userInfo?.username}
+                    {userInfo?.username || t("hello")}
                   </h3>
                   <RatingStar starValue={4.5} />
                   <p className="text-base text-[#808080] pt-7">

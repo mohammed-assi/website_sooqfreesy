@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-export const SideFilter = ({ allCategory, filters, handleChange }) => {
+export const SideFilter = ({ allCategory, filters, handleChange, setSearchTextDebounce }) => {
   const { i18n, t } = useTranslation();
 
   return (
@@ -28,8 +28,8 @@ export const SideFilter = ({ allCategory, filters, handleChange }) => {
         </label>
         <input
           type="text"
-          value={filters?.location}
-          onChange={(e) => handleChange("location", e.target.value)}
+          onChange={(e) => setSearchTextDebounce(e.target.value)}
+          placeholder={t("enterNearbyLocation")}
           className="w-full h-[48px] bg-[#f5f5f5] rounded-lg px-3 py-2 text-sm"
         />
       </div>
@@ -73,7 +73,7 @@ export const SideFilter = ({ allCategory, filters, handleChange }) => {
           onChange={(e) => handleChange("category", e.target.value)}
           className="w-full bg-[#F5F5F5] h-[48px] rounded-lg px-3 py-2 text-sm select-filter"
         >
-          <option value="">---</option>
+          <option value="">--{t("select")}--</option>
           {allCategory?.map((item) => (
             <option key={item.id} value={item.id}>
               {i18n.language === "ar" ? item.arabic_name : item.name}

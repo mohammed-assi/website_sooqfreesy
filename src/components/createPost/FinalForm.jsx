@@ -190,9 +190,9 @@ export const FinalForm = ({
                 {field.type === "dropdown" && (
                   <select
                     {...register(field.name)}
-                    className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                    className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
                   >
-                    <option value="">-- {t('select')} --</option>
+                    <option value="">-- {t("select")} --</option>
                     {field?.options?.map((opt, idx) => (
                       <option key={idx} value={opt.value}>
                         {opt.label || opt.value}
@@ -260,6 +260,7 @@ export const FinalForm = ({
               type="text"
               disabled
               {...register("buildingNumber")}
+              placeholder={t("enterbuildingStreetName")}
               className="w-full rounded p-3 bg-gray-100 focus:outline-none"
             />
             {errors.buildingNumber && (
@@ -279,6 +280,7 @@ export const FinalForm = ({
               type="text"
               disabled
               {...register("apartmentNumber")}
+              placeholder={t("enterapartmentVillaNumber")}
               className="w-full rounded p-3 bg-gray-100 focus:outline-none"
             />
             {errors.apartmentNumber && (

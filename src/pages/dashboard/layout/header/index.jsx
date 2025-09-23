@@ -126,7 +126,7 @@ export const DashboardHeader = () => {
                             {userInfo?.username || "User Name"}
                           </h3>
                           <p className="text-sm text-gray-500">
-                            {userInfo?.email || "Lorem ipsum semper urna"}
+                            {userInfo?.email || "example@gmail.com"}
                           </p>
                         </div>
                       </div>

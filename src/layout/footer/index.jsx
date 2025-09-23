@@ -8,6 +8,8 @@ import { ROUTE } from "../../config/constants";
 
 export const Footer = () => {
   const { t } = useTranslation();
+  const year = new Date().getFullYear();
+
   return (
     <footer className="bg-primaryDark text-white">
       <div className="spacer-x py-10">
@@ -71,7 +73,7 @@ export const Footer = () => {
 
         <div className="border-t border-white/60 mt-8 pt-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sx text-center md:text-left font-bold">
-            {t("copyRight")}
+            © {year} {t("copyRight")}
           </p>
 
           <div className="flex gap-4">

@@ -4,6 +4,8 @@ import gridIcon from "../../assets/icon/gridIcon.svg";
 import listIcon from "../../assets/icon/listIcon.svg";
 import { useTranslation } from "react-i18next";
 import { FilterModal } from "./FilterModal";
+import { Link } from "react-router-dom";
+import { ROUTE } from "../../config/constants";
 
 export const SearchTopFilter = ({
   categories,
@@ -12,7 +14,7 @@ export const SearchTopFilter = ({
   handleSelectSubcatIds,
   subcategoryIds,
   setFiltersModal,
-  searchText
+  searchText,
 }) => {
   const { i18n, t } = useTranslation();
   const [openFilterModal, setOpenFilterModal] = useState(false);
@@ -20,7 +22,9 @@ export const SearchTopFilter = ({
   return (
     <div className="pt-15">
       <div className="text-sm text-gray-500 mb-2">
-        {t("home")} <span className="mx-1">{">"}</span> {searchText !=="" ? t("searchButton") : t("products")}
+        <Link className="hover:text-primary" to={ROUTE.ROOT}>{t("home")}</Link>{" "}
+        <span className="mx-1">{">"}</span>{" "}
+        {searchText !== "" ? t("searchButton") : t("products")}
       </div>
 
       <div className="flex items-center justify-between mb-6">

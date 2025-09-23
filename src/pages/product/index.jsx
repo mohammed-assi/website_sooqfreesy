@@ -8,6 +8,7 @@ import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import { useSelector } from "react-redux";
 import LoginModal from "../../components/auth/LoginModal";
 import { ScreenLoader } from "../../utils/screenLoader";
+import useSearchDebounce from "../../utils/searchDebounce";
 
 export const ProductPage = () => {
   const location = useLocation();
@@ -29,11 +30,11 @@ export const ProductPage = () => {
   const hasUsedSearchText = useRef(false);
   const [filters, setFilters] = useState({
     city: "",
-    location: "",
     type: "",
     category: "",
     priceRange: [0, 0],
   });
+  const [searchTextDebounce, setSearchTextDebounce] = useSearchDebounce();
 
   const handleChange = (key, value) => {
     setFilters((prev) => ({
@@ -95,6 +96,7 @@ export const ProductPage = () => {
     if (filters.priceRange?.[1]) filterObj.price_max = filters.priceRange[1];
     if (filters.city) filterObj.city = filters.city;
     if (filters.type) filterObj.post_type = filters.type;
+    if (searchTextDebounce) filterObj.search = searchTextDebounce;
 
     if (location?.state?.searchText) {
       filterObj.searchtext = location?.state?.searchText;
@@ -141,7 +143,14 @@ export const ProductPage = () => {
 
   useEffect(() => {
     getAllPostsCallBack();
-  }, [currentPage, filters, subcategoryIds, searchText, accessToken]);
+  }, [
+    currentPage,
+    filters,
+    subcategoryIds,
+    searchText,
+    accessToken,
+    searchTextDebounce,
+  ]);
 
   useEffect(() => {
     if (
@@ -191,6 +200,7 @@ export const ProductPage = () => {
             handleChange={handleChange}
             filters={filters}
             handleLikeUnlikePost={handleLikeUnlikePost}
+            setSearchTextDebounce={setSearchTextDebounce}
           />
 
           <LoginModal

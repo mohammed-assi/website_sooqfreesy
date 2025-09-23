@@ -15,14 +15,15 @@ export const ListingFilter = ({
   filters,
   setModalFilter,
   allPosts,
-  handleLikeUnlikePost
+  handleLikeUnlikePost,
+  setSearchTextDebounce
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("listing");
   const [openFilterModal, setOpenFilterModal] = useState(false);
 
   const tabs = [
-    { id: "listing", label: t("listing") },
+    { id: "listing", label: `${t("listing")} (${allPosts?.length})` },
     { id: "reviews", label: t("reviewss") },
   ];
 
@@ -57,15 +58,17 @@ export const ListingFilter = ({
             </p>
           ))}
         </div>
-        <div className="flex gap-3 items-center">
-          <p className="text-lg text-gray-600">{t("sorting")}</p>
-          <button
-            onClick={() => setOpenFilterModal(true)}
-            className="p-2 rounded hover:bg-gray-100"
-          >
-            <img src={filterIcon} alt="Filter" className="w-5 h-5" />
-          </button>
-        </div>
+        {activeTab === "listing" && (
+          <div className="flex gap-3 items-center">
+            <p className="text-lg text-gray-600">{t("sorting")}</p>
+            <button
+              onClick={() => setOpenFilterModal(true)}
+              className="p-2 rounded hover:bg-gray-100"
+            >
+              <img src={filterIcon} alt="Filter" className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="pt-8">
@@ -75,6 +78,7 @@ export const ListingFilter = ({
               allCategory={allCategory}
               handleChange={handleChange}
               filters={filters}
+              setSearchTextDebounce={setSearchTextDebounce}
             />
             <div className="lg:col-span-3">
               <div className="grid grid-cols-1 gap-6">

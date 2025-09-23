@@ -54,7 +54,7 @@ export const SelectCityLocation = ({
             {/* Country */}
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                {t('country')} <span className="text-red-600">*</span>
+                {t("country")} <span className="text-red-600">*</span>
               </label>
               <select
                 {...register("country")}
@@ -62,9 +62,9 @@ export const SelectCityLocation = ({
                   setValue("country", e.target.value);
                   trigger("country");
                 }}
-                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
               >
-                <option value="">{t('selectCountry')}</option>
+                <option value="">{t("selectCountry")}</option>
                 {countries.map((c) => (
                   <option key={c.isoCode} value={c.name}>
                     {c.name}
@@ -81,7 +81,7 @@ export const SelectCityLocation = ({
             {/* State */}
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                {t('state')} <span className="text-red-600">*</span>
+                {t("state")} <span className="text-red-600">*</span>
               </label>
               <select
                 {...register("state")}
@@ -89,7 +89,7 @@ export const SelectCityLocation = ({
                   setValue("state", e.target.value);
                   trigger("state");
                 }}
-                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
                 disabled={!selectedCountry}
               >
                 <option value="">{t("selectState")}</option>
@@ -109,7 +109,7 @@ export const SelectCityLocation = ({
             {/* City */}
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                {t('city')} <span className="text-red-600">*</span>
+                {t("city")} <span className="text-red-600">*</span>
               </label>
               <select
                 {...register("city")}
@@ -117,7 +117,7 @@ export const SelectCityLocation = ({
                   setValue("city", e.target.value);
                   trigger("city");
                 }}
-                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
                 disabled={!selectedState}
               >
                 <option value="">{t("selectCityField")}</option>
@@ -168,8 +168,7 @@ export const SelectCityLocation = ({
           <div className="pt-5">
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                {t("nearbyLocation")}
-                <span className="text-red-600">*</span>
+                {t("nearbyLocation")} <span className="text-red-600">*</span>
               </label>
               {/* <input
                 type="text"
@@ -198,7 +197,7 @@ export const SelectCityLocation = ({
                           onChange(place.formatted_address);
                           setUserLocation(place.formatted_address);
                           setShowLocationValidation(false);
-                          trigger('location')
+                          trigger("location");
                         }
                       }}
                       defaultValue={value}
@@ -237,6 +236,7 @@ export const SelectCityLocation = ({
                 type="text"
                 {...register("buildingNumber")}
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                placeholder={t("enterbuildingStreetName")}
               />
               {errors.buildingNumber && (
                 <p className="text-red-500 text-sm mt-1">
@@ -254,6 +254,7 @@ export const SelectCityLocation = ({
               <input
                 type="text"
                 {...register("apartmentNumber")}
+                placeholder={t("enterapartmentVillaNumber")}
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none"
               />
               {errors.apartmentNumber && (

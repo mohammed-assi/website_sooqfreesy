@@ -15,6 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 import { City, Country, State } from "country-state-city";
+import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const CreatePost = () => {
   const { i18n, t } = useTranslation();
@@ -39,6 +40,7 @@ export const CreatePost = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const baseSchema = {
     country: Yup.string().required(t("countryRequired")),
@@ -189,6 +191,7 @@ export const CreatePost = () => {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
@@ -243,10 +246,13 @@ export const CreatePost = () => {
         showSuccessToast(response?.data?.message);
         navigate(ROUTE.ROOT);
         reset();
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleChooseCategory = (data) => {
@@ -477,13 +483,22 @@ export const CreatePost = () => {
               >
                 <i className="fa-solid fa-arrow-left" /> {t("backButton")}
               </button>
-              <button
+              {/* <button
                 type="submit"
                 form="adForm"
                 className="flex gap-2 items-center py-4 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-primaryDark transition"
               >
                 {t("postAd")}
-              </button>
+              </button>  */}
+              <LoadingButton
+                type="submit"
+                form="adForm"
+                loading={loading}
+                disabled={loading}
+                className="bg-primary py-4 px-6 text-white text-base hover:bg-primaryDark h-[56px]"
+              >
+                {t("postAd")}
+              </LoadingButton>
             </div>
           )}
         </div>

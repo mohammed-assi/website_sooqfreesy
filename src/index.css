@@ -129,33 +129,33 @@ a {
   display: none !important;
 }
 
-.image-slider .swiper-button-next::after, .image-slider  .swiper-button-prev::after {
-    color: #fff;
-    font-size: 25px !important;
-    cursor: pointer;
+.image-slider .swiper-button-next::after,
+.image-slider .swiper-button-prev::after {
+  color: #fff;
+  font-size: 25px !important;
+  cursor: pointer;
 }
 .image-slider .swiper-pagination {
-    position: absolute;
-    bottom: 20px !important;
+  position: absolute;
+  bottom: 20px !important;
 }
 .image-slider span.swiper-pagination-bullet {
-    width: 9px !important;
-    height: 9px !important;
-    background-color: rgba(255, 255, 255, 0.4);
-    opacity: 1;
-    transform: scale(1) !important;
+  width: 9px !important;
+  height: 9px !important;
+  background-color: rgba(255, 255, 255, 0.4);
+  opacity: 1;
+  transform: scale(1) !important;
 }
 .image-slider .swiper-pagination-bullet-active-main {
-    background-color: var(--color-primary) !important;
+  background-color: var(--color-primary) !important;
 }
 .select-filter {
-  background-image:url(./assets/icon/down-icon.svg);
+  background-image: url(./assets/icon/down-icon.svg);
   background-repeat: no-repeat;
   background-position: center right 15px;
   appearance: none;
   padding-right: 35px;
 }
-
 
 input[type="range"] {
   pointer-events: none;
@@ -166,24 +166,23 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   height: 26px;
-  border:3px solid #fff;
+  border: 3px solid #fff;
   width: 26px;
   border-radius: 50%;
-  background: #00B4D8; /* your theme color */
+  background: #00b4d8; /* your theme color */
   cursor: pointer;
-  margin-top:-8px
+  margin-top: -8px;
 }
 
 input[type="range"]::-moz-range-thumb {
   pointer-events: auto;
   height: 26px;
-  border:3px solid #fff;
+  border: 3px solid #fff;
   width: 26px;
   border-radius: 50%;
-  background: #00B4D8;
+  background: #00b4d8;
   cursor: pointer;
 }
-
 
 /* spinner-loader */
 .loader-spanne-20 {
@@ -247,4 +246,8 @@ input[type="range"]::-moz-range-thumb {
     opacity: 0;
     transform: translateX(-100px) rotate(65deg);
   }
+}
+
+span.search-emoji {
+  display: none !important;
 }
