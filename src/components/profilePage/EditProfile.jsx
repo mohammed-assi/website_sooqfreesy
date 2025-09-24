@@ -458,7 +458,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                         setCountryCode(country?.dialCode);
                       }}
                     />
-                    <span className="ml-1">+{countryCode}</span>
+                    <span className="ml-1 me-3">+{countryCode}</span>
                   </div>
                 </div>
                 <div className="w-full">

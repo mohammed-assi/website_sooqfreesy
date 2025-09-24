@@ -13,7 +13,7 @@ export const Footer = () => {
   return (
     <footer className="bg-primaryDark text-white">
       <div className="spacer-x py-10">
-        <div className="flex justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 gap-y-7 md:flex md:justify-between">
           <Link to={ROUTE.ROOT}>
             <img src={logo} alt="SouqSyria" className="h-12 mb-4" />
           </Link>

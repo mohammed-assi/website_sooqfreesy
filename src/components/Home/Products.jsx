@@ -30,8 +30,8 @@ export const Products = ({ allPosts, imagePath, handleLikeUnlikePost }) => {
             >
               {tab.label}
               <span
-                className={`absolute left-0 -bottom-[1px] h-[1px] w-full rounded-full transition-colors ${
-                  activeTab === tab.id ? "bg-primary h-[2px]" : "bg-gray-300"
+                className={`absolute left-0 -bottom-[.0625rem] h-[.0625rem] w-full rounded-full transition-colors ${
+                  activeTab === tab.id ? "bg-primary h-[.125rem]" : "bg-gray-300"
                 }`}
               />
             </p>
