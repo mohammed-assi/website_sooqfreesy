@@ -311,6 +311,12 @@ export const ProductDetail = () => {
                     </div>
                   </>
                 )}
+                <div className="mt-10 w-full">
+                  <h3 className="font-bold text-xl">{t("description")}</h3>
+                  <p className="text-gray-600 py-2">
+                    {postDetailData?.description}
+                  </p>
+                </div>
               </div>
 
               <div className="lg:w-1/3 w-full ps-5 space-y-4">
@@ -368,27 +374,30 @@ export const ProductDetail = () => {
                 </button>
 
                 <div className="grid grid-cols-3 gap-3 text-sm text-gray-700">
-                  <div className="flex flex-col items-center justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    <img src={bed} alt="icon" /> 3 Bedrooms
+                  <div className="flex flex-col items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2">
+                    {/* <img src={bed} alt="icon" /> Bedrooms */}
+                    <span className="text-xl font-bold leading-none">3</span>
+                    Bedrooms
                   </div>
-                  <div className="flex flex-col items-center justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    <img src={sofa} alt="icon" />
+                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
+                    {/* <img src={sofa} alt="icon" /> */}
                     Furnished
                   </div>
-                  <div className="flex flex-col items-center justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    <img src={pool} alt="icon" /> Pool
+                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
+                    {/* <img src={pool} alt="icon" /> */}
+                     Pool
                   </div>
-                  <div className="flex flex-col items-center justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    <img src={area} alt="icon" />
+                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
+                    {/* <img src={area} alt="icon" /> */}
                     214 m2 area
                   </div>
-                  <div className="flex flex-col items-center justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    <img src={floor} alt="icon" />
+                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
+                    {/* <img src={floor} alt="icon" /> */}
                     2nd Floor
                   </div>
-                  <div className="flex flex-col items-center justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    <img src={calendar} alt="icon" />
-                    Post: 16/02/2025
+                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
+                    {/* <img src={calendar} alt="icon" /> */}
+                    16/02/2025
                   </div>
                 </div>
 
@@ -398,100 +407,92 @@ export const ProductDetail = () => {
                 >
                   <img src={report} alt="icon" /> {t("reportListing")}
                 </button>
-              </div>
-            </div>
 
-            <div className="py-6 overflow-hidden flex flex-col lg:flex-row">
-              <div className="lg:w-2/3 w-full">
-                <h3 className="font-bold text-xl">{t("description")}</h3>
-                <p className="text-gray-600 py-2">
-                  {postDetailData?.description}
-                </p>
-              </div>
-              <div className="lg:w-1/3 w-full ps-5 space-y-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <img src={darkLocation} alt="icon" />
-                    <h3 className="font-bold text-xl">
-                      {postDetailData?.nearby_location}
-                    </h3>
-                  </div>
-                  <div className="w-full h-70 py-2 rounded-lg overflow-hidden shadow">
-                    {!isLoaded ? (
-                      <p>Loading map...</p>
-                    ) : (
-                      <GoogleMap
-                        center={
-                          postDetailData?.latitude && postDetailData?.longitude
-                            ? {
+                <div className="w-full mt-10 space-y-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <img src={darkLocation} alt="icon" />
+                      <h3 className="font-bold text-xl">
+                        {postDetailData?.nearby_location}
+                      </h3>
+                    </div>
+                    <div className="w-full h-70 py-2 rounded-lg overflow-hidden shadow">
+                      {!isLoaded ? (
+                        <p>Loading map...</p>
+                      ) : (
+                        <GoogleMap
+                          center={
+                            postDetailData?.latitude && postDetailData?.longitude
+                              ? {
                                 lat: Number(postDetailData?.latitude),
                                 lng: Number(postDetailData?.longitude),
                               }
-                            : { lat: 0, lng: 0 }
-                        }
-                        zoom={14}
-                        mapContainerStyle={{ width: "100%", height: "100%" }}
-                      >
-                        <Marker
-                          position={{
-                            lat: postDetailData.latitude,
-                            lng: postDetailData.longitude,
-                          }}
-                        />
-                      </GoogleMap>
-                    )}
-                  </div>
-                </div>
-
-                <div className="py-4">
-                  <h3 className="font-bold text-xl">{t("postOwner")}</h3>
-                  <div className="flex items-center gap-3 py-2">
-                    <div className="w-40 h-40 flex items-center justify-center">
-                      <img
-                        src={
-                          postDetailData?.user?.user_profile_url
-                            ? `${imagePath}/${postDetailData?.user?.user_profile_url}`
-                            : defaultUser
-                        }
-                        alt="icon"
-                        className="h-full w-full rounded-lg object-cover"
-                      />
+                              : { lat: 0, lng: 0 }
+                          }
+                          zoom={14}
+                          mapContainerStyle={{ width: "100%", height: "100%" }}
+                        >
+                          <Marker
+                            position={{
+                              lat: postDetailData.latitude,
+                              lng: postDetailData.longitude,
+                            }}
+                          />
+                        </GoogleMap>
+                      )}
                     </div>
-                    <Link
-                      to={`${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`}
-                    >
-                      <h3 className="text-xl font-bold">
-                        {postDetailData?.user?.username}
-                      </h3>
-                      <div className="flex gap-2">
-                        <RatingStar starValue={4.5} /> <p>(4.5)</p>
-                      </div>
-                      <p className="text-sm text-gray-500 py-2">
-                        {t("memberSince")}{" "}
-                        {moment(postDetailData?.user?.created_at).format(
-                          "MM/DD/yyyy"
-                        )}
-                      </p>
-                    </Link>
                   </div>
 
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() =>
-                        (window.location.href = `tel:${postDetailData?.user?.phone}`)
-                      }
-                      className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
-                    >
-                      <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
-                      {postDetailData?.user?.phone || "7777777777"}
-                    </button>
-                    <button
-                      onClick={() => setShowReviewModal(true)}
-                      className="flex gap-1 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
-                    >
-                      <img src={whitestar} alt="icon" className="h-5 w-5" />{" "}
-                      {t("addReviewsButton")}
-                    </button>
+                  <div className="py-4">
+                    <h3 className="font-bold text-xl">{t("postOwner")}</h3>
+                    <div className="flex items-center gap-3 py-2">
+                      <div className="w-40 h-40 flex items-center justify-center">
+                        <img
+                          src={
+                            postDetailData?.user?.user_profile_url
+                              ? `${imagePath}/${postDetailData?.user?.user_profile_url}`
+                              : defaultUser
+                          }
+                          alt="icon"
+                          className="h-full w-full rounded-lg object-cover"
+                        />
+                      </div>
+                      <Link
+                        to={`${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`}
+                      >
+                        <h3 className="text-xl font-bold">
+                          {postDetailData?.user?.username}
+                        </h3>
+                        <div className="flex gap-2">
+                          <RatingStar starValue={4.5} /> <p>(4.5)</p>
+                        </div>
+                        <p className="text-sm text-gray-500 py-2">
+                          {t("memberSince")}{" "}
+                          {moment(postDetailData?.user?.created_at).format(
+                            "MM/DD/yyyy"
+                          )}
+                        </p>
+                      </Link>
+                    </div>
+
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() =>
+                          (window.location.href = `tel:${postDetailData?.user?.phone}`)
+                        }
+                        className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                      >
+                        <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
+                        {postDetailData?.user?.phone || "7777777777"}
+                      </button>
+                      <button
+                        onClick={() => setShowReviewModal(true)}
+                        className="flex gap-1 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                      >
+                        <img src={whitestar} alt="icon" className="h-5 w-5" />{" "}
+                        {t("addReviewsButton")}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

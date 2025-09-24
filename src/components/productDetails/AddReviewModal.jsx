@@ -87,7 +87,7 @@ export const AddReviewModal = ({ onClose, postDetailData }) => {
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             rows={6}
-            className="w-full bg-gray-100 rounded-lg p-3 text-sm mb-4 outline-none"
+            className="w-full bg-gray-100 rounded-lg p-3 text-sm mb-4 outline-none resize-none"
             placeholder={t('writeFeedback')}
           />
 

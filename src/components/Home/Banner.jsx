@@ -41,17 +41,17 @@ export const Banner = () => {
   return (
     <div
       // dir={i18n.language === "ar" ? "rtl" : "ltr"}
-      className="relative flex text-center items-center justify-center h-150 bg-gradient-to-r from-orange-100 to-blue-100"
+      className="relative flex text-center items-center justify-center min-h-150 py-17 bg-gradient-to-r from-orange-100 to-blue-100"
     >
-      <div className="absolute bottom-0 start-0">
+      <div className="absolute bottom-0 start-0 hidden md:block">
         <img src={bannerLeft} alt="imageee" />
       </div>
 
-      <div className="absolute bottom-0 end-0">
+      <div className="absolute bottom-0 end-0 hidden md:block">
         <img src={bannerRight} alt="imageee" className="object-contain" />
       </div>
 
-      <div className="w-150">
+      <div className="w-150 relative z-10">
         <h1 className="font-bold text-heading">{t("homeBannerHeading")}</h1>
 
         <div className="my-8 shadow-md  flex justify-between">

@@ -126,60 +126,59 @@ export const WebHead = () => {
   return (
     <>
       <div
-        className={`transition-colors duration-300 ${
-          isScrolled ? "bg-white/85 backdrop-blur-lg" : "bg-white"
-        } border-b border-gray-200`}
+        className={`transition-colors duration-300 ${isScrolled ? "bg-white/85 backdrop-blur-lg" : "bg-white"
+          } border-b border-gray-200`}
       >
         <div className="spacer-x py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex gap-6 items-center">
+          <div className="flex justify-between items-center gap-7">
+            <div className="flex gap-6 items-center flex-shrink-0">
               <Link to="/">
                 <img src={logo} alt="logo" />
               </Link>
-              {isScrolled && location.pathname !== ROUTE.CREATE_POST && (
-                <div className="relative" ref={searchRef}>
-                  <div className="rounded-lg px-4 py-3 flex justify-between items-center bg-gray-100">
-                    <input
-                      type="text"
-                      placeholder={t("searchPlaceholder")}
-                      value={searchValue}
-                      onChange={(e) => setSearchValue(e.target.value)}
-                      onFocus={() => setSearchOpen(true)}
-                      className="w-full focus:outline-none "
-                    />
-                    <button
-                      onClick={goToProductPage}
-                      disabled={searchValue === ""}
-                    >
-                      <i className="fa-regular fa-magnifying-glass fa-lg" />
-                    </button>
-                  </div>
-
-                  {searchOpen && (
-                    <div className="absolute mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
-                      <div className="p-4">
-                        <h3 className="font-semibold">
-                          {t("popularSearches")}
-                        </h3>
-                      </div>
-                      <ul className="">
-                        {popularSearches.map((item) => (
-                          <li
-                            key={item}
-                            onClick={() => setSearchValue(item)}
-                            className="px-4 py-3 text-gray-700 cursor-pointer hover:bg-gray-100 border-t border-gray-100"
-                          >
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
             {location.pathname !== ROUTE.CREATE_POST ? (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 w-full justify-end">
+                {isScrolled && location.pathname !== ROUTE.CREATE_POST && (
+                  <div className="relative me-auto" ref={searchRef}>
+                    <div className="rounded-lg px-4 py-3 flex justify-between items-center bg-gray-100">
+                      <input
+                        type="text"
+                        placeholder={t("searchPlaceholder")}
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        onFocus={() => setSearchOpen(true)}
+                        className="w-full focus:outline-none "
+                      />
+                      <button
+                        onClick={goToProductPage}
+                        disabled={searchValue === ""}
+                      >
+                        <i className="fa-regular fa-magnifying-glass fa-lg" />
+                      </button>
+                    </div>
+
+                    {searchOpen && (
+                      <div className="absolute mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
+                        <div className="p-4">
+                          <h3 className="font-semibold">
+                            {t("popularSearches")}
+                          </h3>
+                        </div>
+                        <ul className="">
+                          {popularSearches.map((item) => (
+                            <li
+                              key={item}
+                              onClick={() => setSearchValue(item)}
+                              className="px-4 py-3 text-gray-700 cursor-pointer hover:bg-gray-100 border-t border-gray-100"
+                            >
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="relative" ref={dropdownRef}>
                   {accessToken ? (
                     <div className="flex gap-7 items-center px-7 py-3">

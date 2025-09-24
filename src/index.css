@@ -21,7 +21,8 @@ a {
 }
 
 .spacer-x {
-  width: 1150px;
+  max-width: 1150px;
+  padding-inline: 12px;
   margin: auto;
 }
 

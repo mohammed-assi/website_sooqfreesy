@@ -12,7 +12,7 @@ export const GetApplications = () => {
       className="relative w-full bg-cover bg-center flex items-end"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
-      <div className="spacer-x flex flex-col lg:flex-row items-center justify-between w-full relative pb-0">
+      <div className="spacer-x flex flex-col lg:flex-row items-center justify-between w-full relative pb-0 gap-2">
         <div className="text-center lg:text-left max-w-lg space-y-6 py-12">
           <h2 className="main-heading">{t("downloadApp")}</h2>
 
@@ -26,7 +26,7 @@ export const GetApplications = () => {
           </div>
         </div>
 
-        <div className="relative self-end">
+        <div className="relative self-center md:self-end">
           <img
             src={phone}
             alt="Phone App"
