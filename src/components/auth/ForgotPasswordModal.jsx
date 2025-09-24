@@ -17,6 +17,7 @@ function ForgotPasswordModal({
   hide,
   setShowRegisterModal,
   setShowLoginModal,
+  setCode,
 }) {
   const { t } = useTranslation();
   const [showResetPassModal, setShowResetPassModal] = useState(false);
@@ -76,6 +77,7 @@ function ForgotPasswordModal({
   };
 
   const handleResendOtp = async () => {
+    console.log("emterere");
     if (timer > 0) return;
     setLoading(true);
     const payload = {
@@ -83,10 +85,10 @@ function ForgotPasswordModal({
     };
     try {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
-      console.log("response", response);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
         setLoading(false);
+        setCode(["", "", "", ""]);
         setTimer(30);
       }
     } catch (error) {

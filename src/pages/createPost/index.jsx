@@ -192,6 +192,13 @@ export const CreatePost = () => {
   };
 
   const onSubmit = async (data) => {
+    const userType =
+      landlordAgentId === 1
+        ? categoryData?.name === "Real Estate"
+          ? "LANDLORD"
+          : "OWNER"
+        : "AGENT";
+    const postType = saleRentId === 1 ? "SALE" : "RENT";
     setLoading(true);
     const formData = new FormData();
     formData.append("title", data.title);
@@ -211,8 +218,8 @@ export const CreatePost = () => {
     formData.append("apartment_villa_no", data.apartmentNumber);
     formData.append("category_id", categoryData?.id);
     formData.append("sub_category_id", subCategoryId);
-    formData.append("post_type", saleRentId === 1 ? "SALE" : "RENT");
-    formData.append("user_type", landlordAgentId === 1 ? "OWNER" : "AGENT");
+    formData.append("post_type", postType);
+    formData.append("user_type", userType);
 
     data.pictures.forEach((pic) => {
       formData.append("images", pic.file);
@@ -583,6 +590,13 @@ export const CreatePost = () => {
             pictures={pictures}
             setValue={setValue}
             control={control}
+            setCoords={setCoords}
+            setUserLocation={setUserLocation}
+            setShowLocationValidation={setShowLocationValidation}
+            trigger={trigger}
+            userCountry={userCountry}
+            setSelectedCity={setSelectedCity}
+            showLocationValidation={showLocationValidation}
           />
         )}
       </div>

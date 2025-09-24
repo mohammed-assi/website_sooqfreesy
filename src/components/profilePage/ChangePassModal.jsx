@@ -26,7 +26,17 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
       ),
     confirmPassword: Yup.string()
       .required(t("confirmPasswordRequired"))
-      .oneOf([Yup.ref("newPassword")], t("passwordsMustMatch")),
+      .when("newPassword", {
+        is: (val) => val && val.length > 0,
+        then: (schema) =>
+          schema.test(
+            "passwords-match",
+            t("passwordsMustMatch"),
+            function (value) {
+              return !value || value === this.resolve(Yup.ref("newPassword"));
+            }
+          ),
+      }),
   });
 
   const {
@@ -123,7 +133,7 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
                     {...register("password")}
                     type={toggle === true ? "password" : "text"}
                     id="password"
-                    className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
+                    className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                     autoComplete="off"
                     placeholder={t("enterPassword")}
                   />
@@ -153,7 +163,7 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
                   {...register("newPassword")}
                   type={toggleNew === true ? "password" : "text"}
                   id="newPassword"
-                  className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
+                  className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                   autoComplete="off"
                   placeholder={t("enterNewPass")}
                 />
@@ -181,7 +191,7 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
                 <input
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
-                  className="w-full h-[48px] rounded-md px-3 py-2 bg-gray-100 focus:outline-none"
+                  className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
                   placeholder={t("enterConfirmPassword")}
                 />
                 <i

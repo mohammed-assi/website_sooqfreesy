@@ -7,12 +7,6 @@ import heartFilled from "../../assets/icon/heartFilled.svg";
 import locationicon from "../../assets/icon/silverLocation.svg";
 import darkLocation from "../../assets/icon/darkLocation.svg";
 import primaryBell from "../../assets/icon/primaryBell.svg";
-import bed from "../../assets/icon/bed.svg";
-import sofa from "../../assets/icon/sofa.svg";
-import pool from "../../assets/icon/pool.svg";
-import area from "../../assets/icon/area.svg";
-import floor from "../../assets/icon/floor.svg";
-import calendar from "../../assets/icon/calendar.svg";
 import report from "../../assets/icon/report.svg";
 import whitestar from "../../assets/icon/whitestar.svg";
 import whitebell from "../../assets/icon/whitebell.svg";
@@ -144,6 +138,8 @@ export const ProductDetail = () => {
   useEffect(() => {
     setShareLink(`${shareURL}${location.pathname}`);
   }, [location]);
+
+  console.log("postDetailData", postDetailData?.content);
 
   return (
     <>
@@ -298,31 +294,17 @@ export const ProductDetail = () => {
                 </button>
 
                 <div className="grid grid-cols-3 gap-3 text-sm text-gray-700">
-                  <div className="flex flex-col items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2">
-                    {/* <img src={bed} alt="icon" /> Bedrooms */}
-                    <span className="text-xl font-bold leading-none">3</span>
-                    Bedrooms
-                  </div>
-                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    {/* <img src={sofa} alt="icon" /> */}
-                    Furnished
-                  </div>
-                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    {/* <img src={pool} alt="icon" /> */}
-                     Pool
-                  </div>
-                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    {/* <img src={area} alt="icon" /> */}
-                    214 m2 area
-                  </div>
-                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    {/* <img src={floor} alt="icon" /> */}
-                    2nd Floor
-                  </div>
-                  <div className="flex flex-col items-center min-h-20 justify-center gap-2 bg-gray-200 rounded-lg py-2">
-                    {/* <img src={calendar} alt="icon" /> */}
-                    16/02/2025
-                  </div>
+                  {postDetailData?.content &&
+                    Object.entries(postDetailData?.content)?.map(
+                      ([key, value]) => (
+                        <div className="flex flex-col text-center items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2 capitalize">
+                          <span className="text-lg font-semibold leading-none pb-2">
+                            {key}
+                          </span>
+                          {value}
+                        </div>
+                      )
+                    )}
                 </div>
 
                 <button
@@ -346,11 +328,12 @@ export const ProductDetail = () => {
                       ) : (
                         <GoogleMap
                           center={
-                            postDetailData?.latitude && postDetailData?.longitude
+                            postDetailData?.latitude &&
+                            postDetailData?.longitude
                               ? {
-                                lat: Number(postDetailData?.latitude),
-                                lng: Number(postDetailData?.longitude),
-                              }
+                                  lat: Number(postDetailData?.latitude),
+                                  lng: Number(postDetailData?.longitude),
+                                }
                               : { lat: 0, lng: 0 }
                           }
                           zoom={14}
@@ -406,7 +389,11 @@ export const ProductDetail = () => {
                         }
                         className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
                       >
-                        <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
+                        <img
+                          src={headerContact}
+                          alt="icon"
+                          className="h-5 w-5"
+                        />{" "}
                         {postDetailData?.user?.phone || "7777777777"}
                       </button>
                       <button

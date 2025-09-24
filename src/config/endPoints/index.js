@@ -52,7 +52,10 @@ export const POST = {
   GET_MYADS: `${BASEURL}/post/get-customer-posts`,
   SELLER_POST: `${BASEURL}/post/get-seller-posts`,
 
-  DELETE: `${BASEURL}/post/delete-post`
+  DELETE: `${BASEURL}/post/delete-post`,
+  MARK_SOLD: `${BASEURL}/post/sold-post`,
+  UPDATE: `${BASEURL}/post/update-post`,
+  DELETE_IMG: `${BASEURL}/post/delete-file`,
 };
 
 export const CONTENT = {

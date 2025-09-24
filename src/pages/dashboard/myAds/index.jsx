@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ProductListCard from "../../../components/searchPage/ProductListCard";
-import { getRequest } from "../../../config/apiFunctions";
+import { deleteRequest, getRequest } from "../../../config/apiFunctions";
 import { POST } from "../../../config/endPoints";
 import { ScreenLoader } from "../../../utils/screenLoader";
 import MyAdsCard from "./section/MyAdsCard";
@@ -23,7 +22,8 @@ export const MyAds = () => {
   const tabs = [
     {
       id: 1,
-      label: `${t("active")} (${allPosts?.length ? allPosts?.length : 0})`,
+      // label: `${t("active")} (${allPosts?.length ? allPosts?.length : 0})`,
+      label: `${t("active")}`,
     },
     { id: 3, label: `${t("sold")}` },
     { id: 2, label: t("reject") },
@@ -37,7 +37,7 @@ export const MyAds = () => {
   const handleDeletePost = async () => {
     setDeleteLoading(true);
     try {
-      const res = await getRequest(`${POST.DELETE}/${deleteId}`);
+      const res = await deleteRequest(`${POST.DELETE}/${deleteId}`);
 
       if (res?.data?.statusCode === 200) {
         showSuccessToast(res?.data?.message);
@@ -50,6 +50,19 @@ export const MyAds = () => {
       setDeleteLoading(false);
     }
     setDeleteLoading(false);
+  };
+
+  const handleMarkSoldPost = async (id) => {
+    try {
+      const res = await getRequest(`${POST.MARK_SOLD}?listing_id=${id}`);
+
+      if (res?.data?.statusCode === 200) {
+        showSuccessToast(res?.data?.message);
+        getAllPostsCallBack();
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
   };
 
   const getAllPosts = async (url) => {
@@ -107,6 +120,8 @@ export const MyAds = () => {
                   item={item}
                   imagePath={imagePath}
                   handleOpenDeleteModal={handleOpenDeleteModal}
+                  handleMarkSoldPost={handleMarkSoldPost}
+                  activeTab={activeTab}
                 />
               ))
             ) : (

@@ -298,7 +298,10 @@ const resources = {
       deleteButton: "Delete",
       noButton: "No",
       postDeleted: "Post Deleted!",
-      postDeletedSubtitle: "Your post has been removed from your listing now"
+      postDeletedSubtitle: "Your post has been removed from your listing now",
+      resendIt: "Resend it",
+      enterCityField: "Enter city",
+      enterStateField: "Enter state"
     },
   },
   ar: {

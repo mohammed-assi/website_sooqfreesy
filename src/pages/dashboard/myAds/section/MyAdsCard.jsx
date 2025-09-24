@@ -7,13 +7,20 @@ import deleteIcon from "../../../../assets/icon/delete.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Pagination } from "swiper/modules";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ROUTE } from "../../../../config/constants";
 
-const MyAdsCard = ({ item, imagePath, handleOpenDeleteModal}) => {
+const MyAdsCard = ({
+  item,
+  imagePath,
+  handleOpenDeleteModal,
+  handleMarkSoldPost,
+  activeTab,
+}) => {
   const { t } = useTranslation();
   const menuRef = useRef(null);
+  const navigate = useNavigate();
   const [showMenuItem, setShowMenuItem] = useState(false);
 
   useEffect(() => {
@@ -25,6 +32,8 @@ const MyAdsCard = ({ item, imagePath, handleOpenDeleteModal}) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  console.log("activeTab", activeTab);
 
   return (
     <div className="flex bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
@@ -85,18 +94,26 @@ const MyAdsCard = ({ item, imagePath, handleOpenDeleteModal}) => {
                 <img src={deleteIcon} alt="icon" />
                 <span>Delete</span>
               </li>
-              <li
-                // onClick={() => handleSelect(item.id)}
-                className={`text-gray-700 flex items-center cursor-pointer px-2 py-1 hover:text-black border-b border-gray-200 gap-3`}
-              >
-                <img src={edit} alt="icon" /> <span>Edit</span>
-              </li>
-              <li
-                // onClick={() => handleSelect(item.id)}
-                className={`text-gray-700 flex items-center cursor-pointer px-2 py-1 hover:text-black gap-3`}
-              >
-                <img src={marksold} alt="icon" /> <span>Mark as sold</span>
-              </li>
+              {activeTab !== 3 && (
+                <li
+                  onClick={() => {
+                    navigate(`${ROUTE.UPDATE_POST}/${item.id}`, {
+                      state: { showFinalForm: true },
+                    });
+                  }}
+                  className={`text-gray-700 flex items-center cursor-pointer px-2 py-1 hover:text-black border-b border-gray-200 gap-3`}
+                >
+                  <img src={edit} alt="icon" /> <span>Edit</span>
+                </li>
+              )}
+              {activeTab !== 3 && activeTab !== 2 && (
+                <li
+                  onClick={() => handleMarkSoldPost(item.id)}
+                  className={`text-gray-700 flex items-center cursor-pointer px-2 py-1 hover:text-black gap-3`}
+                >
+                  <img src={marksold} alt="icon" /> <span>Mark as sold</span>
+                </li>
+              )}
             </ul>
           </div>
         )}

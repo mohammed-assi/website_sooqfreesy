@@ -64,6 +64,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [activeTab, setactiveTab] = useState(1);
   const [currentAction, setCurrentAction] = useState(null);
+  const [showAvailable, setShowAvailable] = useState(false);
 
   const {
     register,
@@ -334,6 +335,15 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     return () => clearInterval(interval);
   }, [timer]);
 
+  useEffect(() => {
+    if (userNameAvailable?.data?.available) {
+      setShowAvailable(true);
+      setTimeout(() => {
+        setShowAvailable(false);
+      }, 2000);
+    }
+  }, [userNameAvailable]);
+
   return (
     <div className="pt-4">
       <h3 className="font-semibold text-2xl py-6">{t("profileDetails")}</h3>
@@ -388,11 +398,12 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                   </button>
                 </div>
               )}
-              {userNameAvailable?.data?.available ? (
+              {showAvailable && (
                 <p className="text-green-500 text-sm mt-1">
                   {userNameAvailable?.message}
                 </p>
-              ) : (
+              )}
+              {!userNameAvailable?.data?.available && (
                 <p className="text-red-500 text-sm mt-1">
                   {userNameAvailable?.message}
                 </p>
@@ -564,7 +575,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 )}
               />
               <div className="absolute right-3 top-3">
-                <i className="fa-solid fa-calendar-lines fa-lg text-gray-700"/>
+                <i className="fa-solid fa-calendar-lines fa-lg text-gray-700" />
               </div>
               {errors.dob && (
                 <p className="text-red-500 text-sm mt-1">

@@ -27,7 +27,7 @@ export const ImageSlider = () => {
             className="w-full h-100 bg-cover bg-center relative flex"
             style={{ backgroundImage: `url(${item.imageUrl})` }}
           >
-            <div className="spacer-x flex flex-col justify-center items-start text-left h-full ">
+            <div className="spacer-x w-full flex flex-col justify-center items-start text-left h-full ">
               <h1 className="image-heading drop-shadow-lg">{item.title}</h1>
               <h2 className="image-subheading">{item.subtitle}</h2>
             </div>

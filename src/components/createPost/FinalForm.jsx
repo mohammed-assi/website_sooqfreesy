@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Pagination } from "swiper/modules";
 import { Controller } from "react-hook-form";
+import Autocomplete from "react-google-autocomplete";
 
 export const FinalForm = ({
   formData,
@@ -16,8 +17,17 @@ export const FinalForm = ({
   pictures,
   setValue,
   control,
+  setCoords,
+  setUserLocation,
+  setShowLocationValidation,
+  trigger,
+  userCountry,
+  setSelectedCity,
+  showLocationValidation
 }) => {
   const { t } = useTranslation();
+  const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
+  const locationRef = useRef(null);
   const fileInputRef = useRef(null);
 
   const handleButtonClick = () => {
@@ -42,8 +52,6 @@ export const FinalForm = ({
     const updated = pictures.filter((_, i) => i !== index);
     setValue("pictures", updated, { shouldValidate: true });
   };
-
-  console.log("formData", formData);
 
   return (
     <div className="flex gap-7 pt-4">
@@ -234,7 +242,7 @@ export const FinalForm = ({
             <label className="block mb-2 text-md font-semibold">
               {t("nearbyLocation")} <span className="text-red-600">*</span>
             </label>
-            <div className="input-icon-grp">
+            {/* <div className="input-icon-grp">
               <input
                 {...register("location")}
                 type="text"
@@ -244,7 +252,53 @@ export const FinalForm = ({
                 autoComplete="off"
               />
               <i className="fa-solid fa-magnifying-glass" />
+            </div> */}
+
+            <div className="input-icon-grp">
+              <Controller
+                name="location"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Autocomplete
+                    apiKey={GOOGLE_API_KEY}
+                    placeholder={t("nearbyLocation")}
+                    onPlaceSelected={(place) => {
+                      if (place?.geometry?.location) {
+                        const lat = place.geometry.location.lat();
+                        const lng = place.geometry.location.lng();
+                        const countryObj = place.address_components?.find((c) =>
+                          c.types.includes("country")
+                        );
+                        const country = countryObj ? countryObj.long_name : "";
+                        setCoords({ lat, lng, country });
+                        onChange(place.formatted_address);
+                        setUserLocation(place.formatted_address);
+                        setShowLocationValidation(false);
+                        trigger("location");
+                      }
+                    }}
+                    defaultValue={value}
+                    ref={locationRef}
+                    options={{
+                      types: ["geocode"],
+                      componentRestrictions: {
+                        country: userCountry ? userCountry.toLowerCase() : "sy",
+                      },
+                    }}
+                    onChange={() => {
+                      setSelectedCity("");
+                      setUserLocation("");
+                      setCoords({ lat: null, lng: null, country: null });
+                    }}
+                    className="w-full rounded p-3 pr-11 bg-gray-100 focus:outline-none"
+                  />
+                )}
+              />
+              <i className="fa-solid fa-magnifying-glass" />
             </div>
+            {showLocationValidation && (
+              <p className="text-red-500 text-sm">{t("locationRequired")}</p>
+            )}
             {errors.location && (
               <p className="text-red-500 text-sm">{errors.location?.message}</p>
             )}

@@ -96,11 +96,14 @@ export const OtpVerificationModal = ({
                 </span>
               ) : (
                 <button
-                  onClick={handleResend}
+                  onClick={() => {
+                    handleResend();
+                    setCode(["", "", "", ""]);
+                  }}
                   disabled={loading}
                   className="text-primary hover:underline cursor-pointer disabled:opacity-50"
                 >
-                  {t("Resend it")}
+                  {t("resendIt")}
                 </button>
               )}
             </p>

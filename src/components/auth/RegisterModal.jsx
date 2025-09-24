@@ -30,9 +30,10 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [code, setCode] = useState(["", "", "", ""]);
   const [searchTextDebounce, setSearchTextDebounce] = useSearchDebounce();
-  const [userNameAvailable, setUserNameAvailable] = useState(null);
+  const [userNameAvailable, setUserNameAvailable] = useState({});
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [showAvailable, setShowAvailable] = useState(false);
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -75,12 +76,19 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           ),
     }),
     confirmPassword: Yup.string().when("$tab", {
-      is: 2,
-      then: (schema) =>
-        schema
-          .required(t("confirmPasswordRequired"))
-          .oneOf([Yup.ref("password")], t("passwordsMustMatch")),
-    }),
+  is: 2,
+  then: (schema) =>
+    schema
+      .required(t("confirmPasswordRequired"))
+      .test(
+        "passwords-match",
+        t("passwordsMustMatch"),
+        function (value) {
+          if (!value) return true; // required() handles empty
+          return value === this.resolve(Yup.ref("password"));
+        }
+      ),
+}),
     terms: Yup.bool()
       .oneOf([true], t("termsRequired"))
       .required(t("termsRequired")),
@@ -136,12 +144,14 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         if (activeTab === 1) {
           showSuccessToast(response?.data?.message);
           setShowOtpModal(true);
-          reset();
           setLoading(false);
         } else {
           setShowConfirmationModal(true);
           showSuccessToast(response?.data?.message);
           reset();
+          setPhoneNumber(null);
+          setCountryCode(963);
+          setUserNameAvailable({});
           setLoading(false);
         }
       }
@@ -174,7 +184,6 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
 
       try {
         const response = await postRequest(apiUrl, payload);
-        console.log("response", response);
         if (response?.data?.success && response?.data?.statusCode === 200) {
           showSuccessToast(response?.data?.message);
           showLoginModal();
@@ -183,6 +192,9 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           setCode(["", "", "", ""]);
           setShowOtpModal(false);
           setLoading(false);
+          setPhoneNumber(null);
+          setCountryCode(963);
+          setUserNameAvailable({});
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
@@ -194,6 +206,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     }
   };
 
+  console.log("phoneNumber", phoneNumber);
   const handleResendOtp = async () => {
     if (timer > 0) return;
     setLoading(true);
@@ -214,6 +227,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
         setLoading(false);
+        setCode(["", "", "", ""]);
         setTimer(30);
       }
     } catch (error) {
@@ -253,6 +267,15 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     return () => clearInterval(interval);
   }, [timer]);
 
+  useEffect(() => {
+    if (userNameAvailable?.data?.available) {
+      setShowAvailable(true);
+      setTimeout(() => {
+        setShowAvailable(false);
+      }, 2000);
+    }
+  }, [userNameAvailable]);
+
   return (
     <>
       <AuthModal
@@ -285,7 +308,6 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                 onClick={() => {
                   setActiveTab(tab.id);
                   reset();
-                  setUserNameAvailable(null);
                   setPhoneNumber(null);
                   setCountryCode(963);
                   setUserNameAvailable({});
@@ -409,11 +431,12 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                       )
                     ) : null}
                   </div>
-                  {userNameAvailable?.data?.available ? (
+                  {showAvailable && (
                     <p className="text-green-500 text-sm mt-1">
                       {userNameAvailable?.message}
                     </p>
-                  ) : (
+                  )}
+                  {!userNameAvailable?.data?.available && (
                     <p className="text-red-500 text-sm mt-1">
                       {userNameAvailable?.message}
                     </p>
@@ -512,6 +535,10 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                     onClick={() => {
                       navigate(ROUTE.TERMS_CONDITIONS);
                       hide();
+                      reset();
+                      setPhoneNumber(null);
+                      setCountryCode(963);
+                      setUserNameAvailable({});
                     }}
                     className="text-primary cursor-pointer hover:underline"
                   >
@@ -545,6 +572,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                 reset();
                 setUserNameAvailable({});
                 setActiveTab(1);
+                setPhoneNumber(null);
+                setCountryCode(963);
               }}
               className="text-primary hover:underline cursor-pointer"
             >
