@@ -292,6 +292,13 @@ const resources = {
       enterNearbyLocation: "Enter location",
       createPassword: "Create password",
       hello: "Hello",
+      shareProduct: "Share Product",
+      owner: "Owner",
+      deleteTitle: "Are you sure want to delete this post?",
+      deleteButton: "Delete",
+      noButton: "No",
+      postDeleted: "Post Deleted!",
+      postDeletedSubtitle: "Your post has been removed from your listing now"
     },
   },
   ar: {

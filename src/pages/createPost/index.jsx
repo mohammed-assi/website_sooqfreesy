@@ -41,6 +41,7 @@ export const CreatePost = () => {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [userCountry, setUserCountry] = useState(null);
 
   const baseSchema = {
     country: Yup.string().required(t("countryRequired")),
@@ -528,6 +529,9 @@ export const CreatePost = () => {
               selectedCountry={selectedCountry}
               setValue={setValue}
               trigger={trigger}
+              watch={watch}
+              setUserCountry={setUserCountry}
+              userCountry={userCountry}
             />
           )}
 
@@ -565,6 +569,7 @@ export const CreatePost = () => {
         {showLandlordAgent && !showFinalForm && (
           <ChoodeLandlordAgent
             handleChooseLandlordAgent={handleChooseLandlordAgent}
+            categoryData={categoryData}
           />
         )}
 

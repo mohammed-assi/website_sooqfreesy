@@ -33,13 +33,11 @@ export const CUSTOMER = {
   GET_SELLER_PROFILE: `${BASEURL}/customer/seller-profile`,
   GET_SELLER_REVIEWS: `${BASEURL}/customer/reviews/get-seller-reviews`,
   CREATE_REVIEW: `${BASEURL}/customer/reviews/create`,
-
   GET_REVIEWS: `${BASEURL}/customer/reviews/get-customer-reviews`,
 };
 
 export const REPORT_LIST = {
   CONTACT_US: `${BASEURL}/report/report-listing`,
-
   REPORT_SELLER: `${BASEURL}/report/create-seller-report`,
   REPORT_POST: `${BASEURL}/report/create-post-report`,
 };
@@ -52,8 +50,9 @@ export const POST = {
   UNLIKE: `${BASEURL}/post/wishlist/remove-item`,
   GET_WISHLIST: `${BASEURL}/post/wishlist/get-all`,
   GET_MYADS: `${BASEURL}/post/get-customer-posts`,
-
   SELLER_POST: `${BASEURL}/post/get-seller-posts`,
+
+  DELETE: `${BASEURL}/post/delete-post`
 };
 
 export const CONTENT = {

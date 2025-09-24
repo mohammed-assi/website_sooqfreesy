@@ -22,35 +22,30 @@ import LoadingButton from "../../common/loadingButton/LoadingButton";
 export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const { t } = useTranslation();
   const schema = yup.object().shape({
-    fullName: yup.string().min(3, t("usernameMin")),
-    // .required(t("usernameRequired"))
+    fullName: yup.string().when("$action", {
+      is: "username",
+      then: (schema) =>
+        schema.min(3, t("usernameMin")).required(t("usernameRequired")),
+      otherwise: (schema) => schema.notRequired().nullable(),
+    }),
     email: yup
       .string()
-      .notRequired()
       .nullable()
       .test("is-valid-email", t("validEmail"), (value) => {
         if (!value) return true;
         return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
       }),
-    phone: yup
-      .string()
-      // .required(t("userPhoneRequired"))
-      .min(10, t("phoneInvalid")),
-    gender: yup.string(),
-    // .required(t("genderRequired"))
-    dob: yup.date(),
-    // .required(t("dobRequired"))
-  });
-
-  const {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    reset,
-    formState: { errors, dirtyFields },
-  } = useForm({
-    resolver: yupResolver(schema),
+    phone: yup.string().min(10, t("phoneInvalid")),
+    gender: yup.string().when("$action", {
+      is: "profile",
+      then: (schema) => schema.required(t("genderRequired")),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+    dob: yup.date().when("$action", {
+      is: "profile",
+      then: (schema) => schema.required(t("dobRequired")),
+      otherwise: (schema) => schema.notRequired().nullable(),
+    }),
   });
 
   const [countryCode, setCountryCode] = useState(963);
@@ -68,6 +63,19 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const [timer, setTimer] = useState(0);
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [activeTab, setactiveTab] = useState(1);
+  const [currentAction, setCurrentAction] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    reset,
+    formState: { errors, dirtyFields },
+  } = useForm({
+    resolver: (data, context, options) =>
+      yupResolver(schema)(data, { ...context, action: currentAction }, options),
+  });
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
@@ -217,8 +225,8 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   };
 
   const onSubmit = async (data, e) => {
-    setLoading(true);
     const action = e.nativeEvent.submitter.value;
+    setLoading(true);
     let payload;
     if (action === "username") {
       payload = {
@@ -227,7 +235,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     }
     if (action === "profile") {
       payload = {
-        dob: moment(data.dob).format("YYYY-MM-DD HH:mm:ss.SSS"),
+        dob: data.dob ? moment(data.dob).format("YYYY-MM-DD HH:mm:ss.SSS") : "",
         gender: data.gender,
       };
     }
@@ -374,6 +382,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                     name="action"
                     value="username"
                     className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
+                    onClick={() => setCurrentAction("username")}
                   >
                     {t("saveChangesButton")}
                   </button>
@@ -536,7 +545,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
           </div>
           <div className="flex gap-10 items-center pb-6">
             <label className="text-gray-700 w-1/5">{t("dateBirth")}</label>
-            <div className="w-4/5">
+            <div className="w-4/5 relative">
               <Controller
                 control={control}
                 name="dob"
@@ -554,6 +563,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                   />
                 )}
               />
+              <div className="absolute right-3 top-3">
+                <i className="fa-solid fa-calendar-lines fa-lg text-gray-700"/>
+              </div>
               {errors.dob && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.dob.message}
@@ -578,6 +590,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 loading={loading}
                 disabled={loading}
                 className="bg-primary text-white text-base hover:bg-primaryDark h-[56px]"
+                onClick={() => setCurrentAction("profile")}
               >
                 {t("saveChangesButton")}
               </LoadingButton>

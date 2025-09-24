@@ -4,18 +4,53 @@ import ProductListCard from "../../../components/searchPage/ProductListCard";
 import { getRequest } from "../../../config/apiFunctions";
 import { POST } from "../../../config/endPoints";
 import { ScreenLoader } from "../../../utils/screenLoader";
+import MyAdsCard from "./section/MyAdsCard";
+import { DeleteModal } from "./section/DeleteModal";
+import { InfoModal } from "../../../common/modal/InfoModal";
+import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
 
 export const MyAds = () => {
   const { t } = useTranslation();
-  const tabs = [
-    { id: 1, label: t("active") },
-    { id: 3, label: t("sold") },
-    { id: 2, label: t("reject") },
-  ];
   const [activeTab, setActiveTab] = useState(1);
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteInfoModal, setShowDeleteInfoModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
+  const tabs = [
+    {
+      id: 1,
+      label: `${t("active")} (${allPosts?.length ? allPosts?.length : 0})`,
+    },
+    { id: 3, label: `${t("sold")}` },
+    { id: 2, label: t("reject") },
+  ];
+
+  const handleOpenDeleteModal = (id) => {
+    setShowDeleteModal(true);
+    setDeleteId(id);
+  };
+
+  const handleDeletePost = async () => {
+    setDeleteLoading(true);
+    try {
+      const res = await getRequest(`${POST.DELETE}/${deleteId}`);
+
+      if (res?.data?.statusCode === 200) {
+        showSuccessToast(res?.data?.message);
+        setShowDeleteInfoModal(true);
+        setDeleteLoading(false);
+        getAllPostsCallBack();
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+      setDeleteLoading(false);
+    }
+    setDeleteLoading(false);
+  };
 
   const getAllPosts = async (url) => {
     setLoading(true);
@@ -67,11 +102,11 @@ export const MyAds = () => {
           <div className="grid grid-cols-1 gap-6">
             {allPosts?.length > 0 ? (
               allPosts.map((item) => (
-                <ProductListCard
+                <MyAdsCard
                   key={item.id}
                   item={item}
                   imagePath={imagePath}
-                  showWishlist={false}
+                  handleOpenDeleteModal={handleOpenDeleteModal}
                 />
               ))
             ) : (
@@ -81,6 +116,25 @@ export const MyAds = () => {
             )}
           </div>
         </div>
+      )}
+
+      {showDeleteModal && (
+        <DeleteModal
+          onClose={() => setShowDeleteModal(false)}
+          handleDeletePost={handleDeletePost}
+          loading={deleteLoading}
+        />
+      )}
+
+      {showDeleteInfoModal && (
+        <InfoModal
+          onClose={() => {
+            setShowDeleteInfoModal(false);
+            setShowDeleteModal(false);
+          }}
+          title={t("postDeleted")}
+          subtitle={t("postDeletedSubtitle")}
+        />
       )}
     </>
   );

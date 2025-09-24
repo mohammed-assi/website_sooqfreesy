@@ -4,7 +4,7 @@ import eyeIcon from "../../assets/icon/eye.svg";
 import shareIcon from "../../assets/icon/share.svg";
 import heart from "../../assets/icon/wishlist.svg";
 import heartFilled from "../../assets/icon/heartFilled.svg";
-import location from "../../assets/icon/silverLocation.svg";
+import locationicon from "../../assets/icon/silverLocation.svg";
 import darkLocation from "../../assets/icon/darkLocation.svg";
 import primaryBell from "../../assets/icon/primaryBell.svg";
 import bed from "../../assets/icon/bed.svg";
@@ -15,6 +15,8 @@ import floor from "../../assets/icon/floor.svg";
 import calendar from "../../assets/icon/calendar.svg";
 import report from "../../assets/icon/report.svg";
 import whitestar from "../../assets/icon/whitestar.svg";
+import whitebell from "../../assets/icon/whitebell.svg";
+import whitecheck from "../../assets/icon/whitecheck.svg";
 import defaultUser from "../../assets/icon/defaultUser.svg";
 import headerContact from "../../assets/icon/headerContact.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -26,7 +28,7 @@ import "swiper/css/thumbs";
 import { ProductCard } from "../../common/card/ProductCard";
 import { AddReviewModal } from "../../components/productDetails/AddReviewModal";
 import RatingStar from "../../common/ratingStar/RatingStar";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 import { InfoModal } from "../../common/modal/InfoModal";
 import { ReportListModal } from "../../components/productDetails/ReportListModal";
@@ -43,7 +45,9 @@ import { ScreenLoader } from "../../utils/screenLoader";
 export const ProductDetail = () => {
   const { t } = useTranslation();
   const { id } = useParams();
+  const location = useLocation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const shareURL = import.meta.env.VITE_APP_SHARE_URL;
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const { accessToken } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
@@ -51,11 +55,13 @@ export const ProductDetail = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showNotifyModal, setShowNotifyModal] = useState(false);
+  const [notified, setNotified] = useState(false);
   const [showReportListModal, setShowReportListModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const [postDetailData, setPostDetailData] = useState({});
   const [showShareModal, setShowShareModal] = useState(false);
   const [reportList, setReportList] = useState("");
+  const [shareLink, setShareLink] = useState("");
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_API_KEY,
@@ -135,6 +141,10 @@ export const ProductDetail = () => {
     getAllPostsCallBack();
   }, [accessToken]);
 
+  useEffect(() => {
+    setShareLink(`${shareURL}${location.pathname}`);
+  }, [location]);
+
   return (
     <>
       {loading ? (
@@ -153,102 +163,6 @@ export const ProductDetail = () => {
 
             <div className="py-6 overflow-hidden flex flex-col lg:flex-row">
               <div className="lg:w-2/3 w-full">
-                {/* <Swiper
-                  style={{
-                    "--swiper-navigation-color": "#00b4d8",
-                    "--swiper-pagination-color": "#00b4d8",
-                  }}
-                  loop={true}
-                  spaceBetween={10}
-                  slidesPerView={1}
-                  centeredSlides={true}
-                  navigation={true}
-                  thumbs={{ swiper: thumbsSwiper }}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                  className="mySwiper2 h-100"
-                >
-                  {postDetailData?.images?.map((item, i) => (
-                    <SwiperSlide key={i}>
-                      <img
-                        src={`${imagePath}/${item.image_url}`}
-                        alt={`Nature ${i + 1}`}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-                <Swiper
-                  onSwiper={setThumbsSwiper}
-                  loop={true}
-                  spaceBetween={10}
-                  slidesPerView={5}
-                  freeMode={true}
-                  watchSlidesProgress={true}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                  className="mySwiper h-40  mt-4 flex items-center"
-                >
-                  {postDetailData?.images?.map((item, i) => (
-                    <SwiperSlide key={i}>
-                      <img
-                        src={`${imagePath}/${item.image_url}`}
-                        alt={`Thumbnail ${i + 1}`}
-                        className="w-full h-full object-cover cursor-pointer rounded-lg"
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper> */}
-
-                {/* <Swiper
-                  style={{
-                    "--swiper-navigation-color": "#00b4d8",
-                    "--swiper-pagination-color": "#00b4d8",
-                  }}
-                  loop={true}
-                  spaceBetween={10}
-                  slidesPerView={1}
-                  centeredSlides={true}
-                  navigation={true}
-                  thumbs={{
-                    swiper:
-                      thumbsSwiper && !thumbsSwiper.destroyed
-                        ? thumbsSwiper
-                        : null,
-                  }}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                  className="mySwiper2 h-100"
-                >
-                  {postDetailData?.images?.map((item, i) => (
-                    <SwiperSlide key={i}>
-                      <img
-                        src={`${imagePath}/${item.image_url}`}
-                        alt={`Nature ${i + 1}`}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-
-                <Swiper
-                  onSwiper={setThumbsSwiper}
-                  loop={true}
-                  spaceBetween={10}
-                  slidesPerView={5}
-                  freeMode={true}
-                  watchSlidesProgress={true}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                  className="mySwiper h-40 mt-4 flex items-center"
-                >
-                  {postDetailData?.images?.map((item, i) => (
-                    <SwiperSlide key={i}>
-                      <img
-                        src={`${imagePath}/${item.image_url}`}
-                        alt={`Thumbnail ${i + 1}`}
-                        className="w-full h-full object-cover cursor-pointer rounded-lg"
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper> */}
-
                 {postDetailData?.images?.length > 0 ? (
                   <>
                     <Swiper
@@ -356,15 +270,25 @@ export const ProductDetail = () => {
                 </p>
 
                 <div className="flex items-center gap-2 text-gray-500 text-sm">
-                  <img src={location} alt="icon" />
+                  <img src={locationicon} alt="icon" />
                   {postDetailData?.nearby_location}
                 </div>
 
                 <button
-                  onClick={() => setShowNotifyModal(true)}
-                  className="w-full p-3 font-bold text-primary underline rounded-lg flex items-center justify-center gap-2 bg-gray-200"
+                  onClick={() => {
+                    setShowNotifyModal(true);
+                    setNotified(true);
+                  }}
+                  disabled={notified}
+                  className={`w-full p-3 font-bold underline rounded-lg flex items-center justify-center gap-2  ${
+                    notified
+                      ? "bg-primary text-white"
+                      : "bg-gray-200 text-primary"
+                  }`}
                 >
-                  <img src={primaryBell} alt="icon" /> {t("priceDrops")}
+                  <img src={notified ? whitebell : primaryBell} alt="icon" />{" "}
+                  {t("priceDrops")}{" "}
+                  {notified && <img src={whitecheck} alt="icon" />}
                 </button>
 
                 <div className="grid grid-cols-3 gap-3 text-sm text-gray-700">
@@ -546,7 +470,13 @@ export const ProductDetail = () => {
           )}
 
           {showShareModal && (
-            <ShareModal onClose={() => setShowShareModal(false)} />
+            <ShareModal
+              onClose={() => setShowShareModal(false)}
+              shareLink={shareLink}
+              title={postDetailData?.title}
+              description={postDetailData?.description}
+              image={`${imagePath}/${postDetailData?.images[0]?.image_url}`}
+            />
           )}
 
           <LoginModal

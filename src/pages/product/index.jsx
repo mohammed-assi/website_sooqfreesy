@@ -172,6 +172,22 @@ export const ProductPage = () => {
     getAllCategory(CUSTOMER.CATEGORY_LIST);
   }, []);
 
+  useEffect(() => {
+    if (location?.state?.categoryName && allCategory?.length) {
+      const matchedId = allCategory.find(
+        (cat) => cat.name === location.state.categoryName
+      )?.id;
+
+      if (matchedId) {
+        setFilters((prev) => ({
+          ...prev,
+          category: matchedId,
+        }));
+      }
+    }
+  }, [location?.state?.categoryName, allCategory]);
+
+
   console.log("filtersModal", filtersModal);
 
   return (
@@ -188,6 +204,7 @@ export const ProductPage = () => {
             subcategoryIds={subcategoryIds}
             setFiltersModal={setFiltersModal}
             searchText={searchText}
+            filters={filters}
           />
           <ProductFilter
             toggleGrid={toggleGrid}

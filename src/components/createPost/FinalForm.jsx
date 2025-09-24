@@ -240,7 +240,7 @@ export const FinalForm = ({
                 type="text"
                 id="location"
                 disabled
-                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                className="w-full rounded p-3 pr-11 bg-gray-100 focus:outline-none"
                 autoComplete="off"
               />
               <i className="fa-solid fa-magnifying-glass" />
@@ -258,7 +258,6 @@ export const FinalForm = ({
             </label>
             <input
               type="text"
-              disabled
               {...register("buildingNumber")}
               placeholder={t("enterbuildingStreetName")}
               className="w-full rounded p-3 bg-gray-100 focus:outline-none"
@@ -278,7 +277,6 @@ export const FinalForm = ({
             </label>
             <input
               type="text"
-              disabled
               {...register("apartmentNumber")}
               placeholder={t("enterapartmentVillaNumber")}
               className="w-full rounded p-3 bg-gray-100 focus:outline-none"
