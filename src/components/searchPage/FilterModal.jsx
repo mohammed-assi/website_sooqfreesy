@@ -9,7 +9,7 @@ export const FilterModal = ({ isOpen, onClose, onApply }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-3">
       <div className="relative bg-white rounded-xl shadow-lg w-full max-w-md p-6 z-10">
         <div>
           <h2 className="text-lg font-bold mb-4">{t("sorting")}</h2>

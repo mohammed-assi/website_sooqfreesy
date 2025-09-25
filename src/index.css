@@ -11,6 +11,12 @@
   --text-subHeading: 20px;
 }
 
+@layer utilities {
+  .container {
+    @apply max-w-[1200px] px-3 mx-auto;
+  }
+}
+
 body {
   font-family: var(--font-primary);
 }
@@ -21,12 +27,12 @@ a {
 }
 
 .spacer-x {
-  max-width: 1150px;
+  max-width: 1200px;
   padding-inline: 12px;
   margin: auto;
 }
 
-.image-heading {
+/* .image-heading {
   font-family: var(--font-heading);
   font-weight: 900;
   font-size: 55px;
@@ -39,7 +45,7 @@ a {
   font-size: 60px;
   color: #fff;
   line-height: 40px;
-}
+} */
 
 .main-heading {
   font-weight: 700;
@@ -278,9 +284,10 @@ span.search-emoji {
 @media (max-width: 1023px) {
   .menu-wrap {
     position: fixed;
-    top: 120px;
+    top: 0;
     left: 0;
-    max-height: calc(100dvh - 120px);
+    height: 100%;
+    overflow: auto;
     flex-direction: column;
     width: 300px;
     justify-content: end;

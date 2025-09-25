@@ -231,8 +231,8 @@ export const SellerProfile = () => {
             <h1 className="main-heading">{t("sellerProfile")}</h1>
 
             <div className="py-10">
-              <div className="relative flex items-center justify-between bg-white shadow-md rounded-2xl p-4 w-full">
-                <div className="flex items-center gap-4">
+              <div className="relative flex flex-wrap md:flex-nowrap items-center gap-8 bg-white shadow-md rounded-2xl p-4 w-full">
+                <div className="flex items-center gap-4 flex-shrink-0 w-full md:w-auto">
                   <img
                     src={
                       sellerProfile?.user_profile_url
@@ -240,8 +240,11 @@ export const SellerProfile = () => {
                         : defaultUser
                     }
                     alt="userImg"
-                    className="w-60 h-45 rounded-lg object-cover"
+                    className="w-full md:w-60 h-45 rounded-lg object-cover"
                   />
+                </div>
+
+                <div className="flex justify-between items-center gap-3 flex-wrap w-full">
                   <div>
                     <h3 className="text-xl font-bold pb-1">
                       {sellerProfile?.username}
@@ -251,9 +254,6 @@ export const SellerProfile = () => {
                       {t("memberSince")} 14/01/2025
                     </p>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-3">
                   <button
                     onClick={() =>
                       (window.location.href = `tel:${sellerProfile?.phone}`)

@@ -27,9 +27,9 @@ export const ImageSlider = () => {
             className="w-full h-100 bg-cover bg-center relative flex"
             style={{ backgroundImage: `url(${item.imageUrl})` }}
           >
-            <div className="spacer-x w-full flex flex-col justify-center items-start text-left h-full ">
-              <h1 className="image-heading drop-shadow-lg">{item.title}</h1>
-              <h2 className="image-subheading">{item.subtitle}</h2>
+            <div className="spacer-x w-full flex flex-col justify-end text-center text-white md:text-left h-full py-20">
+              <h1 className="image-heading font-heading font-bold text-3xl md:text-6xl drop-shadow-lg">{item.title}</h1>
+              <h2 className="image-subheading font-heading font-black text-4xl md:text-7xl">{item.subtitle}</h2>
             </div>
           </div>
         </SwiperSlide>

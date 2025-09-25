@@ -3,7 +3,7 @@ import LoadingButton from "../../../../common/loadingButton/LoadingButton";
 export const DeleteModal = ({ onClose, loading, handleDeletePost }) => {
   const { t } = useTranslation();
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-3">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
         <div className=" flex flex-col items-center justify-center">
           <h3 className="font-bold text-xl pt-6">{t("deleteTitle")}</h3>
@@ -22,7 +22,7 @@ export const DeleteModal = ({ onClose, loading, handleDeletePost }) => {
 
           <button
             onClick={onClose}
-            className="w-full bg-white border-2 border-primary h-[50px] text-primary hover:bg-primary hover:text-white transition rounded-lg font-medium transition"
+            className="w-full bg-white border-2 border-primary h-[50px] text-primary hover:bg-primary hover:text-white rounded-lg font-medium transition"
           >
             {t("noButton")}
           </button>

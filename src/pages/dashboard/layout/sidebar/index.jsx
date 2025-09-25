@@ -7,7 +7,7 @@ import { ROUTE } from "../../../../config/constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const Sidebar = () => {
+const Sidebar = ({...props}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,7 +43,7 @@ const Sidebar = () => {
   }, [location.pathname]);
 
   return (
-    <aside className="w-64 shadow-md h-[calc(100vh-110px)] sticky top-[120px] pt-6">
+    <aside className="w-64 shadow-md h-full lg:h-[calc(100vh-110px)] fixed top-[100px] lg:sticky lg:top-[120px] pt-6 z-10 bg-white transform lg:transform-none -translate-x-full lg:translate-x-0 transition-transform" {...props}>
       <nav className="flex flex-col">
         {menuItems.map((item) => (
           <button
@@ -53,10 +53,9 @@ const Sidebar = () => {
               navigate(item.slug);
             }}
             className={`flex items-center gap-3 px-5 py-4 text-left font-medium transition 
-              ${
-                active === item.value
-                  ? "bg-cyan-100 border-l-5 border-primary text-black"
-                  : "hover:bg-gray-100 text-gray-700"
+              ${active === item.value
+                ? "bg-cyan-100 border-l-5 border-primary text-black"
+                : "hover:bg-gray-100 text-gray-700"
               }`}
           >
             <span className="text-lg">

@@ -16,8 +16,8 @@ const ProductListCard = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="flex bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
-      <div className="relative w-3/6">
+    <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
+      <div className="relative w-full md:w-3/6">
         {/* <Swiper
           pagination={{
             dynamicBullets: true,
@@ -66,7 +66,7 @@ const ProductListCard = ({
         )}
       </div>
 
-      <div className="w-3/6 p-4 relative">
+      <div className="w-full md:w-3/6 p-4 relative">
         <Link to={`${ROUTE.PRODUCT_PAGE}/${item.id}`}>
           <span className="absolute top-3 right-3 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full">
             {item.sub_categoryName}

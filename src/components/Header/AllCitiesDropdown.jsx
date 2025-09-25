@@ -41,14 +41,14 @@ export const AllCitiesDropdown = () => {
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 cursor-pointer"
+        className="flex items-center gap-2 cursor-pointer text-xs md:text-sm"
       >
         {selectedCity.label}
         <i className="fa-solid fa-angle-down fa-sm ml-auto" />
       </button>
 
       {open && (
-        <div className="absolute top-6 -right-15 mt-2 w-60 rounded-md bg-white shadow-lg border p-2 z-50">
+        <div className="absolute top-6 -left-6 lg:-right-15 mt-2 w-60 rounded-md bg-white shadow-lg border p-2 z-50">
           <p className="text-black text-bold text-sm mb-2">
             {t("chooseCity")}
           </p>

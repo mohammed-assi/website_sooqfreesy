@@ -4,7 +4,7 @@ export const AuthModal = ({ show, hide, title, subtitle, children }) => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-3">
       <div className="w-full flex justify-center ">
         <div className="relative w-full my-10 max-h-[100dvh] py-[30px] overflow-y-auto">
       <div className="bg-white w-full max-w-[1000px] rounded-xl shadow-lg overflow-hidden flex relative mx-auto">

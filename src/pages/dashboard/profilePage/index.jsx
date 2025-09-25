@@ -61,10 +61,10 @@ export const ProfilePage = () => {
       {loading ? (
         <ScreenLoader />
       ) : (
-        <div className="p-5">
+        <div className="lg:p-5">
           <h1 className="main-heading">{t("myProfile")}</h1>
           <div className="py-10">
-            <div className="relative flex items-center justify-between bg-white shadow-md rounded-2xl p-4 w-full">
+            <div className="relative flex flex-wrap items-center gap-8 bg-white shadow-md rounded-2xl p-4 w-full">
               <div className="flex items-center gap-8">
                 <img
                   src={
@@ -73,8 +73,9 @@ export const ProfilePage = () => {
                       : defaultUser
                   }
                   alt="userImg"
-                  className="w-60 h-45 rounded-lg object-cover"
+                  className="h-full lg:w-60 lg:h-45 rounded-lg object-cover"
                 />
+              </div>
                 <div>
                   <h3 className="text-2xl font-bold pb-3">
                     {userInfo?.username || t("hello")}
@@ -85,7 +86,6 @@ export const ProfilePage = () => {
                     {moment(userInfo?.created_at).format("MM/DD/YYYY")}
                   </p>
                 </div>
-              </div>
             </div>
           </div>
 
@@ -94,7 +94,7 @@ export const ProfilePage = () => {
               <p
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`relative cursor-pointer pb-2 px-10 text-lg font-semibold  transition-colors ${
+                className={`relative cursor-pointer pb-2 px-4 md:px-10 text-sm md:text-lg font-semibold  transition-colors ${
                   activeTab === tab.id
                     ? "text-primary"
                     : "text-gray-600 hover:text-primary"

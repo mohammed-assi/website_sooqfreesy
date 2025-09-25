@@ -36,8 +36,8 @@ const MyAdsCard = ({
   console.log("activeTab", activeTab);
 
   return (
-    <div className="flex bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
-      <div className="relative w-3/6">
+    <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
+      <div className="relative w-full md:w-3/6">
         {item?.images?.length > 0 ? (
           <Swiper pagination={{ dynamicBullets: true }} modules={[Pagination]}>
             {item.images.map((img, index) => (
@@ -57,7 +57,7 @@ const MyAdsCard = ({
         )}
       </div>
 
-      <div className="w-3/6 p-4 relative">
+      <div className="w-full md:w-3/6 p-4 relative">
         <Link to={`${ROUTE.PRODUCT_PAGE}/${item.id}`}>
           <h2 className="text-2xl font-bold text-gray-900">${item.price}</h2>
 

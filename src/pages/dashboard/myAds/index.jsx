@@ -96,7 +96,7 @@ export const MyAds = () => {
               <p
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`relative cursor-pointer pb-2 px-10 text-lg font-semibold  transition-colors ${
+                className={`relative cursor-pointer pb-2 px-4 md:px-10 text-sm md:text-lg font-semibold transition-colors ${
                   activeTab === tab.id
                     ? "text-primary"
                     : "text-gray-600 hover:text-primary"

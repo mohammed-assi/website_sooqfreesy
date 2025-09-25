@@ -71,7 +71,7 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
             <p className="text-sm text-gray-800">
               {" "}
               {item?.description?.length > 50
-                ? `${item.description.slice(0, 60)}...`
+                ? `${item.description.slice(0, 50)}...`
                 : item.description}
             </p>
             <div className="flex items-center gap-2 text-gray-500 text-sm mt-3">
