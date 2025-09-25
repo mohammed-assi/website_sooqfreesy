@@ -68,7 +68,12 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
           </div>
           <div className="text-start space-y-1">
             <h3 className="font-semibold">{item?.title}</h3>
-            <p className="text-sm text-gray-800">{item?.description}</p>
+            <p className="text-sm text-gray-800">
+              {" "}
+              {item?.description?.length > 50
+                ? `${item.description.slice(0, 60)}...`
+                : item.description}
+            </p>
             <div className="flex items-center gap-2 text-gray-500 text-sm mt-3">
               <img src={location} alt="icon" />
               {item?.nearby_location}

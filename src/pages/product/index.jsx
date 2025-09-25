@@ -142,7 +142,13 @@ export const ProductPage = () => {
   }, [location, navigate]);
 
   useEffect(() => {
-    getAllPostsCallBack();
+    const handler = setTimeout(() => {
+      getAllPostsCallBack();
+    }, 1000); 
+
+    return () => {
+      clearTimeout(handler);
+    };
   }, [
     currentPage,
     filters,
@@ -187,7 +193,6 @@ export const ProductPage = () => {
     }
   }, [location?.state?.categoryName, allCategory]);
 
-
   console.log("filtersModal", filtersModal);
 
   return (
@@ -218,6 +223,7 @@ export const ProductPage = () => {
             filters={filters}
             handleLikeUnlikePost={handleLikeUnlikePost}
             setSearchTextDebounce={setSearchTextDebounce}
+            searchTextDebounce={searchTextDebounce}
           />
 
           <LoginModal

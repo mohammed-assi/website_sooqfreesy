@@ -77,7 +77,9 @@ const ProductListCard = ({
           <h3 className="text-xl font-bold text-gray-800 mt-3">{item.title}</h3>
 
           <p className="text-sm text-gray-700 mt-2 line-clamp-2">
-            {item.description}
+            {item?.description?.length > 50
+              ? `${item.description.slice(0, 60)}...`
+              : item.description}
           </p>
 
           <div className="flex items-center gap-2 text-gray-500 text-sm pt-2">
