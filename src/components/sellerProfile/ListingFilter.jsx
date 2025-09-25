@@ -16,7 +16,7 @@ export const ListingFilter = ({
   setModalFilter,
   allPosts,
   handleLikeUnlikePost,
-  setSearchTextDebounce
+  setSearchTextDebounce,
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("listing");
@@ -27,13 +27,11 @@ export const ListingFilter = ({
     { id: "reviews", label: t("reviewss") },
   ];
 
-  const breakdown = {
-    5: 80,
-    4: 20,
-    3: 10,
-    2: 5,
-    1: 5,
-  };
+  const breakdown = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+  sellerReviews?.ratingsBreakdown?.forEach((item) => {
+    breakdown[item.rating] = item.count;
+  });
 
   return (
     <div className="w-full">
@@ -100,15 +98,15 @@ export const ListingFilter = ({
           <div className="grid grid-cols-1 lg:grid-cols-[38%_62%] gap-6">
             <aside className="space-y-6">
               <RatingSummary
-                average={4.5}
-                totalReviews={120}
+                average={sellerReviews?.averageRating}
+                totalReviews={sellerReviews?.count}
                 breakdown={breakdown}
               />
             </aside>
 
             <div>
               <SellerReviews
-                sellerReviews={sellerReviews}
+                sellerReviews={sellerReviews?.reviews}
                 imagePath={imagePath}
               />
             </div>

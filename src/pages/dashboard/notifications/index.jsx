@@ -3,38 +3,19 @@ import defaultUser from "../../../assets/icon/defaultUser.svg";
 import notificationSetting from "../../../assets/icon/notificationSetting.svg";
 import SettingModal from "../../../components/notification/SettingModal";
 import { useTranslation } from "react-i18next";
-import { CUSTOMER } from "../../../config/endPoints";
+import { CUSTOMER, NOTIFICATION } from "../../../config/endPoints";
 import { showErrorToast } from "../../../utils/toastUtils";
 import { getRequest } from "../../../config/apiFunctions";
 import { ScreenLoader } from "../../../utils/screenLoader";
+import moment from "moment/moment";
 
 export const Notifictions = () => {
   const { t } = useTranslation();
+  const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const [loading, setLoading] = useState(false);
-  const notitfications = [
-    {
-      imageUrl: defaultUser,
-      text: "Lorem ipsum dolor sit amet consectetur. Blandit lobortis non mi non in mi vitae proin. Sit scelerisque cras donec magna dictum. Pharetra nibh tellus elementum convallis turpis urna dapibus turpis. Faucibus arcu laoreet faucibus libero. Volutpat suspendisse egestas mi id nullam imperdiet nunc. Amet risus enim eu vulputate sit mauris lacus velit magnis. Sed sapien ornare sit in.",
-      time: "1 hr ago",
-    },
-    {
-      imageUrl: defaultUser,
-      text: "Lorem ipsum dolor sit amet consectetur. Blandit lobortis non mi non in mi vitae proin.",
-      time: "2 hr ago",
-    },
-    {
-      imageUrl: defaultUser,
-      text: "Lorem ipsum dolor sit amet consectetur. Blandit lobortis non mi non in mi vitae proin. Sit scelerisque cras donec magna dictum. Pharetra nibh tellus elementum convallis turpis urna dapibus turpis. Amet risus enim eu vulputate sit mauris lacus velit magnis. Sed sapien ornare sit in.",
-      time: "3 hr ago",
-    },
-    {
-      imageUrl: defaultUser,
-      text: "Lorem ipsum dolor sit amet consectetur. Blandit lobortis non mi non in mi vitae proin. Sit scelerisque cras donec magna dictum. Pharetra nibh tellus elementum convallis turpis urna dapibus turpis. Faucibus arcu laoreet faucibus libero. Volutpat suspendisse egestas mi id nullam imperdiet nunc.",
-      time: "4 hr ago",
-    },
-  ];
   const [showSettingModal, setShowSetttingModal] = useState(false);
   const [notificationSettingsData, setNotificationSettingData] = useState({});
+  const [notificationList, setNotificationList] = useState([]);
 
   const getNotificationSettingData = async (url) => {
     setLoading(true);
@@ -55,9 +36,32 @@ export const Notifictions = () => {
     getNotificationSettingData(CUSTOMER.GET_NOTIFICATION_SETTNGS);
   };
 
+  const getNotificationData = async (url) => {
+    setLoading(true);
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        console.log("response", response);
+        setNotificationList(response?.data?.data);
+        setLoading(false);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+      setLoading(false);
+    }
+    setLoading(false);
+  };
+
+  const getgetNotificationDataCallback = () => {
+    getNotificationData(NOTIFICATION.GET);
+  };
+
   useEffect(() => {
     getNotificationSettingDataCallback();
+    getgetNotificationDataCallback();
   }, []);
+
+  console.log("notificationList", notificationList);
 
   return (
     <>
@@ -72,19 +76,29 @@ export const Notifictions = () => {
             </button>
           </div>
           <div className="py-8 grid grid-cols-1 gap-6">
-            {notitfications.map((item, i) => (
+            {notificationList?.map((item, i) => (
               <div
                 key={i}
-                className="flex items-start gap-5 shadow-md rounded-md px-4 py-6"
+                className="flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6"
               >
-                <img
-                  src={item.imageUrl}
-                  alt="imageess"
-                  className="h-12 w-12 object-cover rounded-full flex-shrink-0"
-                />
-                <p className="text-gray-600 w-full">{item.text}</p>
+                <div className="flex gap-5">
+                  <img
+                    src={
+                      item.user_profile_url
+                        ? `${imagePath}${item.user_profile_url}`
+                        : defaultUser
+                    }
+                    alt="imageess"
+                    className="h-12 w-12 object-cover rounded-full flex-shrink-0"
+                  />
+
+                  <div>
+                    <p className="w-full text-lg">{item.title}</p>
+                    <p className="text-gray-600 w-full">{item.message}</p>
+                  </div>
+                </div>
                 <p className="text-gray-600 text-base w-[100px] text-right">
-                  {item.time}
+                  {moment(item.created_at).fromNow()}
                 </p>
               </div>
             ))}

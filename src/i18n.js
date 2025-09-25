@@ -288,7 +288,6 @@ const resources = {
       enterDescription: "Enter description here",
       enterFullName: "Enter full name",
       selectDate: "Select date",
-
       enterNearbyLocation: "Enter location",
       createPassword: "Create password",
       hello: "Hello",
@@ -301,7 +300,8 @@ const resources = {
       postDeletedSubtitle: "Your post has been removed from your listing now",
       resendIt: "Resend it",
       enterCityField: "Enter city",
-      enterStateField: "Enter state"
+      enterStateField: "Enter state",
+      usernameAlphaNumOnly: "Username can only contain letters and numbers",
     },
   },
   ar: {
@@ -584,6 +584,20 @@ const resources = {
       enterDescription: "أدخل الوصف هنا",
       enterFullName: "أدخل الاسم الكامل",
       selectDate: "اختر التاريخ",
+      enterNearbyLocation: "أدخل الموقع",
+      createPassword: "إنشاء كلمة المرور",
+      hello: "مرحباً",
+      shareProduct: "مشاركة المنتج",
+      owner: "المالك",
+      deleteTitle: "هل أنت متأكد أنك تريد حذف هذا المنشور؟",
+      deleteButton: "حذف",
+      noButton: "لا",
+      postDeleted: "تم حذف المنشور!",
+      postDeletedSubtitle: "تمت إزالة منشورك من قائمتك الآن",
+      resendIt: "إعادة الإرسال",
+      enterCityField: "أدخل المدينة",
+      enterStateField: "أدخل الولاية",
+      usernameAlphaNumOnly: "يمكن لاسم المستخدم أن يحتوي على أحرف وأرقام فقط",
     },
   },
 };

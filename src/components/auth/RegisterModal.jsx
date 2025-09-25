@@ -16,6 +16,7 @@ import LoadingButton from "../../common/loadingButton/LoadingButton";
 import { ROUTE } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
 import verified from "../../assets/icon/verified.svg";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const { t } = useTranslation();
@@ -34,6 +35,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
   const [showAvailable, setShowAvailable] = useState(false);
+  const [countryMeta, setCountryMeta] = useState({
+    code: "sy",
+    min: 9,
+    max: 9,
+  });
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -46,13 +52,27 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
       then: (schema) =>
         schema
           .required(t("userPhoneRequired"))
-          .min(10, t("phoneInvalid"))
-          .max(12, t("phoneInvalid")),
+          .test("is-valid", t("phoneInvalid"), function (value) {
+            if (!value) return false;
+
+            try {
+              const phoneNumber = parsePhoneNumberFromString(
+                value,
+                countryMeta.code.toUpperCase()
+              );
+              return phoneNumber?.isValid() || false;
+            } catch {
+              return false;
+            }
+          }),
     }),
     username: Yup.string().when("$tab", {
       is: 2,
       then: (schema) =>
-        schema.required(t("usernameRequired")).min(3, t("usernameMin")),
+        schema
+          .required(t("usernameRequired"))
+          .min(3, t("usernameMin"))
+          .matches(/^[a-zA-Z0-9]+$/, t("usernameAlphaNumOnly")),
     }),
     email: Yup.string().when("$tab", {
       is: 2,
@@ -76,19 +96,15 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           ),
     }),
     confirmPassword: Yup.string().when("$tab", {
-  is: 2,
-  then: (schema) =>
-    schema
-      .required(t("confirmPasswordRequired"))
-      .test(
-        "passwords-match",
-        t("passwordsMustMatch"),
-        function (value) {
-          if (!value) return true; // required() handles empty
-          return value === this.resolve(Yup.ref("password"));
-        }
-      ),
-}),
+      is: 2,
+      then: (schema) =>
+        schema
+          .required(t("confirmPasswordRequired"))
+          .test("passwords-match", t("passwordsMustMatch"), function (value) {
+            if (!value) return true; // required() handles empty
+            return value === this.resolve(Yup.ref("password"));
+          }),
+    }),
     terms: Yup.bool()
       .oneOf([true], t("termsRequired"))
       .required(t("termsRequired")),
@@ -370,6 +386,9 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                         dropdownClass="custom-dropdown"
                         onChange={(value, country) => {
                           setCountryCode(country?.dialCode);
+                          setCountryMeta({
+                            code: country?.countryCode?.toUpperCase(),
+                          });
                         }}
                       />
                       <span className="ml-1 me-3">+{countryCode}</span>
@@ -387,6 +406,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                       onChange={(e) => {
                         const onlyNums = e.target.value.replace(/\D/g, "");
                         setPhoneNumber(onlyNums);
+                        setValue("phone", onlyNums, { shouldValidate: true });
                       }}
                       className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
                       placeholder={t("enterPhoneNo")}

@@ -13,6 +13,7 @@ export const MyAds = () => {
   const [activeTab, setActiveTab] = useState(1);
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const [allPosts, setAllPosts] = useState([]);
+  const [postcounts, setPostCounts] = useState({});
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -22,11 +23,10 @@ export const MyAds = () => {
   const tabs = [
     {
       id: 1,
-      // label: `${t("active")} (${allPosts?.length ? allPosts?.length : 0})`,
-      label: `${t("active")}`,
+      label: `${t("active")} (${postcounts?.APPROVED})`,
     },
-    { id: 3, label: `${t("sold")}` },
-    { id: 2, label: t("reject") },
+    { id: 3, label: `${t("sold")} (${postcounts?.SOLD})` },
+    { id: 2, label: `${t("reject")} (${postcounts?.REJECTED})` },
   ];
 
   const handleOpenDeleteModal = (id) => {
@@ -69,6 +69,7 @@ export const MyAds = () => {
     setLoading(true);
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
+      setPostCounts(response?.data?.data?.statusCounts);
       setAllPosts(response?.data?.data?.posts);
       setLoading(false);
     }

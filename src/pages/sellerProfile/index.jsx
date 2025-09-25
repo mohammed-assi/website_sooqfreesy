@@ -16,6 +16,7 @@ import LoginModal from "../../components/auth/LoginModal";
 import { ScreenLoader } from "../../utils/screenLoader";
 import useSearchDebounce from "../../utils/searchDebounce";
 import { ROUTE } from "../../config/constants";
+import moment from "moment";
 
 export const SellerProfile = () => {
   const { t } = useTranslation();
@@ -206,6 +207,7 @@ export const SellerProfile = () => {
 
   console.log("sellerProfile", sellerProfile);
   console.log("modalFilter", modalFilter);
+  console.log("sellerReviews", sellerReviews);
 
   return (
     <>
@@ -246,9 +248,10 @@ export const SellerProfile = () => {
                     <h3 className="text-xl font-bold pb-1">
                       {sellerProfile?.username}
                     </h3>
-                    <RatingStar starValue={4.5} />
+                    <RatingStar starValue={sellerProfile?.averageRating} />
                     <p className="text-sm text-gray-500 pt-5">
-                      {t("memberSince")} 14/01/2025
+                      {t("memberSince")}{" "}
+                      {moment(sellerProfile?.created_at).format("MM/DD/yyyy")}
                     </p>
                   </div>
                 </div>
@@ -275,7 +278,13 @@ export const SellerProfile = () => {
                   {showReportButton && (
                     <div className="absolute top-12 right-4 z-10">
                       <button
-                        onClick={() => setShowReportListModal(true)}
+                        onClick={() => {
+                          if (accessToken) {
+                            setShowReportListModal(true);
+                          } else {
+                            setShowLoginModal(true);
+                          }
+                        }}
                         className="rounded-md shadow-md text-gray-700 bg-white p-4 flex items-center gap-2"
                       >
                         <img

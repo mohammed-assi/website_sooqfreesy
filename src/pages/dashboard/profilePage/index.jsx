@@ -25,13 +25,13 @@ export const ProfilePage = () => {
     { id: "reviews", label: t("ratingReviews") },
   ];
 
-  const breakdown = {
-    5: 80,
-    4: 20,
-    3: 10,
-    2: 5,
-    1: 5,
-  };
+  // const breakdown = {
+  //   5: 80,
+  //   4: 20,
+  //   3: 10,
+  //   2: 5,
+  //   1: 5,
+  // };
 
   const getReviewsData = async (url) => {
     setLoading(true);
@@ -56,6 +56,12 @@ export const ProfilePage = () => {
     getReviewsCallback();
   }, []);
 
+  const breakdown = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+  reviewsList?.ratingsBreakdown?.forEach((item) => {
+    breakdown[item.rating] = item.count;
+  });
+
   return (
     <>
       {loading ? (
@@ -79,7 +85,12 @@ export const ProfilePage = () => {
                   <h3 className="text-2xl font-bold pb-3">
                     {userInfo?.username || t("hello")}
                   </h3>
-                  <RatingStar starValue={4.5} />
+                  {reviewsList?.averageRating && (
+                    <div className="flex gap-3">
+                      <RatingStar starValue={reviewsList?.averageRating} />{" "}
+                      <p>({reviewsList?.averageRating})</p>
+                    </div>
+                  )}
                   <p className="text-base text-[#808080] pt-7">
                     {t("memberSince")}{" "}
                     {moment(userInfo?.created_at).format("MM/DD/YYYY")}
@@ -120,16 +131,28 @@ export const ProfilePage = () => {
           {activeTab === "reviews" && (
             <div className="pt-4">
               <h3 className="font-bold text-2xl py-6">{t("ratingReviews")}</h3>
-              <div className="border-b-2 border-gray-200 pb-4">
-                <RatingSummary
-                  average={4.5}
-                  totalReviews={120}
-                  breakdown={breakdown}
-                />
-              </div>
-              <div className="pt-4">
-                <SellerReviews sellerReviews={reviewsList} imagePath={imagePath} />
-              </div>
+
+              {reviewsList?.reviews?.length ? (
+                <>
+                  <div className="border-b-2 border-gray-200 pb-4">
+                    <RatingSummary
+                      average={reviewsList?.averageRating}
+                      totalReviews={reviewsList?.count}
+                      breakdown={breakdown}
+                    />
+                  </div>
+                  <div className="pt-4">
+                    <SellerReviews
+                      sellerReviews={reviewsList?.reviews}
+                      imagePath={imagePath}
+                    />
+                  </div>
+                </>
+              ) : (
+                <p className="text-gray-500 text-center text-lg pt-4">
+                  {t("noDataFound")}
+                </p>
+              )}
             </div>
           )}
         </div>

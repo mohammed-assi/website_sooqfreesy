@@ -61,3 +61,7 @@ export const POST = {
 export const CONTENT = {
   GET: `${BASEURL}/content/get-by-type`,
 };
+
+export const NOTIFICATION = {
+  GET: `${BASEURL}/notification/get-all`,
+};

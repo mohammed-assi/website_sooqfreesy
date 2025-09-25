@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const AddReviewModal = ({ onClose, postDetailData }) => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
   const [rating, setRating] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,8 +24,7 @@ export const AddReviewModal = ({ onClose, postDetailData }) => {
       const payload = {
         seller_id: postDetailData?.user?.userid,
         rating: rating,
-        review_text:
-          i18n.language === "ar" ? { ar: feedback } : { en: feedback },
+        review_text: feedback,
       };
       try {
         const response = await postRequest(CUSTOMER.CREATE_REVIEW, payload);
@@ -88,7 +87,7 @@ export const AddReviewModal = ({ onClose, postDetailData }) => {
             onChange={(e) => setFeedback(e.target.value)}
             rows={6}
             className="w-full bg-gray-100 rounded-lg p-3 text-sm mb-4 outline-none resize-none"
-            placeholder={t('writeFeedback')}
+            placeholder={t("writeFeedback")}
           />
 
           <LoadingButton

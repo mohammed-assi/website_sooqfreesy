@@ -4,20 +4,19 @@ import { useTranslation } from "react-i18next";
 
 const RatingSummary = ({ average, totalReviews, breakdown }) => {
   const { t } = useTranslation();
-  const maxCount = Math.max(...Object.values(breakdown));
 
   return (
     <div className="w-full">
       <h2 className="text-xl font-bold mb-2">
         {t("ratings")}{" "}
         <span className="text-sm text-gray-500 mb-6">
-          ({t('basedOn')} {totalReviews} {t("reviews")})
+          ({t("basedOn")} {totalReviews} {t("reviews")})
         </span>
       </h2>
 
       <div className="flex items-center gap-6 py-3">
         <div className="text-center">
-          <p className="text-[56px] font-bold">{average.toFixed(1)}</p>
+          <p className="text-[56px] font-bold">{average}</p>
           <RatingStar starValue={4.5} />
         </div>
 
@@ -25,8 +24,8 @@ const RatingSummary = ({ average, totalReviews, breakdown }) => {
           {Object.keys(breakdown)
             .sort((a, b) => b - a)
             .map((star) => {
-              const count = breakdown[star];
-              const percentage = (count / maxCount) * 100;
+              const count = breakdown[star] || 0;
+              const percentage = totalReviews > 0 ? (count / 100) * 100 : 0;
 
               let barColor = "bg-gray-200";
               if (star === "5") barColor = "bg-cyan-500";

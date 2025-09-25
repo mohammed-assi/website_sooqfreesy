@@ -387,7 +387,7 @@ export const EditPost = () => {
 
   useEffect(() => {
     if (categoryData) {
-      getSubCategory(`${CUSTOMER.GET_SUBCATEGORY}/${categoryData.id}`);
+      getSubCategory(`${CUSTOMER.GET_SUBCATEGORY}/${categoryData.id}?onlyWithForms=true`);
     }
   }, [categoryData]);
 
@@ -447,7 +447,7 @@ export const EditPost = () => {
         `${CUSTOMER.GET_FORM_DATA}?category_id=${postDetailData?.category_id}&sub_category_id=${postDetailData?.sub_category_id}`
       );
       getSubCategory(
-        `${CUSTOMER.GET_SUBCATEGORY}/${postDetailData?.category_id}`
+        `${CUSTOMER.GET_SUBCATEGORY}/${postDetailData?.category_id}?onlyWithForms=true`
       );
     }
   }, [postDetailData]);

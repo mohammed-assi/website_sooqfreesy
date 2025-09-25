@@ -18,6 +18,11 @@ import useSearchDebounce from "../../utils/searchDebounce";
 import { OtpVerificationModal } from "../auth/OtpVerificationModal";
 import moment from "moment";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
+import {
+  getCountries,
+  getCountryCallingCode,
+  parsePhoneNumberFromString,
+} from "libphonenumber-js";
 
 export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const { t } = useTranslation();
@@ -25,7 +30,10 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     fullName: yup.string().when("$action", {
       is: "username",
       then: (schema) =>
-        schema.min(3, t("usernameMin")).required(t("usernameRequired")),
+        schema
+          .min(3, t("usernameMin"))
+          .required(t("usernameRequired"))
+          .matches(/^[a-zA-Z0-9]+$/, t("usernameAlphaNumOnly")),
       otherwise: (schema) => schema.notRequired().nullable(),
     }),
     email: yup
@@ -35,7 +43,19 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
         if (!value) return true;
         return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
       }),
-    phone: yup.string().min(10, t("phoneInvalid")),
+    phone: yup.string().test("is-valid", t("phoneInvalid"), function (value) {
+      if (!value) return false;
+
+      try {
+        const phoneNumber = parsePhoneNumberFromString(
+          value,
+          countryMeta.code.toUpperCase()
+        );
+        return phoneNumber?.isValid() || false;
+      } catch {
+        return false;
+      }
+    }),
     gender: yup.string().when("$action", {
       is: "profile",
       then: (schema) => schema.required(t("genderRequired")),
@@ -65,6 +85,11 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const [activeTab, setactiveTab] = useState(1);
   const [currentAction, setCurrentAction] = useState(null);
   const [showAvailable, setShowAvailable] = useState(false);
+  const [countryMeta, setCountryMeta] = useState({
+    code: "sy",
+    min: 9,
+    max: 9,
+  });
 
   const {
     register,
@@ -72,6 +97,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     control,
     setValue,
     reset,
+    trigger,
     formState: { errors, dirtyFields },
   } = useForm({
     resolver: (data, context, options) =>
@@ -80,6 +106,14 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
+  };
+
+  const getCountryCodeFromDialCode = (dialCode) => {
+    const countries = getCountries(); // returns all ISO country codes
+    for (let c of countries) {
+      if (getCountryCallingCode(c) === dialCode) return c;
+    }
+    return null;
   };
 
   const handleFileChange = async (event) => {
@@ -322,6 +356,11 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
       setValue("phone", userInfo?.phone);
       setCountryCode(cleanCode);
       setPhoneNumber(userInfo?.phone);
+      setCountryMeta({
+        code: getCountryCodeFromDialCode(cleanCode) || "sy",
+        min: 5, // optional, default min
+        max: 15, // optional, default max
+      });
     }
   }, [userInfo, setValue]);
 
@@ -467,6 +506,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                       dropdownClass="custom-dropdown"
                       onChange={(value, country) => {
                         setCountryCode(country?.dialCode);
+                        setCountryMeta({
+                          code: country?.countryCode?.toUpperCase(),
+                        });
                       }}
                     />
                     <span className="ml-1 me-3">+{countryCode}</span>
@@ -481,6 +523,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                     onChange={(e) => {
                       const onlyNums = e.target.value.replace(/\D/g, "");
                       setPhoneNumber(onlyNums);
+                      setValue("phone", onlyNums, { shouldValidate: true });
                     }}
                     className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
                     placeholder={t("enterPhoneNo")}
@@ -502,9 +545,16 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               {phoneNumber !== userInfo?.phone && phoneNumber?.length > 0 && (
                 <div className="absolute right-0 top-0 h-full">
                   <button
-                    onClick={() => handleVerifyMailNumber("phone")}
+                    onClick={async () => {
+                      const isValid = await trigger("phone");
+                      if (isValid) {
+                        handleVerifyMailNumber("phone");
+                      } else {
+                        console.log("Phone number is invalid");
+                      }
+                    }}
                     type="button"
-                    className="h-full px-4 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
+                    className="h-[48px] px-4 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
                   >
                     {t("verifyPhoneButton")}
                   </button>

@@ -36,6 +36,8 @@ export const Banner = () => {
   const goToProductPage = () => {
     if (searchValue !== "") {
       navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: searchValue } });
+    } else {
+      navigate(ROUTE.PRODUCT_PAGE);
     }
   };
   return (
@@ -63,7 +65,6 @@ export const Banner = () => {
           />
           <button
             onClick={goToProductPage}
-            disabled={searchValue === ""}
             className="flex gap-3 items-center text-white bg-primary px-3 rounded-tr rounded-br cursor-pointer"
           >
             <i className="fa-regular fa-magnifying-glass" />

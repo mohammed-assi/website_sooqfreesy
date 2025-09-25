@@ -16,6 +16,7 @@ import { login } from "../../redux/slices/authSlice";
 import axios from "axios";
 import { setUser } from "../../redux/slices/userSlice";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 function LoginModal({ show, hide, setShowLoginModal }) {
   const { t } = useTranslation();
@@ -30,6 +31,11 @@ function LoginModal({ show, hide, setShowLoginModal }) {
   const [code, setCode] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [countryMeta, setCountryMeta] = useState({
+    code: "sy",
+    min: 9,
+    max: 9,
+  });
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -40,7 +46,21 @@ function LoginModal({ show, hide, setShowLoginModal }) {
     phone: Yup.string().when("$tab", {
       is: 1,
       then: (schema) =>
-        schema.required(t("userPhoneRequired")).min(10, t("phoneInvalid")),
+        schema
+          .required(t("userPhoneRequired"))
+          .test("is-valid", t("phoneInvalid"), function (value) {
+            if (!value) return false;
+
+            try {
+              const phoneNumber = parsePhoneNumberFromString(
+                value,
+                countryMeta.code.toUpperCase()
+              );
+              return phoneNumber?.isValid() || false;
+            } catch {
+              return false;
+            }
+          }),
     }),
     username: Yup.string().when("$tab", {
       is: 2,
@@ -56,10 +76,14 @@ function LoginModal({ show, hide, setShowLoginModal }) {
     handleSubmit,
     register,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     context: { tab: activeTab },
+    defaultValues: {
+      phone: "",
+    },
   });
 
   const handlepass = () => {
@@ -179,7 +203,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
-        setCode(["", "", "", ""])
+        setCode(["", "", "", ""]);
         setTimer(30);
       }
     } catch (error) {
@@ -285,6 +309,9 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                         dropdownClass="custom-dropdown"
                         onChange={(value, country) => {
                           setCountryCode(country?.dialCode);
+                          setCountryMeta({
+                            code: country?.countryCode?.toUpperCase(),
+                          });
                         }}
                       />
                       <span className="ml-1 me-3">+{countryCode}</span>
@@ -302,6 +329,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                       onChange={(e) => {
                         const onlyNums = e.target.value.replace(/\D/g, "");
                         setPhoneNumber(onlyNums);
+                        setValue("phone", onlyNums, { shouldValidate: true });
                       }}
                       className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
                       placeholder={t("enterPhoneNo")}

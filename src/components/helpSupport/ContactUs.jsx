@@ -8,6 +8,7 @@ import { getRequest, postRequest } from "../../config/apiFunctions";
 import { CUSTOMER, REPORT_LIST } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const ContactUs = () => {
   const { i18n, t } = useTranslation();
@@ -24,12 +25,28 @@ export const ContactUs = () => {
     phone: yup
       .string()
       .required(t("userPhoneRequired"))
-      .min(10, t("phoneInvalid")),
+      .test("is-valid", t("phoneInvalid"), function (value) {
+        if (!value) return false;
+
+        try {
+          const phoneNumber = parsePhoneNumberFromString(
+            value,
+            countryMeta.code.toUpperCase()
+          );
+          return phoneNumber?.isValid() || false;
+        } catch {
+          return false;
+        }
+      }),
     description: yup.string().required(t("descriptionRequired")),
     platform: yup.string().required(t("platformRequired")),
     help: yup.string().required(t("fieldRequired")),
   });
-
+  const [countryMeta, setCountryMeta] = useState({
+    code: "sy",
+    min: 9,
+    max: 9,
+  });
   const [countryCode, setCountryCode] = useState(963);
   const [reportList, setReportList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -211,6 +228,9 @@ export const ContactUs = () => {
                   dropdownClass="custom-dropdown"
                   onChange={(value, country) => {
                     setCountryCode(country?.dialCode);
+                    setCountryMeta({
+                      code: country?.countryCode?.toUpperCase(),
+                    });
                   }}
                 />
                 <span className="ml-1 me-3">+{countryCode}</span>

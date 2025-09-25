@@ -14,7 +14,7 @@ import { setupAxiosInterceptors } from "./config/apiFunctions";
 import { useDispatch } from "react-redux";
 
 function App() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,6 +33,16 @@ function App() {
       clearTimeout(timer);
     };
   }, [location]);
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      window.location.reload();
+    };
+    i18n.on("languageChanged", handleLanguageChange);
+    return () => {
+      i18n.off("languageChanged", handleLanguageChange);
+    };
+  }, [i18n]);
 
   useEffect(() => {
     setupAxiosInterceptors(dispatch, navigate, setShowSessionModal);

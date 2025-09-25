@@ -57,6 +57,10 @@ export const ProductDetail = () => {
   const [reportList, setReportList] = useState("");
   const [shareLink, setShareLink] = useState("");
 
+  const relatedPosts = allPosts?.filter(
+    (post) => post.sub_category_id === postDetailData?.sub_category_id
+  );
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_API_KEY,
   });
@@ -72,7 +76,7 @@ export const ProductDetail = () => {
   };
 
   const getAllPostsCallBack = () => {
-    getAllPosts(`${POST.GET_ALL}?page=${1}&limit=8`);
+    getAllPosts(`${POST.GET_ALL}?page=${1}&limit=20`);
   };
 
   const getPostDeatils = async (url) => {
@@ -138,8 +142,6 @@ export const ProductDetail = () => {
   useEffect(() => {
     setShareLink(`${shareURL}${location.pathname}`);
   }, [location]);
-
-  console.log("postDetailData", postDetailData?.content);
 
   return (
     <>
@@ -267,9 +269,7 @@ export const ProductDetail = () => {
                   </span>
                 </div>
 
-                <p className="text-sm text-gray-700">
-                  {postDetailData?.description}
-                </p>
+                <p className="text-sm text-gray-700">{postDetailData?.title}</p>
 
                 <div className="flex items-center gap-2 text-gray-500 text-sm">
                   <img src={locationicon} alt="icon" />
@@ -278,8 +278,12 @@ export const ProductDetail = () => {
 
                 <button
                   onClick={() => {
-                    setShowNotifyModal(true);
-                    setNotified(true);
+                    if (accessToken) {
+                      setShowNotifyModal(true);
+                      setNotified(true);
+                    } else {
+                      setShowLoginModal(true);
+                    }
                   }}
                   disabled={notified}
                   className={`w-full p-3 font-bold underline rounded-lg flex items-center justify-center gap-2  ${
@@ -298,7 +302,7 @@ export const ProductDetail = () => {
                     Object.entries(postDetailData?.content)?.map(
                       ([key, value]) => (
                         <div className="flex flex-col text-center items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2 capitalize">
-                          <span className="text-lg font-semibold leading-none pb-2">
+                          <span className="font-semibold leading-none pb-2">
                             {key}
                           </span>
                           {value}
@@ -308,7 +312,13 @@ export const ProductDetail = () => {
                 </div>
 
                 <button
-                  onClick={() => setShowReportListModal(true)}
+                  onClick={() => {
+                    if (accessToken) {
+                      setShowReportListModal(true);
+                    } else {
+                      setShowLoginModal(true);
+                    }
+                  }}
                   className="w-full p-3 font-bold text-red-600 rounded-lg flex items-center justify-center gap-2 bg-gray-200"
                 >
                   <img src={report} alt="icon" /> {t("reportListing")}
@@ -397,7 +407,13 @@ export const ProductDetail = () => {
                         {postDetailData?.user?.phone || "7777777777"}
                       </button>
                       <button
-                        onClick={() => setShowReviewModal(true)}
+                        onClick={() => {
+                          if (accessToken) {
+                            setShowReviewModal(true);
+                          } else {
+                            setShowLoginModal(true);
+                          }
+                        }}
                         className="flex gap-1 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
                       >
                         <img src={whitestar} alt="icon" className="h-5 w-5" />{" "}
@@ -417,8 +433,8 @@ export const ProductDetail = () => {
                 </Link>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {allPosts?.length > 0 ? (
-                  allPosts?.map((item) => (
+                {relatedPosts?.length > 0 ? (
+                  relatedPosts?.map((item) => (
                     <ProductCard
                       key={item.id}
                       item={item}
