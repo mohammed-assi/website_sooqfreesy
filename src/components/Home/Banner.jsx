@@ -16,19 +16,19 @@ export const Banner = () => {
       id: 1,
       name: t("realEstate"),
       icon: estate,
-      slug: ROUTE.PRODUCT_PAGE,
+      categoryName: "Real Estate",
     },
     {
       id: 2,
       name: t("vehicle"),
       icon: vehicle,
-      slug: ROUTE.PRODUCT_PAGE,
+      categoryName: "Vehicle",
     },
     {
       id: 3,
       name: t("others"),
       icon: other,
-      slug: ROUTE.PRODUCT_PAGE,
+      categoryName: "Other",
     },
   ];
   const [searchValue, setSearchValue] = useState("");
@@ -77,8 +77,12 @@ export const Banner = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 mt-6">
           {categories.map((category) => (
-            <Link
-              to={category.slug}
+            <button
+              onClick={() => {
+                navigate(ROUTE.PRODUCT_PAGE, {
+                  state: { categoryName: category?.categoryName },
+                });
+              }}
               key={category.id}
               className="flex flex-col items-center justify-center border bg-white border-gray-300 rounded-xl p-6 hover:shadow-lg hover:border-none transition group"
             >
@@ -88,7 +92,7 @@ export const Banner = () => {
                 className="w-12 h-12 mb-3 group-hover:scale-110 transition"
               />
               <p className="font-medium">{category.name}</p>
-            </Link>
+            </button>
           ))}
         </div>
       </div>

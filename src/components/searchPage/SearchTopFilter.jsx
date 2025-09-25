@@ -15,14 +15,19 @@ export const SearchTopFilter = ({
   subcategoryIds,
   setFiltersModal,
   searchText,
+  filters,
 }) => {
   const { i18n, t } = useTranslation();
   const [openFilterModal, setOpenFilterModal] = useState(false);
 
+  console.log("filters", filters);
+
   return (
     <div className="pt-15">
       <div className="text-sm text-gray-500 mb-2">
-        <Link className="hover:text-primary" to={ROUTE.ROOT}>{t("home")}</Link>{" "}
+        <Link className="hover:text-primary" to={ROUTE.ROOT}>
+          {t("home")}
+        </Link>{" "}
         <span className="mx-1">{">"}</span>{" "}
         {searchText !== "" ? t("searchButton") : t("products")}
       </div>
@@ -49,21 +54,23 @@ export const SearchTopFilter = ({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        {categories.map((cat, i) => (
-          <button
-            key={i}
-            onClick={() => handleSelectSubcatIds(cat.id)}
-            className={`px-4 py-2 rounded-md text-sm transition ${
-              subcategoryIds.includes(cat.id)
-                ? "bg-primary text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
-          >
-            {i18n.language === "ar" ? cat.arabic_name : cat.name}
-          </button>
-        ))}
-      </div>
+      {!filters?.category && (
+        <div className="flex flex-wrap gap-3">
+          {categories.map((cat, i) => (
+            <button
+              key={i}
+              onClick={() => handleSelectSubcatIds(cat.id)}
+              className={`px-4 py-2 rounded-md text-sm transition ${
+                subcategoryIds.includes(cat.id)
+                  ? "bg-primary text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              {i18n.language === "ar" ? cat.arabic_name : cat.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       <FilterModal
         isOpen={openFilterModal}

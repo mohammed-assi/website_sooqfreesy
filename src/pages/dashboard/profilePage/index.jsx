@@ -25,8 +25,6 @@ export const ProfilePage = () => {
     { id: "reviews", label: t("ratingReviews") },
   ];
 
-  console.log('userInfo', userInfo);
-
   const breakdown = {
     5: 80,
     4: 20,
@@ -57,8 +55,6 @@ export const ProfilePage = () => {
   useEffect(() => {
     getReviewsCallback();
   }, []);
-  
-  console.log("reviewsList", reviewsList);
 
   return (
     <>

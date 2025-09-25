@@ -179,6 +179,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
+        setCode(["", "", "", ""])
         setTimer(30);
       }
     } catch (error) {
@@ -393,6 +394,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                 handleOpenRegisterModal();
                 reset();
                 setActiveTab(1);
+                setPhoneNumber(null);
+                setCountryCode(963);
               }}
               className="text-primary hover:underline cursor-pointer"
             >
@@ -418,6 +421,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
         }}
         setShowRegisterModal={setShowRegisterModal}
         setShowLoginModal={setShowLoginModal}
+        setCode={setCode}
       />
 
       <OtpVerificationModal

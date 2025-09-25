@@ -16,5 +16,6 @@ export const ROUTE = {
   ABOUT_US: "/about-us",
   TERMS_CONDITIONS: "/terms-conditions",
   PRIVACY_POLICY: "/privacy-policies",
-  CREATE_POST: "/create-post"
+  CREATE_POST: "/create-post",
+  UPDATE_POST: "/edit-post",
 };

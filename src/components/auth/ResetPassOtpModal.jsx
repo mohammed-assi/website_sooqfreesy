@@ -35,7 +35,17 @@ export const ResetPassOtpModal = ({
       ),
     confirmPassword: Yup.string()
       .required(t("confirmPasswordRequired"))
-      .oneOf([Yup.ref("password")], t("passwordsMustMatch")),
+      .when("newPassword", {
+        is: (val) => val && val.length > 0,
+        then: (schema) =>
+          schema.test(
+            "passwords-match",
+            t("passwordsMustMatch"),
+            function (value) {
+              return !value || value === this.resolve(Yup.ref("newPassword"));
+            }
+          ),
+      }),
   });
 
   const {
@@ -152,12 +162,15 @@ export const ResetPassOtpModal = ({
                 </span>
               ) : (
                 <button
-                  onClick={handleResend}
+                  onClick={() => {
+                    handleResend();
+                    setCode(["", "", "", ""]);
+                  }}
                   type="button"
                   disabled={loading}
                   className="text-primary hover:underline cursor-pointer disabled:opacity-50"
                 >
-                  {t("Resend it")}
+                  {t("resendIt")}
                 </button>
               )}
             </p>

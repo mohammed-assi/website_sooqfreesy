@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
-// import selectedLang from "../../assets/icon/selectedLang.svg";
+import React, { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Controller } from "react-hook-form";
 import Autocomplete from "react-google-autocomplete";
-import { City, Country } from "country-state-city";
 
 export const SelectCityLocation = ({
   setSelectedCity,
-  selectedCity,
   register,
   errors,
   onSubmit,
@@ -17,7 +14,6 @@ export const SelectCityLocation = ({
   setShowLocationValidation,
   setCoords,
   control,
-  coords,
   countries,
   states,
   cities,
@@ -25,23 +21,12 @@ export const SelectCityLocation = ({
   selectedState,
   setValue,
   trigger,
+  userCountry,
+  setUserCountry,
 }) => {
   const { t } = useTranslation();
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
-  const [citiesList, setCitiesList] = useState([]);
-
-  useEffect(() => {
-    const country = Country.getAllCountries().find(
-      (c) => c.name === coords.country
-    );
-
-    if (country) {
-      const cities = City.getCitiesOfCountry(country.isoCode);
-      setCitiesList(cities.map((c) => c.name));
-    }
-  }, [coords.country]);
-
-  console.log("citiesList", citiesList, selectedCity);
+  const locationRef = useRef(null);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -59,8 +44,26 @@ export const SelectCityLocation = ({
               <select
                 {...register("country")}
                 onChange={(e) => {
-                  setValue("country", e.target.value);
+                  const selectedName = e.target.value;
+                  const selectedCountry = countries.find(
+                    (c) => c.name === selectedName
+                  );
+
+                  setValue("country", selectedName);
                   trigger("country");
+
+                  if (selectedCountry) {
+                    setUserCountry(selectedCountry.isoCode);
+                  }
+
+                  setValue("location", "", {
+                    shouldDirty: true,
+                  });
+                  setUserLocation("");
+                  setCoords({ lat: null, lng: null, country: null });
+                  setSelectedCity("");
+                  setShowLocationValidation(false);
+                  if (locationRef.current) locationRef.current.value = "";
                 }}
                 className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
               >
@@ -83,22 +86,31 @@ export const SelectCityLocation = ({
               <label className="block mb-2 text-md font-bold">
                 {t("state")} <span className="text-red-600">*</span>
               </label>
-              <select
-                {...register("state")}
-                onChange={(e) => {
-                  setValue("state", e.target.value);
-                  trigger("state");
-                }}
-                className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
-                disabled={!selectedCountry}
-              >
-                <option value="">{t("selectState")}</option>
-                {states.map((s) => (
-                  <option key={s.isoCode} value={s.name}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+              {states?.length ? (
+                <select
+                  {...register("state")}
+                  onChange={(e) => {
+                    setValue("state", e.target.value);
+                    trigger("state");
+                  }}
+                  className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
+                  disabled={!selectedCountry}
+                >
+                  <option value="">{t("selectState")}</option>
+                  {states.map((s) => (
+                    <option key={s.isoCode} value={s.name}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  {...register("state")}
+                  placeholder={t("enterStateField")}
+                  className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                />
+              )}
               {errors.state && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.state.message}
@@ -111,22 +123,31 @@ export const SelectCityLocation = ({
               <label className="block mb-2 text-md font-bold">
                 {t("city")} <span className="text-red-600">*</span>
               </label>
-              <select
-                {...register("city")}
-                onChange={(e) => {
-                  setValue("city", e.target.value);
-                  trigger("city");
-                }}
-                className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
-                disabled={!selectedState}
-              >
-                <option value="">{t("selectCityField")}</option>
-                {cities.map((c) => (
-                  <option key={c.name} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+              {cities?.length ? (
+                <select
+                  {...register("city")}
+                  onChange={(e) => {
+                    setValue("city", e.target.value);
+                    trigger("city");
+                  }}
+                  className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
+                  disabled={!selectedState}
+                >
+                  <option value="">{t("selectCityField")}</option>
+                  {cities.map((c) => (
+                    <option key={c.name} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  {...register("city")}
+                  placeholder={t("enterCityField")}
+                  className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                />
+              )}
               {errors.city && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.city.message}
@@ -134,33 +155,6 @@ export const SelectCityLocation = ({
               )}
             </div>
           </div>
-
-          {/* <div className="py-3">
-          {citiesList.length > 0 ? (
-            <ul className="space-y-5 p-5 border border-gray-200 rounded-lg">
-              {citiesList.map((city) => (
-                <li
-                  key={city}
-                  onClick={() => setSelectedCity(city)}
-                  className={`${
-                    selectedCity === city
-                      ? "text-black font-medium"
-                      : "text-gray-600"
-                  } flex items-center justify-between cursor-pointer p-2 hover:text-black border-b border-gray-100`}
-                >
-                  <span>{city}</span>
-                  {selectedCity === city && (
-                    <img src={selectedLang} alt="icon" />
-                  )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-600 pt-4">
-              {t("selectCities")} <span className="text-red-600">*</span>
-            </p>
-          )}
-        </div> */}
         </div>
         <div className="w-full p-5 shadow-lg rounded-lg">
           <h3 className="text-2xl font-bold">{t("nearbyLocation")}</h3>
@@ -170,11 +164,6 @@ export const SelectCityLocation = ({
               <label className="block mb-2 text-md font-bold">
                 {t("nearbyLocation")} <span className="text-red-600">*</span>
               </label>
-              {/* <input
-                type="text"
-                {...register("location")}
-                className="w-full rounded p-3 bg-gray-100 focus:outline-none"
-              /> */}
               <div className="input-icon-grp">
                 <Controller
                   name="location"
@@ -201,16 +190,21 @@ export const SelectCityLocation = ({
                         }
                       }}
                       defaultValue={value}
+                      ref={locationRef}
                       options={{
                         types: ["geocode"],
+                        componentRestrictions: {
+                          country: userCountry
+                            ? userCountry.toLowerCase()
+                            : "sy",
+                        },
                       }}
                       onChange={() => {
                         setSelectedCity("");
-                        setCitiesList([]);
                         setUserLocation("");
                         setCoords({ lat: null, lng: null, country: null });
                       }}
-                      className="w-full rounded p-3 bg-gray-100 focus:outline-none"
+                      className="w-full rounded p-3 pr-11 bg-gray-100 focus:outline-none"
                     />
                   )}
                 />

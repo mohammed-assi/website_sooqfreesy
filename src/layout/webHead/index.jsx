@@ -123,11 +123,16 @@ export const WebHead = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const isCreateOrUpdate =
+    location.pathname === ROUTE.CREATE_POST ||
+    location.pathname.startsWith(ROUTE.UPDATE_POST);
+
   return (
     <>
       <div
-        className={`transition-colors duration-300 ${isScrolled ? "bg-white/85 backdrop-blur-lg" : "bg-white"
-          } border-b border-gray-200`}
+        className={`transition-colors duration-300 ${
+          isScrolled ? "bg-white/85 backdrop-blur-lg" : "bg-white"
+        } border-b border-gray-200`}
       >
         <div className="spacer-x py-4">
           <div className="flex justify-between items-center gap-7">
@@ -136,7 +141,7 @@ export const WebHead = () => {
                 <img src={logo} alt="logo" />
               </Link>
             </div>
-            {location.pathname !== ROUTE.CREATE_POST ? (
+            {!isCreateOrUpdate ? (
               <div className="flex items-center gap-4 w-full justify-end">
                 <div className="menu-wrap flex items-center gap-4 w-full justify-end">
                   {isScrolled && location.pathname !== ROUTE.CREATE_POST && (
