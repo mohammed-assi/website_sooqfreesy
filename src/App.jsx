@@ -54,7 +54,7 @@ function App() {
       <Router />
       <ToastContainer />
       {showSessionModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-3">
           <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
             <div className=" flex flex-col items-center justify-center">
               <img src={infoModalIcon} alt="icon" className="h-15 w-15" />

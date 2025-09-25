@@ -388,8 +388,8 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
       <h3 className="font-semibold text-2xl py-6">{t("profileDetails")}</h3>
 
       <div>
-        <form onSubmit={handleSubmit(onSubmit)} className="w-[60%]">
-          <div className="flex gap-15 pb-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="md:w-[60%]">
+          <div className="flex flex-col justify-start items-start md:flex-row gap-3 md:gap-15 pb-6 w-fit">
             <label className="text-gray-700">{t("profliePhoto")}</label>
             <div className="relative">
               <img
@@ -414,9 +414,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
             </div>
           </div>
 
-          <div className="flex gap-10 items-center pb-6">
-            <label className="text-gray-700 w-1/5">{t("userName")}</label>
-            <div className="w-4/5 relative">
+          <div className="flex flex-col justify-start items-start md:flex-row gap-3 md:gap-10 md:items-center pb-6">
+            <label className="text-gray-700 md:w-1/5">{t("userName")}</label>
+            <div className="w-full md:w-4/5 relative">
               <input
                 type="text"
                 {...register("fullName")}
@@ -455,9 +455,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
             </div>
           </div>
 
-          <div className="flex gap-10 items-center pb-6">
-            <label className="text-gray-700 w-1/5">{t("emailField")}</label>
-            <div className="w-4/5 relative">
+          <div className="flex flex-col justify-start items-start md:flex-row gap-3 md:gap-10 md:items-center pb-6">
+            <label className="text-gray-700 md:w-1/5">{t("emailField")}</label>
+            <div className="w-full md:w-4/5 relative">
               <input
                 type="email"
                 {...register("email")}
@@ -490,9 +490,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
             </div>
           </div>
 
-          <div className="flex gap-10 items-center pb-6">
-            <label className="text-gray-700 w-1/5">{t("phoneNofield")}</label>
-            <div className="w-4/5 relative">
+          <div className="flex flex-col justify-start items-start md:flex-row gap-3 md:gap-10 md:items-center pb-6">
+            <label className="text-gray-700 md:w-1/5">{t("phoneNofield")}</label>
+            <div className="w-full md:w-4/5 relative">
               <div className="flex gap-3">
                 <div>
                   <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
@@ -563,9 +563,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
             </div>
           </div>
 
-          <div className="flex gap-10 items-center pb-6">
-            <label className="text-gray-700 w-1/5">{t("password")}</label>
-            <div className="w-4/5 relative">
+          <div className="flex flex-col justify-start items-start md:flex-row gap-3 md:gap-10 md:items-center pb-6">
+            <label className="text-gray-700 md:w-1/5">{t("password")}</label>
+            <div className="w-full md:w-4/5 relative">
               <input
                 type="text"
                 disabled
@@ -586,9 +586,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
             </div>
           </div>
 
-          <div className="flex gap-10 items-center pb-6">
-            <label className="text-gray-700 w-1/5">{t("gender")}</label>
-            <div className="w-4/5">
+          <div className="flex flex-col justify-start items-start md:flex-row gap-3 md:gap-10 md:items-center pb-6">
+            <label className="text-gray-700 md:w-1/5">{t("gender")}</label>
+            <div className="w-full md:w-4/5">
               <select
                 {...register("gender")}
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none select-filter"
@@ -604,9 +604,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               )}
             </div>
           </div>
-          <div className="flex gap-10 items-center pb-6">
-            <label className="text-gray-700 w-1/5">{t("dateBirth")}</label>
-            <div className="w-4/5 relative">
+          <div className="flex flex-col justify-start items-start md:flex-row gap-3 md:gap-10 md:items-center pb-6">
+            <label className="text-gray-700 md:w-1/5">{t("dateBirth")}</label>
+            <div className="w-full md:w-4/5 relative">
               <Controller
                 control={control}
                 name="dob"

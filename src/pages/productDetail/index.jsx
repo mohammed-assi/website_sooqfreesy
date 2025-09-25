@@ -201,14 +201,25 @@ export const ProductDetail = () => {
                       freeMode={true}
                       watchSlidesProgress={true}
                       modules={[FreeMode, Navigation, Thumbs]}
-                      className="mySwiper h-40 mt-4 flex items-center"
+                      breakpoints= {{
+                        0: {
+                          slidesPerView: 3.4
+                        }, 
+                        767: {
+                          slidesPerView: 4.4
+                        }, 
+                        1024: {
+                          slidesPerView: 5
+                        }
+                      }}
+                      className="mySwiper mt-4 flex items-center"
                     >
                       {postDetailData.images.map((item, i) => (
                         <SwiperSlide key={i}>
                           <img
                             src={`${imagePath}/${item.image_url}`}
                             alt={`Thumbnail ${i + 1}`}
-                            className="w-full h-full object-cover cursor-pointer rounded-lg"
+                            className="w-full object-cover cursor-pointer rounded-lg aspect-square lg:aspect-auto lg:h-[110px]"
                           />
                         </SwiperSlide>
                       ))}

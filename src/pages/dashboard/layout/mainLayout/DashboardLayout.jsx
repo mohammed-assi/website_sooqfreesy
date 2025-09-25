@@ -8,14 +8,14 @@ import Sidebar from "../sidebar";
 export const DashboardLayout = () => {
   return (
     <>
-      <div className="fixed top-0 left-0 w-full z-50">
-        <Header />
+      <div className="sticky top-0 left-0 w-full z-50">
+        <Header className="lg:!max-w-[calc(100%_-_100px)]" />
         <DashboardHeader />
       </div>
-      <div className="pt-[120px] flex">
+      <div className="flex">
         <Sidebar />
 
-        <div className="flex-1 p-6 min-h-screen">
+        <div className="flex-1 lg:p-6 py-6 px-3 min-h-screen">
           <Outlet />
         </div>
       </div>

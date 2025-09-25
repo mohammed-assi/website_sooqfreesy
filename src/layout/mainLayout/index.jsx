@@ -7,11 +7,12 @@ import { WebHead } from "../webHead";
 export const MainLayout = () => {
   return (
     <>
-      <div className="fixed top-0 left-0 w-full z-50">
+      <div className="sticky top-0 left-0 w-full z-50">
         <Header />
         <WebHead />
       </div>
-      <div className="pt-[110px]">
+      {/* <div className="pt-[110px]"> */}
+      <div>
         <Outlet />
       </div>
       <Footer />

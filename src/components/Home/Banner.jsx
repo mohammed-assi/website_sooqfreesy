@@ -53,8 +53,8 @@ export const Banner = () => {
         <img src={bannerRight} alt="imageee" className="object-contain" />
       </div>
 
-      <div className="w-150 relative z-10">
-        <h1 className="font-bold text-heading">{t("homeBannerHeading")}</h1>
+      <div className="w-150 relative z-10 px-3">
+        <h1 className="font-bold text-3xl md:text-4xl lg:text-heading">{t("homeBannerHeading")}</h1>
 
         <div className="my-8 shadow-md  flex justify-between">
           <input

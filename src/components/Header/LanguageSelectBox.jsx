@@ -40,7 +40,7 @@ export const LanguageSelectBox = () => {
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 cursor-pointer"
+        className="flex items-center gap-2 cursor-pointer text-xs md:text-sm"
       >
         {languages.find((l) => l.code === i18n.language)?.label}
         <i className="fa-solid fa-angle-down fa-sm ml-auto" />
