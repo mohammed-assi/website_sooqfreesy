@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-export const SideFilter = ({ allCategory, filters, handleChange, setSearchTextDebounce }) => {
+export const SideFilter = ({ allCategory, filters, handleChange, setSearchTextDebounce , searchTextDebounce}) => {
   const { i18n, t } = useTranslation();
 
   return (
@@ -28,6 +28,7 @@ export const SideFilter = ({ allCategory, filters, handleChange, setSearchTextDe
         </label>
         <input
           type="text"
+          defaultValue={searchTextDebounce}
           onChange={(e) => setSearchTextDebounce(e.target.value)}
           placeholder={t("enterNearbyLocation")}
           className="w-full h-[48px] bg-[#f5f5f5] rounded-lg px-3 py-2 text-sm"

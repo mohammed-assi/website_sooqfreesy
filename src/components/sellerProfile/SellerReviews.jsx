@@ -4,7 +4,7 @@ import RatingStar from "../../common/ratingStar/RatingStar";
 import { useTranslation } from "react-i18next";
 
 export const SellerReviews = ({ sellerReviews, imagePath }) => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="w-full">
@@ -27,16 +27,12 @@ export const SellerReviews = ({ sellerReviews, imagePath }) => {
               </div>
               <RatingStar starValue={Number(item.rating)} />
             </div>
-            <p className="text-gray-500 py-2">
-              {i18n.language === "ar"
-                ? item.review_text.ar
-                : item.review_text.en || "---"}
-            </p>
+            <p className="text-gray-500 py-2">{item.review_text}</p>
           </div>
         ))
       ) : (
         <p className="text-center text-gray-500 font-medium py-6">
-          {t('noReviewsFound')}
+          {t("noReviewsFound")}
         </p>
       )}
     </div>

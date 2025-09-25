@@ -12,8 +12,6 @@ export const Products = ({ allPosts, imagePath, handleLikeUnlikePost }) => {
     { id: "worldwide", label: t("worldwide") },
   ];
 
-  console.log("allPosts", allPosts);
-
   return (
     <div className="spacer-x py-20">
       <div className="w-full">

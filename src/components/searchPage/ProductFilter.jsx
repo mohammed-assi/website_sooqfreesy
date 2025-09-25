@@ -16,6 +16,7 @@ export default function ProductFilter({
   filters,
   handleLikeUnlikePost,
   setSearchTextDebounce,
+  searchTextDebounce
 }) {
   const { t } = useTranslation();
   return (
@@ -26,11 +27,12 @@ export default function ProductFilter({
           handleChange={handleChange}
           filters={filters}
           setSearchTextDebounce={setSearchTextDebounce}
+          searchTextDebounce={searchTextDebounce}
         />
 
         <main className="lg:col-span-3">
           {allPosts?.length === 0 ? (
-            <p className="text-gray-500">{t("noDataFound")}</p>
+            <p className="text-gray-500 text-center text-lg pt-4">{t("noDataFound")}</p>
           ) : !toggleGrid ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {allPosts?.map((item) => (
