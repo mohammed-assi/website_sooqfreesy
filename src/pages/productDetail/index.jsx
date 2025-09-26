@@ -201,16 +201,16 @@ export const ProductDetail = () => {
                       freeMode={true}
                       watchSlidesProgress={true}
                       modules={[FreeMode, Navigation, Thumbs]}
-                      breakpoints= {{
+                      breakpoints={{
                         0: {
-                          slidesPerView: 3.4
-                        }, 
+                          slidesPerView: 3.4,
+                        },
                         767: {
-                          slidesPerView: 4.4
-                        }, 
+                          slidesPerView: 4.4,
+                        },
                         1024: {
-                          slidesPerView: 5
-                        }
+                          slidesPerView: 5,
+                        },
                       }}
                       className="mySwiper mt-4 flex items-center"
                     >
@@ -392,7 +392,10 @@ export const ProductDetail = () => {
                           {postDetailData?.user?.username}
                         </h3>
                         <div className="flex gap-2">
-                          <RatingStar starValue={4.5} /> <p>(4.5)</p>
+                          <RatingStar
+                            starValue={postDetailData?.user?.averageRating}
+                          />{" "}
+                          <p>({postDetailData?.user?.averageRating})</p>
                         </div>
                         <p className="text-sm text-gray-500 py-2">
                           {t("memberSince")}{" "}

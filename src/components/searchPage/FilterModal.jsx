@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-export const FilterModal = ({ isOpen, onClose, onApply }) => {
+export const FilterModal = ({
+  isOpen,
+  onClose,
+  onApply,
+  handleApplyFilters,
+}) => {
   const { t } = useTranslation();
   const [sorting, setSorting] = useState("newest");
   const [price, setPrice] = useState("highest");
@@ -72,7 +77,10 @@ export const FilterModal = ({ isOpen, onClose, onApply }) => {
         <div className="flex gap-3 mt-8">
           <button
             className="px-5 py-2 font-semibold bg-primary text-white rounded-lg hover:bg-primaryDark transition w-full"
-            onClick={() => onApply({ sorting, price })}
+            onClick={() => {
+              onApply({ sorting, price });
+              handleApplyFilters();
+            }}
           >
             {t("applyButton")}
           </button>

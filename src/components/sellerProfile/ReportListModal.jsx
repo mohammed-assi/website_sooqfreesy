@@ -5,13 +5,13 @@ const ReportListModal = ({
   onClose,
   setShowReportButton,
   reportList,
-  setReportId, 
+  setReportId,
   reportId,
   setCustomReason,
   customReason,
-  handleSubmit
+  handleSubmit,
 }) => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -34,9 +34,7 @@ const ReportListModal = ({
                 onChange={() => setReportId(item.id)}
                 className="accent-cyan-500"
               />
-              <span className="text-gray-700">
-                {i18n.language === "ar" ? item.arabic_name : item.name}
-              </span>
+              <span className="text-gray-700">{item.name}</span>
             </label>
           ))}
         </div>

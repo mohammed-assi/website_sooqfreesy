@@ -1,24 +1,57 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import selectedLang from "../../assets/icon/selectedLang.svg";
+import Autocomplete from "react-google-autocomplete";
+import { useDispatch, useSelector } from "react-redux";
+import { setLocationCoords } from "../../redux/slices/locationSlice";
 
 export const AllCitiesDropdown = () => {
   const { t } = useTranslation();
-
-  const cities = [
-    { value: "all", label: "All Cities" },
-    { value: "al-hasakah", label: "Al-Hasakah" },
-    { value: "aleppo", label: "Aleppo" },
-    { value: "damascus", label: "Damascus" },
-    { value: "daraa", label: "Daraa" },
-    { value: "deir-ez-zor", label: "Deir ez-Zor" },
-    { value: "hama", label: "Hama" },
-    { value: "homs", label: "Homs" },
-  ];
+  const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
+  const dispatch = useDispatch();
+  const reduxCoords = useSelector((state) => state.location.coords);
 
   const [open, setOpen] = useState(false);
-  const [selectedCity, setSelectedCity] = useState(cities[0]);
   const dropdownRef = useRef(null);
+  const [location, setLocation] = useState("");
+
+  const handleUseMyLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+
+          try {
+            const res = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}`
+            );
+            const data = await res.json();
+
+            if (data.status === "OK") {
+              const result = data.results[0];
+              const countryObj = result.address_components.find((c) =>
+                c.types.includes("country")
+              );
+              const country = countryObj ? countryObj.long_name : "";
+
+              const newCoords = { lat, lng, country };
+              setLocation(result.formatted_address);
+              dispatch(setLocationCoords(newCoords));
+              setOpen(false);
+            }
+          } catch (err) {
+            console.error("Reverse geocoding failed:", err);
+          }
+        },
+        (err) => {
+          console.error("Error fetching location:", err);
+          alert("Unable to fetch your location. Please allow location access.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -32,44 +65,60 @@ export const AllCitiesDropdown = () => {
     };
   }, []);
 
-  const handleSelect = (city) => {
-    setSelectedCity(city);
-    setOpen(false);
-  };
-
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
+    <div className="relative inline-block text-left" useRef={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 cursor-pointer text-xs md:text-sm"
       >
-        {selectedCity.label}
+        {reduxCoords?.country || "Choose location"}
         <i className="fa-solid fa-angle-down fa-sm ml-auto" />
       </button>
 
       {open && (
-        <div className="absolute top-6 -left-6 lg:-right-15 mt-2 w-60 rounded-md bg-white shadow-lg border p-2 z-50">
-          <p className="text-black text-bold text-sm mb-2">
-            {t("chooseCity")}
-          </p>
-          <ul className="space-y-2">
-            {cities.map((city) => (
-              <li
-                key={city.value}
-                onClick={() => handleSelect(city)}
-                className={`${
-                  selectedCity.value === city.value
-                    ? "text-black font-medium"
-                    : "text-gray-600"
-                } flex items-center justify-between cursor-pointer px-2 py-1 hover:text-black border-b border-gray-100`}
-              >
-                <span>{city.label}</span>
-                {selectedCity.value === city.value && (
-                  <img src={selectedLang} alt="icon" />
-                )}
-              </li>
-            ))}
-          </ul>
+        <div className="absolute top-6 -left-6 lg:-right-15 mt-2 w-80 rounded-md bg-white shadow-lg border p-2 z-50">
+          <div className="w-full space-y-2 p-2">
+            <p className="text-gray-800">{t("provideLocation")}</p>
+            <button
+              type="button"
+              onClick={handleUseMyLocation}
+              className="flex gap-1 items-center text-gray-700 text-sm hover:text-primaryDark transition"
+            >
+              <i className="fa-light fa-location-crosshairs" />
+              {t("useMyLocation")}
+            </button>
+
+            <p className="block my-1 text-md text-gray-700 text-center">
+              {t("or")}
+            </p>
+
+            <Autocomplete
+              apiKey={GOOGLE_API_KEY}
+              placeholder={t("nearbyLocation")}
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              onPlaceSelected={(place) => {
+                if (place?.geometry?.location) {
+                  const lat = place.geometry.location.lat();
+                  const lng = place.geometry.location.lng();
+
+                  const countryObj = place.address_components?.find((c) =>
+                    c.types.includes("country")
+                  );
+                  const country = countryObj ? countryObj.long_name : "";
+                  const newCoords = { lat, lng, country };
+                  setLocation(place.formatted_address);
+
+                  dispatch(setLocationCoords(newCoords));
+                  setOpen(false);
+                } else {
+                  console.warn("No geometry found for selected place:", place);
+                }
+              }}
+              options={{ types: ["geocode"] }}
+              className="w-full text-black rounded p-3 bg-gray-100 focus:outline-none"
+            />
+          </div>
         </div>
       )}
     </div>

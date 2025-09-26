@@ -11,7 +11,7 @@ import LoadingButton from "../../common/loadingButton/LoadingButton";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const ContactUs = () => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
   const schema = yup.object().shape({
     fullName: yup.string().required(t("fullNameRequired")),
     email: yup
@@ -125,7 +125,7 @@ export const ContactUs = () => {
             <option value="">--{t("select")}--</option>
             {reportList?.map((item) => (
               <option key={item.id} value={item?.id}>
-                {i18n.language === "ar" ? item?.arabic_name : item?.name}
+                {item?.name}
               </option>
             ))}
           </select>

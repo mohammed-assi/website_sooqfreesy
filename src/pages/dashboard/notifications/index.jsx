@@ -76,32 +76,36 @@ export const Notifictions = () => {
             </button>
           </div>
           <div className="py-8 grid grid-cols-1 gap-6">
-            {notificationList?.map((item, i) => (
-              <div
-                key={i}
-                className="flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6"
-              >
-                <div className="flex gap-5">
-                  <img
-                    src={
-                      item.user_profile_url
-                        ? `${imagePath}${item.user_profile_url}`
-                        : defaultUser
-                    }
-                    alt="imageess"
-                    className="h-12 w-12 object-cover rounded-full flex-shrink-0"
-                  />
+            {notificationList?.length ? (
+              notificationList?.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6"
+                >
+                  <div className="flex gap-5">
+                    <img
+                      src={
+                        item.user_profile_url
+                          ? `${imagePath}${item.user_profile_url}`
+                          : defaultUser
+                      }
+                      alt="imageess"
+                      className="h-12 w-12 object-cover rounded-full flex-shrink-0"
+                    />
 
-                  <div>
-                    <p className="w-full text-lg">{item.title}</p>
-                    <p className="text-gray-600 w-full">{item.message}</p>
+                    <div>
+                      <p className="w-full text-lg">{item.title}</p>
+                      <p className="text-gray-600 w-full">{item.message}</p>
+                    </div>
                   </div>
+                  <p className="text-gray-600 text-base w-[100px] text-right">
+                    {moment(item.created_at).fromNow()}
+                  </p>
                 </div>
-                <p className="text-gray-600 text-base w-[100px] text-right">
-                  {moment(item.created_at).fromNow()}
-                </p>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-center text-gray-700">{t("noDataFound")}</p>
+            )}
           </div>
           <SettingModal
             isOpen={showSettingModal}

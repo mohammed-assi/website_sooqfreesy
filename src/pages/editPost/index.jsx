@@ -23,7 +23,7 @@ import { EditFinalForm } from "../../components/editPost/EditFinalForm";
 import { ScreenLoader } from "../../utils/screenLoader";
 
 export const EditPost = () => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const navigate = useNavigate();
   const location = useLocation();
@@ -221,8 +221,9 @@ export const EditPost = () => {
     formData.append("phone", data.phone || "9876543210");
     // formData.append("city", selectedCity.label || "Mohali");
     // formData.append("country", coords?.country || "Syria");
-    formData.append("city", data.city || "Mohali");
-    formData.append("country", data.country || "Syria");
+    formData.append("city", data.city);
+    formData.append("state", data.state);
+    formData.append("country", data.country);
 
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || postDetailData?.longitude);
@@ -387,7 +388,9 @@ export const EditPost = () => {
 
   useEffect(() => {
     if (categoryData) {
-      getSubCategory(`${CUSTOMER.GET_SUBCATEGORY}/${categoryData.id}?onlyWithForms=true`);
+      getSubCategory(
+        `${CUSTOMER.GET_SUBCATEGORY}/${categoryData.id}?onlyWithForms=true`
+      );
     }
   }, [categoryData]);
 
@@ -510,9 +513,7 @@ export const EditPost = () => {
                   !showFinalForm &&
                   t("chooseCategory")}
                 {showSaleRent && !showLandlordAgent && !showFinalForm
-                  ? i18n.language === "ar"
-                    ? categoryData?.arabic_name
-                    : categoryData?.name
+                  ? categoryData?.name
                   : ""}
                 {showSubCategory &&
                   !showSaleRent &&

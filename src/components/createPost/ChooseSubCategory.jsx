@@ -1,12 +1,10 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 export const ChooseSubCategory = ({
   subCategoryList,
   imagePath,
   handleChooseSubCategory,
 }) => {
-  const { i18n } = useTranslation();
 
   return (
     <div className="py-5">
@@ -25,7 +23,7 @@ export const ChooseSubCategory = ({
               />
             </div>
             <h3 className="text-center pt-4 font-bold text-xl">
-              {i18n.language === "en" ? item.name : item.arabic_name}
+              {item.name}
             </h3>
           </div>
         ))}

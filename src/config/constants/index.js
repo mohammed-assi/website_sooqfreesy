@@ -2,6 +2,7 @@ export const LOCAL_STORAGE = {
   USER_INFO: "user_info",
   ACCESS_TOKEN: "access_token",
   REFRESH_TOKEN: "refresh_token",
+  COORDS: 'LOCATION_INFO'
 };
 
 export const ROUTE = {

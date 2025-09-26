@@ -6,7 +6,7 @@ import { postRequest } from "../../config/apiFunctions";
 import { REPORT_LIST } from "../../config/endPoints";
 
 export const ReportListModal = ({ onClose, reportList, postDetailData }) => {
-  const { t, i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [showInfoModal, setShowInfoModal] = useState(false);
 
   const handleSelect = async (id) => {
@@ -34,7 +34,9 @@ export const ReportListModal = ({ onClose, reportList, postDetailData }) => {
         <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
           <button
             onClick={onClose}
-            className="absolute top-4 right-6 text-gray-400 hover:text-gray-600"
+            className={`absolute top-4 text-gray-400 hover:text-gray-600 ${
+              i18n.language === "ar" ? "left-6" : "right-6"
+            }`}
           >
             <i className="fa-solid fa-xmark fa-lg" />
           </button>
@@ -48,9 +50,7 @@ export const ReportListModal = ({ onClose, reportList, postDetailData }) => {
                 onClick={() => handleSelect(item.id)}
                 className={`text-gray-600 flex items-center justify-between cursor-pointer px-2 py-1 hover:text-black border-b border-gray-100`}
               >
-                <span>
-                  {i18n.language === "ar" ? item.arabic_name : item.name}
-                </span>
+                <span>{item.name}</span>
               </li>
             ))}
           </ul>

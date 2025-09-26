@@ -36,6 +36,9 @@ export const LanguageSelectBox = () => {
     };
   }, []);
 
+  console.log("i18n", languages.find((l) => l.code === i18n.language)?.label);
+  console.log("languages", languages);
+
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button

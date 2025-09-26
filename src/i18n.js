@@ -113,7 +113,7 @@ const resources = {
 
       // search page
       home: "Home",
-      buySell: "Buy & Sell Anything in Syria",
+      buySell: "Buy & Sell Anything",
       sorting: "Sorting",
       newest: "Newest",
       relevant: "Relevant",
@@ -302,6 +302,11 @@ const resources = {
       enterCityField: "Enter city",
       enterStateField: "Enter state",
       usernameAlphaNumOnly: "Username can only contain letters and numbers",
+      useMyLocation: "Use my current location",
+      subcategory: "Sub Category",
+      in: "in",
+      provideLocation: "Please provide your location",
+      or: "Or",
     },
   },
   ar: {
@@ -412,7 +417,7 @@ const resources = {
 
       // search page
       home: "الرئيسية",
-      buySell: "اشترِ وبِع أي شيء في سوريا",
+      buySell: "شراء وبيع أي شيء",
       sorting: "ترتيب",
       newest: "الأحدث",
       relevant: "الأكثر صلة",
@@ -598,6 +603,11 @@ const resources = {
       enterCityField: "أدخل المدينة",
       enterStateField: "أدخل الولاية",
       usernameAlphaNumOnly: "يمكن لاسم المستخدم أن يحتوي على أحرف وأرقام فقط",
+      useMyLocation: "استخدم موقعي الحالي",
+      subcategory: "الفئة الفرعية",
+      in: "في",
+      provideLocation: "يرجى تزويدنا بموقعك",
+      or: "أو",
     },
   },
 };

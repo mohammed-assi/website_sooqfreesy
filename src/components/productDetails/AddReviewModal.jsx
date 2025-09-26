@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const AddReviewModal = ({ onClose, postDetailData }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [rating, setRating] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,7 +47,9 @@ export const AddReviewModal = ({ onClose, postDetailData }) => {
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-6 text-gray-400 hover:text-gray-600"
+          className={`absolute top-4 text-gray-400 hover:text-gray-600 ${
+            i18n.language === "ar" ? "left-6" : "right-6"
+          }`}
         >
           <i className="fa-solid fa-xmark fa-lg" />
         </button>

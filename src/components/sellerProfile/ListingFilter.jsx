@@ -17,6 +17,18 @@ export const ListingFilter = ({
   allPosts,
   handleLikeUnlikePost,
   setSearchTextDebounce,
+  searchTextDebounce,
+  states,
+  selectedState,
+  setSelectedState,
+  cities,
+  selectedCity,
+  setSelectedCity,
+  setSelectedLocation,
+  setCoords,
+  selectedLocation,
+  subCategoryList,
+  handleApplyFilters
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("listing");
@@ -77,6 +89,17 @@ export const ListingFilter = ({
               handleChange={handleChange}
               filters={filters}
               setSearchTextDebounce={setSearchTextDebounce}
+              searchTextDebounce={searchTextDebounce}
+              states={states}
+              selectedState={selectedState}
+              setSelectedState={setSelectedState}
+              cities={cities}
+              selectedCity={selectedCity}
+              setSelectedCity={setSelectedCity}
+              setSelectedLocation={setSelectedLocation}
+              setCoords={setCoords}
+              selectedLocation={selectedLocation}
+              subCategoryList={subCategoryList}
             />
             <div className="lg:col-span-3">
               <div className="grid grid-cols-1 gap-6">
@@ -120,6 +143,7 @@ export const ListingFilter = ({
           setModalFilter(values);
           setOpenFilterModal(false);
         }}
+        handleApplyFilters={handleApplyFilters}
       />
     </div>
   );

@@ -6,7 +6,7 @@ export const ChooseRentSale = ({
   imagePath,
   handleChooseRentSale,
 }) => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
   return (
     <div className="py-5">
       <div className="grid grid-cols-2 gap-6">
@@ -19,9 +19,7 @@ export const ChooseRentSale = ({
             />
           </div>
           <h3 className="text-center pt-4 font-bold text-xl">
-            {i18n.language === "ar"
-              ? categoryData?.arabic_name
-              : categoryData.name}{" "}
+            {categoryData.name}{" "}
             {t("forSale")}
           </h3>
         </div>
@@ -34,9 +32,7 @@ export const ChooseRentSale = ({
             />
           </div>
           <h3 className="text-center pt-4 font-bold text-xl">
-            {i18n.language === "ar"
-              ? categoryData?.arabic_name
-              : categoryData.name}{" "}
+            {categoryData.name}{" "}
             {t("forRent")}
           </h3>
         </div>

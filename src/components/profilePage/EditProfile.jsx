@@ -109,7 +109,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   };
 
   const getCountryCodeFromDialCode = (dialCode) => {
-    const countries = getCountries(); // returns all ISO country codes
+    const countries = getCountries();
     for (let c of countries) {
       if (getCountryCallingCode(c) === dialCode) return c;
     }

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { FilterModal } from "./FilterModal";
 import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
+import { useSelector } from "react-redux";
 
 export const SearchTopFilter = ({
   categories,
@@ -16,11 +17,12 @@ export const SearchTopFilter = ({
   setFiltersModal,
   searchText,
   filters,
+  handleApplyFilters
 }) => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
   const [openFilterModal, setOpenFilterModal] = useState(false);
 
-  console.log("filters", filters);
+  const reduxCoords = useSelector((state) => state.location.coords);
 
   return (
     <div className="pt-15">
@@ -33,7 +35,9 @@ export const SearchTopFilter = ({
       </div>
 
       <div className="flex items-center justify-between mb-6">
-        <h1 className="main-heading">{t("buySell")}</h1>
+        <h1 className="main-heading">
+          {t("buySell")} {t("in")} {reduxCoords?.country}
+        </h1>
         <div className="flex items-center space-x-4">
           <button
             onClick={() => setOpenFilterModal(true)}
@@ -66,7 +70,7 @@ export const SearchTopFilter = ({
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              {i18n.language === "ar" ? cat.arabic_name : cat.name}
+              {cat.name}
             </button>
           ))}
         </div>
@@ -79,6 +83,7 @@ export const SearchTopFilter = ({
           setFiltersModal(values);
           setOpenFilterModal(false);
         }}
+        handleApplyFilters={handleApplyFilters}
       />
     </div>
   );

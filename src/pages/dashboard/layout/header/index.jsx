@@ -17,6 +17,7 @@ import { logout } from "../../../../redux/slices/authSlice";
 import { showInfoToast, showSuccessToast } from "../../../../utils/toastUtils";
 import { clearUser } from "../../../../redux/slices/userSlice";
 import { ROUTE } from "../../../../config/constants";
+import { clearLocationCoords } from "../../../../redux/slices/locationSlice";
 
 export const DashboardHeader = () => {
   const { t } = useTranslation();
@@ -30,11 +31,11 @@ export const DashboardHeader = () => {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
-  }
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -67,6 +68,7 @@ export const DashboardHeader = () => {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearUser());
+    dispatch(clearLocationCoords());
     navigate(ROUTE.ROOT);
     setOpen(false);
     showSuccessToast(t("logOutMsg"));
@@ -278,7 +280,26 @@ export const DashboardHeader = () => {
             </div>
             <div className="item-right flex items-center justify-end lg:justify-between gap-3 lg:gap-8 w-full pr-3 lg:pr-[62px]">
               <button className="lg:hidden p-2 bg-gray-100 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="size-5" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"><path d="M22 12c0-3.75 0-5.625-.955-6.939a5 5 0 0 0-1.106-1.106C18.625 3 16.749 3 13 3h-2c-3.75 0-5.625 0-6.939.955A5 5 0 0 0 2.955 5.06C2 6.375 2 8.251 2 12s0 5.625.955 6.939a5 5 0 0 0 1.106 1.106C5.375 21 7.251 21 11 21h2c3.75 0 5.625 0 6.939-.955a5 5 0 0 0 1.106-1.106C22 17.625 22 15.749 22 12Zm-7.5-8.5v17"/><path stroke-linecap="round" d="M19 7h-1.5m1.5 4h-1.5M8 10l1.227 1.057c.515.445.773.667.773.943s-.258.498-.773.943L8 14"/></g></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="size-5"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                  >
+                    <path d="M22 12c0-3.75 0-5.625-.955-6.939a5 5 0 0 0-1.106-1.106C18.625 3 16.749 3 13 3h-2c-3.75 0-5.625 0-6.939.955A5 5 0 0 0 2.955 5.06C2 6.375 2 8.251 2 12s0 5.625.955 6.939a5 5 0 0 0 1.106 1.106C5.375 21 7.251 21 11 21h2c3.75 0 5.625 0 6.939-.955a5 5 0 0 0 1.106-1.106C22 17.625 22 15.749 22 12Zm-7.5-8.5v17" />
+                    <path
+                      stroke-linecap="round"
+                      d="M19 7h-1.5m1.5 4h-1.5M8 10l1.227 1.057c.515.445.773.667.773.943s-.258.498-.773.943L8 14"
+                    />
+                  </g>
+                </svg>
               </button>
               <Link
                 to="/"
@@ -287,11 +308,18 @@ export const DashboardHeader = () => {
                 <i className="fa-solid fa-arrow-left text-xs md:text-lg" />
                 <p className="hidden lg:block">{t("backSouqSyria")}</p>
               </Link>
-              <div className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end flex-col bg-white shadow-lg top-0 left-0 h-full ${menuOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}>
+              <div
+                className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end flex-col bg-white shadow-lg top-0 left-0 h-full ${
+                  menuOpen ? "translate-x-0" : "-translate-x-full"
+                } lg:translate-x-0`}
+              >
                 <img src={logo} className="mb-auto lg:hidden h-7" alt="" />
                 <div className="flex flex-col lg:flex-row items-center justify-between w-full">
                   {location.pathname !== ROUTE.CREATE_POST && (
-                    <div className="relative w-full lg:w-auto" ref={dropdownRef}>
+                    <div
+                      className="relative w-full lg:w-auto"
+                      ref={dropdownRef}
+                    >
                       <div
                         className="cursor-pointer flex justify-center"
                         onClick={() => setOpen(!open)}
@@ -390,7 +418,8 @@ export const DashboardHeader = () => {
                                 }}
                                 className="flex items-center gap-3 "
                               >
-                                <img src={support} alt="icon" /> {t("helpSupport")}
+                                <img src={support} alt="icon" />{" "}
+                                {t("helpSupport")}
                               </button>
                             </li>
                           </ul>
@@ -420,16 +449,28 @@ export const DashboardHeader = () => {
                   )}
                   {location.pathname !== ROUTE.CREATE_POST ? (
                     <div className="flex flex-col lg:flex-row w-full lg:w-auto items-center mt-3 lg:mt-0">
-                      <div className="relative w-full lg:w-auto" ref={dropdownRef}>
+                      <div
+                        className="relative w-full lg:w-auto"
+                        ref={dropdownRef}
+                      >
                         {accessToken ? (
                           <div className="flex gap-7 items-center justify-center lg:px-7 py-3 lg:py-0">
-                            <Link to={ROUTE.NOTIFICATIONS} className="h-9 w-9 flex justify-center items-center lg:size-auto">
+                            <Link
+                              to={ROUTE.NOTIFICATIONS}
+                              className="h-9 w-9 flex justify-center items-center lg:size-auto"
+                            >
                               <img src={notification} alt="icon" />
                             </Link>
-                            <Link to={ROUTE.WISHLIST} className="h-9 w-9 flex justify-center items-center lg:size-auto">
+                            <Link
+                              to={ROUTE.WISHLIST}
+                              className="h-9 w-9 flex justify-center items-center lg:size-auto"
+                            >
                               <img src={wishlist} alt="icon" />
                             </Link>
-                            <Link to={ROUTE.MY_ADS} className="h-9 w-9 flex justify-center items-center lg:size-auto">
+                            <Link
+                              to={ROUTE.MY_ADS}
+                              className="h-9 w-9 flex justify-center items-center lg:size-auto"
+                            >
                               <img src={ads} alt="icon" />
                             </Link>
                           </div>
@@ -451,7 +492,10 @@ export const DashboardHeader = () => {
                       <button
                         onClick={() => {
                           // navigate(ROUTE.CREATE_POST);
-                          if (userInfo?.is_phone_verified && userInfo?.username) {
+                          if (
+                            userInfo?.is_phone_verified &&
+                            userInfo?.username
+                          ) {
                             navigate(ROUTE.CREATE_POST);
                           } else {
                             showInfoToast(t("verifyPhoneNumber"));
@@ -460,7 +504,10 @@ export const DashboardHeader = () => {
                         className="custom-btn w-full lg:w-auto"
                       >
                         <span className="icon w-full lg:w-auto justify-center rounded-sm">
-                          <span><i class="fa-solid fa-plus"></i></span> {t("postAdButton")}
+                          <span>
+                            <i class="fa-solid fa-plus"></i>
+                          </span>{" "}
+                          {t("postAdButton")}
                         </span>
                       </button>
                     </div>
@@ -473,7 +520,12 @@ export const DashboardHeader = () => {
                   )}
                 </div>
               </div>
-              <div className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${menuOpen && "opacity-100 !pointer-events-auto cursor-pointer"}`} onClick={handleMenuToggle}></div>
+              <div
+                className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
+                  menuOpen && "opacity-100 !pointer-events-auto cursor-pointer"
+                }`}
+                onClick={handleMenuToggle}
+              ></div>
               <div className="hamburger lg:hidden" onClick={handleMenuToggle}>
                 <i className="fa-solid fa-bars fa-lg" />
               </div>

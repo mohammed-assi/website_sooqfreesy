@@ -62,6 +62,8 @@ export const ProfilePage = () => {
     breakdown[item.rating] = item.count;
   });
 
+  console.log("reviewsList?.averageRating", reviewsList);
+
   return (
     <>
       {loading ? (
@@ -82,21 +84,29 @@ export const ProfilePage = () => {
                   className="h-full lg:w-60 lg:h-45 rounded-lg object-cover"
                 />
               </div>
-                <div>
-                  <h3 className="text-2xl font-bold pb-3">
-                    {userInfo?.username || t("hello")}
-                  </h3>
-                  {reviewsList?.averageRating && (
-                    <div className="flex gap-3">
-                      <RatingStar starValue={reviewsList?.averageRating} />{" "}
+              <div>
+                <h3 className="text-2xl font-bold pb-3">
+                  {userInfo?.username || t("hello")}
+                </h3>
+                {reviewsList && (
+                  <div className="flex gap-3">
+                    <RatingStar
+                      starValue={
+                        reviewsList?.averageRating
+                          ? reviewsList?.averageRating
+                          : 0
+                      }
+                    />{" "}
+                    {reviewsList?.averageRating && (
                       <p>({reviewsList?.averageRating})</p>
-                    </div>
-                  )}
-                  <p className="text-base text-[#808080] pt-7">
-                    {t("memberSince")}{" "}
-                    {moment(userInfo?.created_at).format("MM/DD/YYYY")}
-                  </p>
-                </div>
+                    )}
+                  </div>
+                )}
+                <p className="text-base text-[#808080] pt-7">
+                  {t("memberSince")}{" "}
+                  {moment(userInfo?.created_at).format("MM/DD/YYYY")}
+                </p>
+              </div>
             </div>
           </div>
 

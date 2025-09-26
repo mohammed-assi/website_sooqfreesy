@@ -18,7 +18,7 @@ import { City, Country, State } from "country-state-city";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
 
 export const CreatePost = () => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const navigate = useNavigate();
   const [showChooseCategory, setShowChooseCategory] = useState(false);
@@ -208,8 +208,9 @@ export const CreatePost = () => {
     formData.append("phone", data.phone || "9876543210");
     // formData.append("city", selectedCity.label || "Mohali");
     // formData.append("country", coords?.country || "Syria");
-    formData.append("city", data.city || "Mohali");
-    formData.append("country", data.country || "Syria");
+    formData.append("city", data.city);
+    formData.append("state", data.state);
+    formData.append("country", data.country );
 
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || 34.8021);
@@ -335,7 +336,9 @@ export const CreatePost = () => {
 
   useEffect(() => {
     if (categoryData) {
-      getSubCategory(`${CUSTOMER.GET_SUBCATEGORY}/${categoryData.id}?onlyWithForms=true`);
+      getSubCategory(
+        `${CUSTOMER.GET_SUBCATEGORY}/${categoryData.id}?onlyWithForms=true`
+      );
     }
   }, [categoryData]);
 
@@ -403,9 +406,7 @@ export const CreatePost = () => {
               !showFinalForm &&
               t("chooseCategory")}
             {showSaleRent && !showLandlordAgent && !showFinalForm
-              ? i18n.language === "ar"
-                ? categoryData?.arabic_name
-                : categoryData?.name
+              ? categoryData?.name
               : ""}
             {showSubCategory &&
               !showSaleRent &&

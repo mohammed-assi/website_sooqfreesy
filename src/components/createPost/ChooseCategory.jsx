@@ -1,8 +1,8 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-
-export const ChooseCategory = ({ categoryList, handleChooseCategory, imagePath }) => {
-  const { i18n } = useTranslation();
+export const ChooseCategory = ({
+  categoryList,
+  handleChooseCategory,
+  imagePath,
+}) => {
   return (
     <div className="py-5">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -19,9 +19,7 @@ export const ChooseCategory = ({ categoryList, handleChooseCategory, imagePath }
                 className="h-full w-full object-cover rounded-lg"
               />
             </div>
-            <h3 className="text-center pt-4 font-bold text-xl">
-              {i18n.language === "en" ? item.name : item.arabic_name}
-            </h3>
+            <h3 className="text-center pt-4 font-bold text-xl">{item.name}</h3>
           </div>
         ))}
       </div>

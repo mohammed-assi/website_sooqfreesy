@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 export const EditCategory = ({
   categoryList,
@@ -7,7 +6,6 @@ export const EditCategory = ({
   imagePath,
   postDetailData,
 }) => {
-  const { i18n } = useTranslation();
   return (
     <div className="py-5">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -31,7 +29,7 @@ export const EditCategory = ({
               />
             </div>
             <h3 className="text-center pt-4 font-bold text-xl">
-              {i18n.language === "en" ? item.name : item.arabic_name}
+              {item.name}
             </h3>
           </div>
         ))}
