@@ -19,6 +19,7 @@ import ProtectedRoute from "./section/ProtectedRoute";
 import UnprotectedRoute from "./section/UnprotectedRoute";
 import { CreatePost } from "../pages/createPost";
 import { EditPost } from "../pages/editPost";
+import NotFoundPage from "../pages/notFoundPage";
 
 export const Router = () => {
   return (
@@ -35,8 +36,14 @@ export const Router = () => {
         <Route path={ROUTE.TERMS_CONDITIONS} element={<TermConditions />} />
         <Route path={ROUTE.PRIVACY_POLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTE.HELP_SUPPORT} element={<HelpSupport />} />
-        <Route path={ROUTE.CREATE_POST} element={<CreatePost />} />
-        <Route path={`${ROUTE.UPDATE_POST}/:id`} element={<EditPost />} />
+        {/* <Route path={ROUTE.CREATE_POST} element={<CreatePost />} />
+        <Route path={`${ROUTE.UPDATE_POST}/:id`} element={<EditPost />} /> */}
+        <Route element={<ProtectedRoute />}>
+          <Route path={ROUTE.CREATE_POST} element={<CreatePost />} />
+          <Route path={`${ROUTE.UPDATE_POST}/:id`} element={<EditPost />} />
+        </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
       <Route
         element={
@@ -49,6 +56,8 @@ export const Router = () => {
         <Route path={ROUTE.MY_ADS} element={<MyAds />} />
         <Route path={ROUTE.WISHLIST} element={<MyWishlist />} />
         <Route path={ROUTE.NOTIFICATIONS} element={<Notifictions />} />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

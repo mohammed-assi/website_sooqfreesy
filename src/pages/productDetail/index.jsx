@@ -35,6 +35,7 @@ import LoginModal from "../../components/auth/LoginModal";
 import moment from "moment/moment";
 import { ShareModal } from "../../components/productDetails/ShareModal";
 import { ScreenLoader } from "../../utils/screenLoader";
+import NotFoundPage from "../notFoundPage";
 
 export const ProductDetail = () => {
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ export const ProductDetail = () => {
   const [notified, setNotified] = useState(false);
   const [showReportListModal, setShowReportListModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
-  const [postDetailData, setPostDetailData] = useState({});
+  const [postDetailData, setPostDetailData] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [reportList, setReportList] = useState("");
   const [shareLink, setShareLink] = useState("");
@@ -85,6 +86,8 @@ export const ProductDetail = () => {
     if (response?.data?.success && response?.data?.statusCode === 200) {
       setPostDetailData(response?.data?.data?.post);
       setLoading(false);
+    } else {
+      setPostDetailData(null);
     }
     setLoading(false);
   };
@@ -142,368 +145,359 @@ export const ProductDetail = () => {
   useEffect(() => {
     setShareLink(`${shareURL}${location.pathname}`);
   }, [location]);
+  if (loading) return <ScreenLoader />;
+  if (!postDetailData && !loading) return <NotFoundPage />;
 
   return (
     <>
-      {loading ? (
-        <ScreenLoader />
-      ) : (
-        <div className="spacer-x">
-          <div className="pt-15">
-            <div className="text-sm text-gray-500 mb-2">
-              <Link className="hover:text-primary" to={ROUTE.ROOT}>
-                {t("home")}
-              </Link>{" "}
-              <span className="mx-1">{">"}</span> {t("productDetails")}
-            </div>
+      <div className="spacer-x">
+        <div className="pt-15">
+          <div className="text-sm text-gray-500 mb-2">
+            <Link className="hover:text-primary" to={ROUTE.ROOT}>
+              {t("home")}
+            </Link>{" "}
+            <span className="mx-1">{">"}</span> {t("productDetails")}
+          </div>
 
-            <h1 className="main-heading">{postDetailData?.title}</h1>
+          <h1 className="main-heading">{postDetailData?.title}</h1>
 
-            <div className="py-6 overflow-hidden flex flex-col lg:flex-row">
-              <div className="lg:w-2/3 w-full">
-                {postDetailData?.images?.length > 0 ? (
-                  <>
-                    <Swiper
-                      style={{
-                        "--swiper-navigation-color": "#00b4d8",
-                        "--swiper-pagination-color": "#00b4d8",
-                      }}
-                      loop={true}
-                      spaceBetween={10}
-                      slidesPerView={1}
-                      centeredSlides={true}
-                      navigation={true}
-                      thumbs={{
-                        swiper:
-                          thumbsSwiper && !thumbsSwiper.destroyed
-                            ? thumbsSwiper
-                            : null,
-                      }}
-                      modules={[FreeMode, Navigation, Thumbs]}
-                      className="mySwiper2 h-100"
-                    >
-                      {postDetailData.images.map((item, i) => (
-                        <SwiperSlide key={i}>
-                          <img
-                            src={`${imagePath}/${item.image_url}`}
-                            alt={`Nature ${i + 1}`}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-
-                    <Swiper
-                      onSwiper={setThumbsSwiper}
-                      loop={true}
-                      spaceBetween={10}
-                      slidesPerView={5}
-                      freeMode={true}
-                      watchSlidesProgress={true}
-                      modules={[FreeMode, Navigation, Thumbs]}
-                      breakpoints={{
-                        0: {
-                          slidesPerView: 3.4,
-                        },
-                        767: {
-                          slidesPerView: 4.4,
-                        },
-                        1024: {
-                          slidesPerView: 5,
-                        },
-                      }}
-                      className="mySwiper mt-4 flex items-center"
-                    >
-                      {postDetailData.images.map((item, i) => (
-                        <SwiperSlide key={i}>
-                          <img
-                            src={`${imagePath}/${item.image_url}`}
-                            alt={`Thumbnail ${i + 1}`}
-                            className="w-full object-cover cursor-pointer rounded-lg aspect-square lg:aspect-auto lg:h-[110px]"
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </>
-                ) : (
-                  <>
-                    <div className="w-full h-100 flex items-center justify-center bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg">
-                      <span className="text-gray-500 text-sm">
-                        {t("noImages")}
-                      </span>
-                    </div>
-                  </>
-                )}
-                <div className="mt-10 w-full">
-                  <h3 className="font-bold text-xl">{t("description")}</h3>
-                  <p className="text-gray-600 py-2">
-                    {postDetailData?.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="lg:w-1/3 w-full ps-5 space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-md rounded-full px-3 py-1 font-semibold bg-gray-200">
-                    Listing ID: 123456789
-                  </span>
-                  <div className="flex items-center gap-5">
-                    <div className="flex items-center gap-1 text-sm">
-                      <img src={eyeIcon} alt="icon" />
-                      {postDetailData?.views}
-                    </div>
-                    <button
-                      onClick={() => setShowShareModal(true)}
-                      className="flex items-center gap-1 text-sm"
-                    >
-                      <img src={shareIcon} alt="icon" />
-                    </button>
-                    <button
-                      onClick={() => handleLikeUnlikePost(postDetailData)}
-                      className="flex items-center gap-1 text-sm"
-                    >
-                      {postDetailData?.isWishlisted ? (
-                        <img src={heartFilled} alt="icon" />
-                      ) : (
-                        <img src={heart} alt="icon" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <h2 className="main-heading text-primary">
-                    ${postDetailData?.price}
-                  </h2>
-                  <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
-                    {postDetailData?.subCategoryName}
-                  </span>
-                </div>
-
-                <p className="text-sm text-gray-700">{postDetailData?.title}</p>
-
-                <div className="flex items-center gap-2 text-gray-500 text-sm">
-                  <img src={locationicon} alt="icon" />
-                  {postDetailData?.nearby_location}
-                </div>
-
-                <button
-                  onClick={() => {
-                    if (accessToken) {
-                      setShowNotifyModal(true);
-                      setNotified(true);
-                    } else {
-                      setShowLoginModal(true);
-                    }
-                  }}
-                  disabled={notified}
-                  className={`w-full p-3 font-bold underline rounded-lg flex items-center justify-center gap-2  ${
-                    notified
-                      ? "bg-primary text-white"
-                      : "bg-gray-200 text-primary"
-                  }`}
-                >
-                  <img src={notified ? whitebell : primaryBell} alt="icon" />{" "}
-                  {t("priceDrops")}{" "}
-                  {notified && <img src={whitecheck} alt="icon" />}
-                </button>
-
-                <div className="grid grid-cols-3 gap-3 text-sm text-gray-700">
-                  {postDetailData?.content &&
-                    Object.entries(postDetailData?.content)?.map(
-                      ([key, value]) => (
-                        <div className="flex flex-col text-center items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2 capitalize">
-                          <span className="font-semibold leading-none pb-2">
-                            {key}
-                          </span>
-                          {value}
-                        </div>
-                      )
-                    )}
-                </div>
-
-                <button
-                  onClick={() => {
-                    if (accessToken) {
-                      setShowReportListModal(true);
-                    } else {
-                      setShowLoginModal(true);
-                    }
-                  }}
-                  className="w-full p-3 font-bold text-red-600 rounded-lg flex items-center justify-center gap-2 bg-gray-200"
-                >
-                  <img src={report} alt="icon" /> {t("reportListing")}
-                </button>
-
-                <div className="w-full mt-10 space-y-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <img src={darkLocation} alt="icon" />
-                      <h3 className="font-bold text-xl">
-                        {postDetailData?.nearby_location}
-                      </h3>
-                    </div>
-                    <div className="w-full h-70 py-2 rounded-lg overflow-hidden shadow">
-                      {!isLoaded ? (
-                        <p>Loading map...</p>
-                      ) : (
-                        <GoogleMap
-                          center={
-                            postDetailData?.latitude &&
-                            postDetailData?.longitude
-                              ? {
-                                  lat: Number(postDetailData?.latitude),
-                                  lng: Number(postDetailData?.longitude),
-                                }
-                              : { lat: 0, lng: 0 }
-                          }
-                          zoom={14}
-                          mapContainerStyle={{ width: "100%", height: "100%" }}
-                        >
-                          <Marker
-                            position={{
-                              lat: postDetailData.latitude,
-                              lng: postDetailData.longitude,
-                            }}
-                          />
-                        </GoogleMap>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="py-4">
-                    <h3 className="font-bold text-xl">{t("postOwner")}</h3>
-                    <div className="flex items-center gap-3 py-2">
-                      <div className="w-40 h-40 flex items-center justify-center">
+          <div className="py-6 overflow-hidden flex flex-col lg:flex-row">
+            <div className="lg:w-2/3 w-full">
+              {postDetailData?.images?.length > 0 ? (
+                <>
+                  <Swiper
+                    style={{
+                      "--swiper-navigation-color": "#00b4d8",
+                      "--swiper-pagination-color": "#00b4d8",
+                    }}
+                    loop={true}
+                    spaceBetween={10}
+                    slidesPerView={1}
+                    centeredSlides={true}
+                    navigation={true}
+                    thumbs={{
+                      swiper:
+                        thumbsSwiper && !thumbsSwiper.destroyed
+                          ? thumbsSwiper
+                          : null,
+                    }}
+                    modules={[FreeMode, Navigation, Thumbs]}
+                    className="mySwiper2 h-100"
+                  >
+                    {postDetailData.images.map((item, i) => (
+                      <SwiperSlide key={i}>
                         <img
-                          src={
-                            postDetailData?.user?.user_profile_url
-                              ? `${imagePath}/${postDetailData?.user?.user_profile_url}`
-                              : defaultUser
-                          }
-                          alt="icon"
-                          className="h-full w-full rounded-lg object-cover"
+                          src={`${imagePath}/${item.image_url}`}
+                          alt={`Nature ${i + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
                         />
-                      </div>
-                      <Link
-                        to={`${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`}
-                      >
-                        <h3 className="text-xl font-bold">
-                          {postDetailData?.user?.username}
-                        </h3>
-                        <div className="flex gap-2">
-                          <RatingStar
-                            starValue={postDetailData?.user?.averageRating}
-                          />{" "}
-                          <p>({postDetailData?.user?.averageRating})</p>
-                        </div>
-                        <p className="text-sm text-gray-500 py-2">
-                          {t("memberSince")}{" "}
-                          {moment(postDetailData?.user?.created_at).format(
-                            "MM/DD/yyyy"
-                          )}
-                        </p>
-                      </Link>
-                    </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
 
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() =>
-                          (window.location.href = `tel:${postDetailData?.user?.phone}`)
-                        }
-                        className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
-                      >
+                  <Swiper
+                    onSwiper={setThumbsSwiper}
+                    loop={true}
+                    spaceBetween={10}
+                    slidesPerView={5}
+                    freeMode={true}
+                    watchSlidesProgress={true}
+                    modules={[FreeMode, Navigation, Thumbs]}
+                    breakpoints={{
+                      0: {
+                        slidesPerView: 3.4,
+                      },
+                      767: {
+                        slidesPerView: 4.4,
+                      },
+                      1024: {
+                        slidesPerView: 5,
+                      },
+                    }}
+                    className="mySwiper mt-4 flex items-center"
+                  >
+                    {postDetailData.images.map((item, i) => (
+                      <SwiperSlide key={i}>
                         <img
-                          src={headerContact}
-                          alt="icon"
-                          className="h-5 w-5"
-                        />{" "}
-                        {postDetailData?.user?.phone || "7777777777"}
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (accessToken) {
-                            setShowReviewModal(true);
-                          } else {
-                            setShowLoginModal(true);
-                          }
-                        }}
-                        className="flex gap-1 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
-                      >
-                        <img src={whitestar} alt="icon" className="h-5 w-5" />{" "}
-                        {t("addReviewsButton")}
-                      </button>
-                    </div>
+                          src={`${imagePath}/${item.image_url}`}
+                          alt={`Thumbnail ${i + 1}`}
+                          className="w-full object-cover cursor-pointer rounded-lg aspect-square lg:aspect-auto lg:h-[110px]"
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </>
+              ) : (
+                <>
+                  <div className="w-full h-100 flex items-center justify-center bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg">
+                    <span className="text-gray-500 text-sm">
+                      {t("noImages")}
+                    </span>
                   </div>
-                </div>
+                </>
+              )}
+              <div className="mt-10 w-full">
+                <h3 className="font-bold text-xl">{t("description")}</h3>
+                <p className="text-gray-600 py-2">
+                  {postDetailData?.description}
+                </p>
               </div>
             </div>
 
-            <div className="pb-8">
-              <div className="flex justify-between items-center pb-4">
-                <h2 className="main-heading">{t("similarPosts")}</h2>
-                <Link to={ROUTE.PRODUCT_PAGE}>
-                  <h2 className="font-bold text-md">{t("viewAll")}</h2>
-                </Link>
+            <div className="lg:w-1/3 w-full ps-5 space-y-4">
+              <div className="flex justify-between items-center">
+                <span></span>
+                <div className="flex items-center gap-5">
+                  <div className="flex items-center gap-1 text-sm">
+                    <img src={eyeIcon} alt="icon" />
+                    {postDetailData?.views}
+                  </div>
+                  <button
+                    onClick={() => setShowShareModal(true)}
+                    className="flex items-center gap-1 text-sm"
+                  >
+                    <img src={shareIcon} alt="icon" />
+                  </button>
+                  <button
+                    onClick={() => handleLikeUnlikePost(postDetailData)}
+                    className="flex items-center gap-1 text-sm"
+                  >
+                    {postDetailData?.isWishlisted ? (
+                      <img src={heartFilled} alt="icon" />
+                    ) : (
+                      <img src={heart} alt="icon" />
+                    )}
+                  </button>
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {relatedPosts?.length > 0 ? (
-                  relatedPosts?.map((item) => (
-                    <ProductCard
-                      key={item.id}
-                      item={item}
-                      imagePath={imagePath}
-                      handleLikeUnlikePost={handleLikeUnlikePost}
-                    />
-                  ))
-                ) : (
-                  <p className="col-span-full text-center text-gray-500 font-medium py-6">
-                    {t("noDataFound")}
-                  </p>
-                )}
+
+              <div className="flex justify-between items-center">
+                <h2 className="main-heading text-primary">
+                  ${postDetailData?.price}
+                </h2>
+                <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
+                  {postDetailData?.subCategoryName}
+                </span>
+              </div>
+
+              <p className="text-sm text-gray-700">{postDetailData?.title}</p>
+
+              <div className="flex items-center gap-2 text-gray-500 text-sm">
+                <img src={locationicon} alt="icon" />
+                {postDetailData?.nearby_location}
+              </div>
+
+              <button
+                onClick={() => {
+                  if (accessToken) {
+                    setShowNotifyModal(true);
+                    setNotified(true);
+                  } else {
+                    setShowLoginModal(true);
+                  }
+                }}
+                disabled={notified}
+                className={`w-full p-3 font-bold underline rounded-lg flex items-center justify-center gap-2  ${
+                  notified
+                    ? "bg-primary text-white"
+                    : "bg-gray-200 text-primary"
+                }`}
+              >
+                <img src={notified ? whitebell : primaryBell} alt="icon" />{" "}
+                {t("priceDrops")}{" "}
+                {notified && <img src={whitecheck} alt="icon" />}
+              </button>
+
+              <div className="grid grid-cols-3 gap-3 text-sm text-gray-700">
+                {postDetailData?.content &&
+                  Object.entries(postDetailData?.content)?.map(
+                    ([key, value]) => (
+                      <div className="flex flex-col text-center items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2 capitalize">
+                        <span className="font-semibold leading-none pb-2">
+                          {key}
+                        </span>
+                        {value}
+                      </div>
+                    )
+                  )}
+              </div>
+
+              <button
+                onClick={() => {
+                  if (accessToken) {
+                    setShowReportListModal(true);
+                  } else {
+                    setShowLoginModal(true);
+                  }
+                }}
+                className="w-full p-3 font-bold text-red-600 rounded-lg flex items-center justify-center gap-2 bg-gray-200"
+              >
+                <img src={report} alt="icon" /> {t("reportListing")}
+              </button>
+
+              <div className="w-full mt-10 space-y-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <img src={darkLocation} alt="icon" />
+                    <h3 className="font-bold text-xl">
+                      {postDetailData?.nearby_location}
+                    </h3>
+                  </div>
+                  <div className="w-full h-70 py-2 rounded-lg overflow-hidden shadow">
+                    {!isLoaded ? (
+                      <p>Loading map...</p>
+                    ) : (
+                      <GoogleMap
+                        center={
+                          postDetailData?.latitude && postDetailData?.longitude
+                            ? {
+                                lat: Number(postDetailData?.latitude),
+                                lng: Number(postDetailData?.longitude),
+                              }
+                            : { lat: 0, lng: 0 }
+                        }
+                        zoom={14}
+                        mapContainerStyle={{ width: "100%", height: "100%" }}
+                      >
+                        <Marker
+                          position={{
+                            lat: postDetailData.latitude,
+                            lng: postDetailData.longitude,
+                          }}
+                        />
+                      </GoogleMap>
+                    )}
+                  </div>
+                </div>
+
+                <div className="py-4">
+                  <h3 className="font-bold text-xl">{t("postOwner")}</h3>
+                  <div className="flex items-center gap-3 py-2">
+                    <div className="w-40 h-40 flex items-center justify-center">
+                      <img
+                        src={
+                          postDetailData?.user?.user_profile_url
+                            ? `${imagePath}/${postDetailData?.user?.user_profile_url}`
+                            : defaultUser
+                        }
+                        alt="icon"
+                        className="h-full w-full rounded-lg object-cover"
+                      />
+                    </div>
+                    <Link
+                      to={`${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`}
+                    >
+                      <h3 className="text-xl font-bold">
+                        {postDetailData?.user?.username}
+                      </h3>
+                      <div className="flex gap-2">
+                        <RatingStar
+                          starValue={postDetailData?.user?.averageRating}
+                        />{" "}
+                        <p>({postDetailData?.user?.averageRating})</p>
+                      </div>
+                      <p className="text-sm text-gray-500 py-2">
+                        {t("memberSince")}{" "}
+                        {moment(postDetailData?.user?.created_at).format(
+                          "MM/DD/yyyy"
+                        )}
+                      </p>
+                    </Link>
+                  </div>
+
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() =>
+                        (window.location.href = `tel:${postDetailData?.user?.phone}`)
+                      }
+                      className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                    >
+                      <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
+                      {postDetailData?.user?.phone || "7777777777"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (accessToken) {
+                          setShowReviewModal(true);
+                        } else {
+                          setShowLoginModal(true);
+                        }
+                      }}
+                      className="flex gap-1 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                    >
+                      <img src={whitestar} alt="icon" className="h-5 w-5" />{" "}
+                      {t("addReviewsButton")}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {showReviewModal && (
-            <AddReviewModal
-              onClose={() => setShowReviewModal(false)}
-              postDetailData={postDetailData}
-            />
-          )}
-
-          {showNotifyModal && (
-            <InfoModal
-              onClose={() => setShowNotifyModal(false)}
-              title={t("requestSubmitted")}
-              subtitle={t("successfullySubmitted")}
-            />
-          )}
-          {showReportListModal && (
-            <ReportListModal
-              onClose={() => setShowReportListModal(false)}
-              reportList={reportList}
-              postDetailData={postDetailData}
-            />
-          )}
-
-          {showShareModal && (
-            <ShareModal
-              onClose={() => setShowShareModal(false)}
-              shareLink={shareLink}
-              title={postDetailData?.title}
-              description={postDetailData?.description}
-              image={`${imagePath}/${postDetailData?.images[0]?.image_url}`}
-            />
-          )}
-
-          <LoginModal
-            show={showLoginModal}
-            hide={() => setShowLoginModal(false)}
-            setShowLoginModal={setShowLoginModal}
-          />
+          <div className="pb-8">
+            <div className="flex justify-between items-center pb-4">
+              <h2 className="main-heading">{t("similarPosts")}</h2>
+              <Link to={ROUTE.PRODUCT_PAGE}>
+                <h2 className="font-bold text-md">{t("viewAll")}</h2>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedPosts?.length > 0 ? (
+                relatedPosts?.map((item) => (
+                  <ProductCard
+                    key={item.id}
+                    item={item}
+                    imagePath={imagePath}
+                    handleLikeUnlikePost={handleLikeUnlikePost}
+                  />
+                ))
+              ) : (
+                <p className="col-span-full text-center text-gray-500 font-medium py-6">
+                  {t("noDataFound")}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
-      )}
+
+        {showReviewModal && (
+          <AddReviewModal
+            onClose={() => setShowReviewModal(false)}
+            postDetailData={postDetailData}
+          />
+        )}
+
+        {showNotifyModal && (
+          <InfoModal
+            onClose={() => setShowNotifyModal(false)}
+            title={t("requestSubmitted")}
+            subtitle={t("successfullySubmitted")}
+          />
+        )}
+        {showReportListModal && (
+          <ReportListModal
+            onClose={() => setShowReportListModal(false)}
+            reportList={reportList}
+            postDetailData={postDetailData}
+          />
+        )}
+
+        {showShareModal && (
+          <ShareModal
+            onClose={() => setShowShareModal(false)}
+            shareLink={shareLink}
+            title={postDetailData?.title}
+            description={postDetailData?.description}
+            image={`${imagePath}/${postDetailData?.images[0]?.image_url}`}
+          />
+        )}
+
+        <LoginModal
+          show={showLoginModal}
+          hide={() => setShowLoginModal(false)}
+          setShowLoginModal={setShowLoginModal}
+        />
+      </div>
     </>
   );
 };

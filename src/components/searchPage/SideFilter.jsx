@@ -88,40 +88,43 @@ export const SideFilter = ({
           placeholder={t("enterNearbyLocation")}
           className="w-full h-[48px] bg-[#f5f5f5] rounded-lg px-3 py-2 text-sm focus:outline-none"
         /> */}
-        <Autocomplete
-          apiKey={GOOGLE_API_KEY}
-          placeholder={t("nearbyLocation")}
-          value={selectedLocation}
-          onChange={(e) => setSelectedLocation(e.target.value)}
-          onPlaceSelected={(place) => {
-            if (place?.geometry?.location) {
-              const lat = place.geometry.location.lat();
-              const lng = place.geometry.location.lng();
+        <div className="input-icon-grp">
+          <Autocomplete
+            apiKey={GOOGLE_API_KEY}
+            placeholder={t("nearbyLocation")}
+            value={selectedLocation}
+            onChange={(e) => setSelectedLocation(e.target.value)}
+            onPlaceSelected={(place) => {
+              if (place?.geometry?.location) {
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
 
-              const countryObj = place.address_components?.find((c) =>
-                c.types.includes("country")
-              );
-              const country = countryObj ? countryObj.long_name : "";
-              const newCoords = { lat, lng, country };
-              setSelectedLocation(place.formatted_address);
+                const countryObj = place.address_components?.find((c) =>
+                  c.types.includes("country")
+                );
+                const country = countryObj ? countryObj.long_name : "";
+                const newCoords = { lat, lng, country };
+                setSelectedLocation(place.formatted_address);
 
-              setCoords(newCoords);
-            } else {
-              console.warn("No geometry found for selected place:", place);
-            }
-          }}
-          options={{
-            types: ["geocode"],
-            componentRestrictions: reduxCoords?.country
-              ? {
-                  country: Country.getAllCountries()
-                    .find((c) => c.name === reduxCoords.country)
-                    ?.isoCode.toLowerCase(),
-                }
-              : {},
-          }}
-          className="w-full text-black rounded p-3 pr-11 bg-gray-100 focus:outline-none"
-        />
+                setCoords(newCoords);
+              } else {
+                console.warn("No geometry found for selected place:", place);
+              }
+            }}
+            options={{
+              types: ["geocode"],
+              componentRestrictions: reduxCoords?.country
+                ? {
+                    country: Country.getAllCountries()
+                      .find((c) => c.name === reduxCoords.country)
+                      ?.isoCode.toLowerCase(),
+                  }
+                : {},
+            }}
+            className="w-full text-black rounded p-3 pr-11 bg-gray-100 focus:outline-none"
+          />
+          <i className="fa-solid fa-magnifying-glass" />
+        </div>
       </div>
 
       <div>

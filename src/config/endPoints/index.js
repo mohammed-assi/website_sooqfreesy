@@ -56,6 +56,8 @@ export const POST = {
   MARK_SOLD: `${BASEURL}/post/sold-post`,
   UPDATE: `${BASEURL}/post/update-post`,
   DELETE_IMG: `${BASEURL}/post/delete-file`,
+
+  GET_SUGGESTION: `${BASEURL}/post/get-search-suggestion`,
 };
 
 export const CONTENT = {

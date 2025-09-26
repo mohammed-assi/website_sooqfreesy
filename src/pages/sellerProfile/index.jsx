@@ -19,6 +19,7 @@ import { ROUTE } from "../../config/constants";
 import moment from "moment";
 import useDebounce from "../../utils/debounce";
 import { City, Country, State } from "country-state-city";
+import NotFoundPage from "../notFoundPage";
 
 export const SellerProfile = () => {
   // const { t } = useTranslation();
@@ -279,7 +280,7 @@ export const SellerProfile = () => {
   const [showReportButton, setShowReportButton] = useState(false);
   const [showReportListModal, setShowReportListModal] = useState(false);
 
-  const [sellerProfile, setSellerProfile] = useState({});
+  const [sellerProfile, setSellerProfile] = useState(null);
   const [sellerReviews, setSellerReviews] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
@@ -354,130 +355,103 @@ export const SellerProfile = () => {
   // ======== API Calls ========
   const getAllPosts = async (url) => {
     setLoading(true);
-    try {
-      const response = await getRequest(url);
-      if (response?.data?.success && response?.data?.statusCode === 200) {
-        setAllPosts(response?.data?.data?.posts || []);
-      } else {
-        setAllPosts([]);
-      }
-    } catch (err) {
-      console.error("Error fetching posts:", err);
-      showErrorToast(err?.response?.data?.message || "Failed to fetch posts");
-    } finally {
-      setLoading(false);
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setAllPosts(response?.data?.data?.posts || []);
+    } else {
+      setAllPosts([]);
     }
+    setLoading(false);
   };
 
- const buildUrlForRequest = useCallback(
-  (page = 1, includeSortingPrice = false) => {
+  const buildUrlForRequest = useCallback(
+    (page = 1, includeSortingPrice = false) => {
+      const filterObj = buildFilterObject();
+
+      let url = `${POST.SELLER_POST}/${id}?page=${page}&limit=12`;
+
+      if (includeSortingPrice) {
+        const sorting =
+          modalFilter?.sorting === "relevant" ? "relevant" : "newest";
+        const byPrice = modalFilter?.price === "lowest" ? "lowest" : "highest";
+        url += `&sorting=${sorting}&byPrice=${byPrice}`;
+      }
+
+      if (Object.keys(filterObj).length > 0) {
+        url += `&filters=${encodeURIComponent(JSON.stringify(filterObj))}`;
+      }
+
+      return url;
+    },
+    [buildFilterObject, modalFilter, id]
+  );
+
+  const getAllPostsCallback = useCallback(() => {
     const filterObj = buildFilterObject();
+    const requestKey = JSON.stringify({
+      page: 1,
+      filters: filterObj,
+    });
 
-    let url = `${POST.SELLER_POST}/${id}?page=${page}&limit=12`;
+    if (lastRequestKeyRef.current === requestKey) return;
 
-    if (includeSortingPrice) {
-      const sorting =
-        modalFilter?.sorting === "relevant" ? "relevant" : "newest";
-      const byPrice = modalFilter?.price === "lowest" ? "lowest" : "highest";
-      url += `&sorting=${sorting}&byPrice=${byPrice}`;
-    }
+    if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
 
-    if (Object.keys(filterObj).length > 0) {
-      url += `&filters=${encodeURIComponent(JSON.stringify(filterObj))}`;
-    }
+    requestTimerRef.current = setTimeout(() => {
+      lastRequestKeyRef.current = requestKey;
 
-    return url;
-  },
-  [buildFilterObject, modalFilter, id]
-);
+      // Do NOT include sorting & byPrice for auto-fetch
+      const url = buildUrlForRequest(1, false);
+      getAllPosts(url);
 
-const getAllPostsCallback = useCallback(() => {
-  const filterObj = buildFilterObject();
-  const requestKey = JSON.stringify({
-    page: 1,
-    filters: filterObj,
-  });
+      requestTimerRef.current = null;
+    }, 1000);
+  }, [buildFilterObject, buildUrlForRequest, accessToken]);
 
-  if (lastRequestKeyRef.current === requestKey) return;
-
-  if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
-
-  requestTimerRef.current = setTimeout(() => {
-    lastRequestKeyRef.current = requestKey;
-
-    // Do NOT include sorting & byPrice for auto-fetch
-    const url = buildUrlForRequest(1, false);
+  const handleApplyFilters = () => {
+    // Include sorting & byPrice only when user applies
+    const url = buildUrlForRequest(1, true);
     getAllPosts(url);
-
-    requestTimerRef.current = null;
-  }, 1000);
-}, [buildFilterObject, buildUrlForRequest, accessToken]);
-
-
-const handleApplyFilters = () => {
-  // Include sorting & byPrice only when user applies
-  const url = buildUrlForRequest(1, true);
-  getAllPosts(url);
-};
+  };
 
   const getAllCategory = async (url) => {
-    try {
-      const response = await getRequest(url);
-      if (response?.data?.success && response?.data?.statusCode === 200) {
-        setAllCategory(response?.data?.data?.categories || []);
-      }
-    } catch (err) {
-      console.error("Error fetching categories:", err);
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setAllCategory(response?.data?.data?.categories || []);
     }
   };
 
   const getSubCategory = async (url) => {
-    try {
-      const response = await getRequest(url);
-      if (response?.data?.success && response?.data?.statusCode === 200) {
-        setSubCategoryList(response?.data?.data || []);
-      }
-    } catch (err) {
-      showErrorToast(err?.response?.data?.message);
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setSubCategoryList(response?.data?.data || []);
     }
   };
 
   const getSellerProfile = async (url) => {
     setLoading(true);
-    try {
-      const response = await getRequest(url);
-      if (response?.data?.success && response?.data?.statusCode === 200) {
-        setSellerProfile(response?.data?.data || {});
-      }
-    } catch (err) {
-      showErrorToast(err?.response?.data?.message);
-    } finally {
-      setLoading(false);
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setSellerProfile(response?.data?.data || {});
+    } else {
+      setSellerProfile(null);
     }
+    setLoading(false);
   };
 
   const getSellerReview = async (url) => {
     setLoading(true);
-    try {
-      const response = await getRequest(url);
-      if (response?.data?.success && response?.data?.statusCode === 200) {
-        setSellerReviews(response?.data?.data || []);
-      }
-    } catch (err) {
-      showErrorToast(err?.response?.data?.message);
-    } finally {
-      setLoading(false);
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setSellerReviews(response?.data?.data || []);
     }
+    setLoading(false);
   };
 
   const getContactReportList = async (url) => {
-    try {
-      const response = await getRequest(url);
-      if (response?.data?.success && response?.data?.statusCode === 200) {
-        setReportList(response?.data?.data || []);
-      }
-    } catch (err) {
-      showErrorToast(err?.response?.data?.message);
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setReportList(response?.data?.data || []);
     }
   };
 
@@ -515,14 +489,10 @@ const handleApplyFilters = () => {
 
     const url = data?.isWishlisted ? POST.UNLIKE : POST.LIKE;
 
-    try {
-      const response = await getRequest(`${url}?listingId=${data?.id}`);
-      if (response?.data?.success && response?.data?.statusCode === 200) {
-        showSuccessToast(response?.data?.message || "Updated wishlist");
-        getAllPostsCallback();
-      }
-    } catch (err) {
-      showErrorToast(err?.response?.data?.message);
+    const response = await getRequest(`${url}?listingId=${data?.id}`);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      showSuccessToast(response?.data?.message || "Updated wishlist");
+      getAllPostsCallback();
     }
   };
 
@@ -581,123 +551,119 @@ const handleApplyFilters = () => {
     }
   }, [selectedState, states]);
 
+  if (loading) return <ScreenLoader />;
+
+  if (!sellerProfile && !loading) return <NotFoundPage />;
+
   return (
     <>
-      {loading ? (
-        <ScreenLoader />
-      ) : (
-        <div className="spacer-x pb-10">
-          <div className="pt-15">
-            <div className="text-sm text-gray-500 mb-2">
-              <Link className="hover:text-primary" to={ROUTE.ROOT}>
-                {t("home")}
-              </Link>{" "}
-              <span className="mx-1">{">"}</span>{" "}
-              <span
-                onClick={() => navigate(-1)}
-                className="cursor-pointer hover:text-primary"
-              >
-                {t("productDetails")}
-              </span>{" "}
-              <span className="mx-1">{">"}</span> {t("sellerProfile")}
-            </div>
+      <div className="spacer-x pb-10">
+        <div className="pt-15">
+          <div className="text-sm text-gray-500 mb-2">
+            <Link className="hover:text-primary" to={ROUTE.ROOT}>
+              {t("home")}
+            </Link>{" "}
+            <span className="mx-1">{">"}</span>{" "}
+            <span
+              onClick={() => navigate(-1)}
+              className="cursor-pointer hover:text-primary"
+            >
+              {t("productDetails")}
+            </span>{" "}
+            <span className="mx-1">{">"}</span> {t("sellerProfile")}
+          </div>
 
-            <h1 className="main-heading">{t("sellerProfile")}</h1>
+          <h1 className="main-heading">{t("sellerProfile")}</h1>
 
-            <div className="py-10">
-              <div className="relative flex flex-wrap md:flex-nowrap items-center gap-8 bg-white shadow-md rounded-2xl p-4 w-full">
-                <div className="flex items-center gap-4 flex-shrink-0 w-full md:w-auto">
-                  <img
-                    src={
-                      sellerProfile?.user_profile_url
-                        ? `${imagePath}/${sellerProfile?.user_profile_url}`
-                        : defaultUser
-                    }
-                    alt="userImg"
-                    className="w-full md:w-60 h-45 rounded-lg object-cover"
-                  />
+          <div className="py-10">
+            <div className="relative flex flex-wrap md:flex-nowrap items-center gap-8 bg-white shadow-md rounded-2xl p-4 w-full">
+              <div className="flex items-center gap-4 flex-shrink-0 w-full md:w-auto">
+                <img
+                  src={
+                    sellerProfile?.user_profile_url
+                      ? `${imagePath}/${sellerProfile?.user_profile_url}`
+                      : defaultUser
+                  }
+                  alt="userImg"
+                  className="w-full md:w-60 h-45 rounded-lg object-cover"
+                />
+              </div>
+
+              <div className="flex justify-between items-center gap-3 flex-wrap w-full">
+                <div>
+                  <h3 className="text-xl font-bold pb-1">
+                    {sellerProfile?.username}
+                  </h3>
+                  <RatingStar starValue={sellerProfile?.averageRating} />
+                  <p className="text-sm text-gray-500 pt-5">
+                    {t("memberSince")}{" "}
+                    {moment(sellerProfile?.created_at).format("MM/DD/yyyy")}
+                  </p>
                 </div>
+                <button
+                  onClick={() =>
+                    (window.location.href = `tel:${sellerProfile?.phone}`)
+                  }
+                  className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                >
+                  <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
+                  {sellerProfile?.phone || "7777777777"}
+                </button>
 
-                <div className="flex justify-between items-center gap-3 flex-wrap w-full">
-                  <div>
-                    <h3 className="text-xl font-bold pb-1">
-                      {sellerProfile?.username}
-                    </h3>
-                    <RatingStar starValue={sellerProfile?.averageRating} />
-                    <p className="text-sm text-gray-500 pt-5">
-                      {t("memberSince")}{" "}
-                      {moment(sellerProfile?.created_at).format("MM/DD/yyyy")}
-                    </p>
-                  </div>
+                <div className="absolute top-5 right-4">
                   <button
-                    onClick={() =>
-                      (window.location.href = `tel:${sellerProfile?.phone}`)
-                    }
-                    className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                    onClick={() => setShowReportButton(!showReportButton)}
+                    className="text-gray-700"
                   >
-                    <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
-                    {sellerProfile?.phone || "7777777777"}
+                    <img src={menu} alt="userImg" className="w-6 h-6" />
                   </button>
-
-                  <div className="absolute top-5 right-4">
+                </div>
+                {showReportButton && (
+                  <div className="absolute top-12 right-4 z-10">
                     <button
-                      onClick={() => setShowReportButton(!showReportButton)}
-                      className="text-gray-700"
+                      onClick={() => {
+                        if (accessToken) {
+                          setShowReportListModal(true);
+                        } else {
+                          setShowLoginModal(true);
+                        }
+                      }}
+                      className="rounded-md shadow-md text-gray-700 bg-white p-4 flex items-center gap-2"
                     >
-                      <img src={menu} alt="userImg" className="w-6 h-6" />
+                      <img src={reportUser} alt="userImg" className="w-6 h-6" />
+                      {t("reportSeller")}
                     </button>
                   </div>
-                  {showReportButton && (
-                    <div className="absolute top-12 right-4 z-10">
-                      <button
-                        onClick={() => {
-                          if (accessToken) {
-                            setShowReportListModal(true);
-                          } else {
-                            setShowLoginModal(true);
-                          }
-                        }}
-                        className="rounded-md shadow-md text-gray-700 bg-white p-4 flex items-center gap-2"
-                      >
-                        <img
-                          src={reportUser}
-                          alt="userImg"
-                          className="w-6 h-6"
-                        />
-                        {t("reportSeller")}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
             </div>
           </div>
-
-          <ListingFilter
-            sellerReviews={sellerReviews}
-            imagePath={imagePath}
-            allCategory={allCategory}
-            filters={filters}
-            handleChange={handleChange}
-            setModalFilter={setModalFilter}
-            allPosts={allPosts}
-            handleLikeUnlikePost={handleLikeUnlikePost}
-            setSearchTextDebounce={setSearchTextDebounce}
-            searchTextDebounce={searchTextDebounce}
-            states={states}
-            selectedState={selectedState}
-            setSelectedState={setSelectedState}
-            cities={cities}
-            selectedCity={selectedCity}
-            setSelectedCity={setSelectedCity}
-            setSelectedLocation={setSelectedLocation}
-            setCoords={setCoords}
-            selectedLocation={selectedLocation}
-            subCategoryList={subCategoryList}
-            handleApplyFilters={handleApplyFilters}
-          />
         </div>
-      )}
+
+        <ListingFilter
+          sellerReviews={sellerReviews}
+          imagePath={imagePath}
+          allCategory={allCategory}
+          filters={filters}
+          handleChange={handleChange}
+          setModalFilter={setModalFilter}
+          allPosts={allPosts}
+          handleLikeUnlikePost={handleLikeUnlikePost}
+          setSearchTextDebounce={setSearchTextDebounce}
+          searchTextDebounce={searchTextDebounce}
+          states={states}
+          selectedState={selectedState}
+          setSelectedState={setSelectedState}
+          cities={cities}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+          setSelectedLocation={setSelectedLocation}
+          setCoords={setCoords}
+          selectedLocation={selectedLocation}
+          subCategoryList={subCategoryList}
+          handleApplyFilters={handleApplyFilters}
+        />
+      </div>
 
       {showReportListModal && (
         <ReportListModal

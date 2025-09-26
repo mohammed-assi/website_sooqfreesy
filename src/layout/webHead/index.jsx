@@ -18,6 +18,8 @@ import { showInfoToast, showSuccessToast } from "../../utils/toastUtils";
 import { clearUser } from "../../redux/slices/userSlice";
 import { ROUTE } from "../../config/constants";
 import { clearLocationCoords } from "../../redux/slices/locationSlice";
+import { getRequest } from "../../config/apiFunctions";
+import { POST } from "../../config/endPoints";
 
 export const WebHead = () => {
   const { t } = useTranslation();
@@ -34,20 +36,11 @@ export const WebHead = () => {
   const [searchValue, setSearchValue] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [suggestionList, setSuggestionList] = useState([]);
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
   };
-
-  const popularSearches = [
-    t("cars"),
-    t("bikes"),
-    t("land"),
-    t("offices"),
-    t("washingMachine"),
-    t("phone"),
-    t("laptop"),
-  ];
 
   const userDropDown = [
     { name: t("profile"), imgUrl: profile, slug: ROUTE.USER_PROFILE },
@@ -79,7 +72,8 @@ export const WebHead = () => {
     if (searchValue !== "") {
       navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: searchValue } });
     }
-    setSearchValue("")
+    setSearchValue("");
+    setSuggestionList([]);
   };
 
   const handleNavigate = (slug) => {
@@ -91,6 +85,19 @@ export const WebHead = () => {
     setOpen(false);
     setSearchOpen(false);
   };
+
+  const handleCheckSuggestions = async (url) => {
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setSuggestionList(response?.data?.data);
+    }
+  };
+
+  useEffect(() => {
+    if (searchValue.length >= 2) {
+      handleCheckSuggestions(`${POST.GET_SUGGESTION}?search=${searchValue}`);
+    }
+  }, [searchValue]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -133,8 +140,7 @@ export const WebHead = () => {
     location.pathname === ROUTE.CREATE_POST ||
     location.pathname.startsWith(ROUTE.UPDATE_POST);
 
-
-    
+  console.log("suggestionList", suggestionList);
 
   return (
     <>
@@ -387,18 +393,21 @@ export const WebHead = () => {
                         </button>
                       </div>
 
-                      {searchOpen && (
-                        <div className="absolute mt-2 w-80 rounded-xl bg-white shadow-lg z-50">
+                      {searchOpen && suggestionList?.length > 0 && (
+                        <div className="absolute mt-2 w-90 rounded-xl bg-white shadow-lg z-50">
                           <div className="p-4">
                             <h3 className="font-semibold">
                               {t("popularSearches")}
                             </h3>
                           </div>
                           <ul className="">
-                            {popularSearches.map((item) => (
+                            {suggestionList?.map((item) => (
                               <li
                                 key={item}
-                                onClick={() => setSearchValue(item)}
+                                onClick={() => {
+                                  setSearchValue(item);
+                                  goToProductPage();
+                                }}
                                 className="px-4 py-3 text-gray-700 cursor-pointer hover:bg-gray-100 border-t border-gray-100"
                               >
                                 {item}

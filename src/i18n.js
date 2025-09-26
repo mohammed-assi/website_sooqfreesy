@@ -307,6 +307,8 @@ const resources = {
       in: "in",
       provideLocation: "Please provide your location",
       or: "Or",
+      oops: "Oops! The page you are looking for does not exist.",
+      gotohome: "Go to Home",
     },
   },
   ar: {
@@ -608,6 +610,8 @@ const resources = {
       in: "في",
       provideLocation: "يرجى تزويدنا بموقعك",
       or: "أو",
+      oops: "عذرًا! الصفحة التي تبحث عنها غير موجودة.",
+      gotohome: "الذهاب إلى الصفحة الرئيسية",
     },
   },
 };
