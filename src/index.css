@@ -207,7 +207,7 @@ input[type="range"]::-moz-range-thumb {
   padding: 0;
 }
 
-.loader-spanne-20 > span {
+.loader-spanne-20>span {
   position: absolute;
   right: 0;
   width: 5px;
@@ -219,31 +219,31 @@ input[type="range"]::-moz-range-thumb {
   animation: move 2.8s linear infinite;
 }
 
-.loader-spanne-20 > span:nth-child(1) {
+.loader-spanne-20>span:nth-child(1) {
   animation-delay: -0.4s;
 }
 
-.loader-spanne-20 > span:nth-child(2) {
+.loader-spanne-20>span:nth-child(2) {
   animation-delay: -0.8s;
 }
 
-.loader-spanne-20 > span:nth-child(3) {
+.loader-spanne-20>span:nth-child(3) {
   animation-delay: -1.2s;
 }
 
-.loader-spanne-20 > span:nth-child(4) {
+.loader-spanne-20>span:nth-child(4) {
   animation-delay: -1.6s;
 }
 
-.loader-spanne-20 > span:nth-child(5) {
+.loader-spanne-20>span:nth-child(5) {
   animation-delay: -2s;
 }
 
-.loader-spanne-20 > span:nth-child(6) {
+.loader-spanne-20>span:nth-child(6) {
   animation-delay: -2.4s;
 }
 
-.loader-spanne-20 > span:nth-child(7) {
+.loader-spanne-20>span:nth-child(7) {
   animation-delay: -2.8s;
 }
 
@@ -306,4 +306,10 @@ input[type="number"].no-arrow::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"].no-arrow {
   -moz-appearance: textfield;
+}
+
+@media (max-width: 767px) {
+  .main-heading {
+    font-size: 24px;
+  }
 }

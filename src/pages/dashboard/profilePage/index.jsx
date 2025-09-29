@@ -71,7 +71,7 @@ export const ProfilePage = () => {
       ) : (
         <div className="lg:p-5">
           <h1 className="main-heading">{t("myProfile")}</h1>
-          <div className="py-10">
+          <div className="md:py-10 pt-5 pb-10">
             <div className="relative flex flex-wrap items-center gap-8 bg-white shadow-md rounded-2xl p-4 w-full">
               <div className="flex items-center gap-8">
                 <img

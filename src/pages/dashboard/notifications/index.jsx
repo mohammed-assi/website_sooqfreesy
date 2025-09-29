@@ -99,19 +99,19 @@ export const Notifictions = () => {
       {loading ? (
         <ScreenLoader />
       ) : (
-        <div className="p-5">
+        <div className="lg:p-5">
           <div className="flex items-center justify-between">
             <h1 className="main-heading">{t("notification")}</h1>
-            <div className="text-end">
-              <button onClick={() => setShowSetttingModal(true)}>
-                <img src={notificationSetting} alt="icon" />
-              </button>
+            <div className="text-end flex gap-4">
               <p
                 onClick={handleMarkAllNotificationRead}
                 className="text-primary text-sm cursor-pointer hover:underline transition"
               >
                 {t("markAllRead")}
               </p>
+              <button onClick={() => setShowSetttingModal(true)}>
+                <img src={notificationSetting} alt="icon" />
+              </button>
             </div>
           </div>
           <div className="py-8 grid grid-cols-1 gap-6">
@@ -122,7 +122,7 @@ export const Notifictions = () => {
                   onClick={() => {
                     handleMarkNotificationRead(item.id);
                   }}
-                  className="flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer"
+                  className="flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer relative"
                 >
                   <div className="flex gap-5">
                     <img
@@ -140,7 +140,7 @@ export const Notifictions = () => {
                       <p className="text-gray-600 w-full">{item.message}</p>
                     </div>
                   </div>
-                  <p className="text-gray-600 text-base w-[100px] text-right">
+                  <p className="text-gray-600 w-[100px] text-right text-xs absolute top-2.5 right-2.5">
                     {moment(item.created_at).fromNow()}
                   </p>
                 </div>

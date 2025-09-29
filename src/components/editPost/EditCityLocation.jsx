@@ -31,7 +31,7 @@ export const EditCityLocation = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex gap-7 pt-4">
+      <div className="flex gap-7 pt-4 flex-wrap">
         <div className="w-full p-5 shadow-lg rounded-lg">
           <h3 className="text-2xl font-bold">{t("chooseLocation")}</h3>
           <p className="text-gray-600">{t("placeYourAd")}</p>

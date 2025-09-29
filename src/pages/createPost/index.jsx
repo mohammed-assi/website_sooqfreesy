@@ -387,7 +387,7 @@ export const CreatePost = () => {
 
   return (
     <div className="spacer-x">
-      <div className="pt-15 pb-10">
+      <div className="pt-8 md:pt-15 pb-10">
         <div className="text-sm text-gray-500 mb-2">
           {t("home")} <span className="mx-1">{">"}</span> {t("postYourAd")}
         </div>
@@ -504,7 +504,7 @@ export const CreatePost = () => {
                 form="adForm"
                 loading={loading}
                 disabled={loading}
-                className="bg-primary py-4 px-6 text-white text-base hover:bg-primaryDark h-[56px]"
+                className="bg-primary py-4 px-6 text-white text-base hover:bg-primaryDark h-[3.5rem]"
               >
                 {t("postAd")}
               </LoadingButton>
