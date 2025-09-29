@@ -89,7 +89,7 @@ export const MyAds = () => {
       {loading ? (
         <ScreenLoader />
       ) : (
-        <div className="p-5">
+        <div className="lg:p-5">
           <h1 className="main-heading">{t("myAds")}</h1>
 
           <div className="flex py-8">

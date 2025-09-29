@@ -55,7 +55,7 @@ const ProductListCard = ({
         {showWishlist && (
           <button
             onClick={() => handleLikeUnlikePost(item)}
-            className="cursor-pointer absolute top-3 right-3 z-9"
+            className="cursor-pointer absolute top-4 right-3 z-9"
           >
             {item.isWishlisted ? (
               <img src={heartFilled} alt="icon" />

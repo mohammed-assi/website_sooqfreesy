@@ -11,7 +11,7 @@ export const ChoodeLandlordAgent = ({
 
   return (
     <div className="py-5">
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
           onClick={() => handleChooseLandlordAgent(1)}
           className="cursor-pointer"

@@ -60,7 +60,7 @@ export const MyWishlist = () => {
       {loading ? (
         <ScreenLoader />
       ) : (
-        <div className="p-5">
+        <div className="lg:p-5">
           <h1 className="main-heading">{t("wishlist")}</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-8">

@@ -362,7 +362,7 @@ export const WebHead = () => {
           </div>
         </div>
       </div> */}
-      <header className="header bg-white">
+      <header className="header bg-white border-b border-gray-200">
         <div className="container">
           <nav className="navigation-wrap flex gap-7 items-center py-2.5 lg:py-6">
             <div className="item-left">

@@ -74,9 +74,9 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
                 ? `${item.description.slice(0, 50)}...`
                 : item.description}
             </p>
-            <div className="flex items-center gap-2 text-gray-500 text-sm mt-3">
+            <div className="flex items-center gap-2 text-gray-500 text-xs mt-3 capitalize">
               <img src={location} alt="icon" />
-              {item?.nearby_location}
+              {item?.state && <span>{item.state},</span>} {item?.city}
             </div>
           </div>
         </div>

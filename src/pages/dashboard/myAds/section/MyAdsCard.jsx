@@ -77,14 +77,14 @@ const MyAdsCard = ({
         </Link>
         <button
           onClick={() => setShowMenuItem(true)}
-          className="absolute top-3 right-3"
+          className="absolute top-4 right-3"
         >
           <img src={menu} alt="icon" />
         </button>
         {showMenuItem && (
           <div
             ref={menuRef}
-            className="absolute top-3 right-3 bg-white shadow-xl py-3 px-2 rounded-lg m-w-33"
+            className="absolute top-4 right-3 bg-white shadow-xl py-3 px-2 rounded-lg m-w-33"
           >
             <ul className="space-y-2">
               <li

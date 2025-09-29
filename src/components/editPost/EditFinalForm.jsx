@@ -55,8 +55,8 @@ export const EditFinalForm = ({
   };
 
   return (
-    <div className="flex gap-7 pt-4">
-      <div className="w-[50%] p-5 shadow-lg rounded-lg">
+    <div className="flex gap-7 pt-4 flex-wrap">
+      <div className="lg:w-[50%] w-full p-5 shadow-lg rounded-lg">
         <h3 className="text-2xl font-semibold">{t("imagesPost")}</h3>
         <div className="border-b border-gray-200 pt-4"></div>
 
@@ -120,7 +120,7 @@ export const EditFinalForm = ({
           </button>
         )}
       </div>
-      <div className="w-[50%] p-5 shadow-lg rounded-lg">
+      <div className="lg:w-[50%] w-full p-5 shadow-lg rounded-lg">
         <h3 className="text-2xl font-semibold">{t("includeInformation")}</h3>
         <div className="border-b border-gray-200 pt-4"></div>
 
