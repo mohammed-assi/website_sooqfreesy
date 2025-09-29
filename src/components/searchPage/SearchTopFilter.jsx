@@ -17,7 +17,7 @@ export const SearchTopFilter = ({
   setFiltersModal,
   searchText,
   filters,
-  handleApplyFilters
+  handleApplyFilters,
 }) => {
   const { t } = useTranslation();
   const [openFilterModal, setOpenFilterModal] = useState(false);
@@ -36,7 +36,8 @@ export const SearchTopFilter = ({
 
       <div className="flex items-center justify-between mb-6">
         <h1 className="main-heading">
-          {t("buySell")} {t("in")} {reduxCoords?.country}
+          {t("buySell")}{" "}
+          {reduxCoords?.country ? `${t("in")} ${reduxCoords?.country}` : ""}
         </h1>
         <div className="flex items-center space-x-4">
           <button

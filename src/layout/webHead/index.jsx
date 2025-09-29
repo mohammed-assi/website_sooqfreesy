@@ -19,7 +19,7 @@ import { clearUser } from "../../redux/slices/userSlice";
 import { ROUTE } from "../../config/constants";
 import { clearLocationCoords } from "../../redux/slices/locationSlice";
 import { getRequest } from "../../config/apiFunctions";
-import { POST } from "../../config/endPoints";
+import { CUSTOMER, POST } from "../../config/endPoints";
 
 export const WebHead = () => {
   const { t } = useTranslation();
@@ -37,6 +37,7 @@ export const WebHead = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [suggestionList, setSuggestionList] = useState([]);
+  const [counter, setCounter] = useState({});
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
@@ -93,6 +94,17 @@ export const WebHead = () => {
     }
   };
 
+  const handlegetCounter = async (url) => {
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setCounter(response?.data?.data);
+    }
+  };
+
+  useEffect(() => {
+    handlegetCounter(CUSTOMER.NOTIFICTIN_COUNT);
+  }, [accessToken]);
+
   useEffect(() => {
     if (searchValue.length >= 2) {
       handleCheckSuggestions(`${POST.GET_SUGGESTION}?search=${searchValue}`);
@@ -140,7 +152,7 @@ export const WebHead = () => {
     location.pathname === ROUTE.CREATE_POST ||
     location.pathname.startsWith(ROUTE.UPDATE_POST);
 
-  console.log("suggestionList", suggestionList);
+  console.log("counter", counter);
 
   return (
     <>
@@ -424,11 +436,21 @@ export const WebHead = () => {
                       >
                         {accessToken ? (
                           <div className="flex gap-7 items-center px-0 lg:px-7">
-                            <Link to={ROUTE.NOTIFICATIONS}>
+                            <Link to={ROUTE.NOTIFICATIONS} className="relative">
                               <img src={notification} alt="icon" />
+                              {counter?.notificationCount > 0 && (
+                                <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                                  {counter?.notificationCount}
+                                </p>
+                              )}
                             </Link>
-                            <Link to={ROUTE.WISHLIST}>
+                            <Link to={ROUTE.WISHLIST} className="relative">
                               <img src={wishlist} alt="icon" />
+                              {counter?.wishlistCount > 0 && (
+                                <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                                  {counter?.wishlistCount}
+                                </p>
+                              )}
                             </Link>
                             <Link to={ROUTE.MY_ADS}>
                               <img src={ads} alt="icon" />
