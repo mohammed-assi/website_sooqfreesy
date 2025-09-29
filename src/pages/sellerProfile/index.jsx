@@ -11,7 +11,7 @@ import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import { getRequest, postRequest } from "../../config/apiFunctions";
 import { CUSTOMER, POST, REPORT_LIST } from "../../config/endPoints";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LoginModal from "../../components/auth/LoginModal";
 import { ScreenLoader } from "../../utils/screenLoader";
 import useSearchDebounce from "../../utils/searchDebounce";
@@ -20,6 +20,7 @@ import moment from "moment";
 import useDebounce from "../../utils/debounce";
 import { City, Country, State } from "country-state-city";
 import NotFoundPage from "../notFoundPage";
+import { setNotifications } from "../../redux/slices/notificationSlice";
 
 export const SellerProfile = () => {
   // const { t } = useTranslation();
@@ -271,6 +272,7 @@ export const SellerProfile = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const reduxCoords = useSelector((state) => state.location.coords);
@@ -493,6 +495,10 @@ export const SellerProfile = () => {
     if (response?.data?.success && response?.data?.statusCode === 200) {
       showSuccessToast(response?.data?.message || "Updated wishlist");
       getAllPostsCallback();
+      const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
+      if (res?.data?.success && res?.data?.statusCode === 200) {
+        dispatch(setNotifications(res?.data?.data));
+      }
     }
   };
 

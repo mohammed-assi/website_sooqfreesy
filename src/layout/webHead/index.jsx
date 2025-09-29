@@ -20,6 +20,7 @@ import { ROUTE } from "../../config/constants";
 import { clearLocationCoords } from "../../redux/slices/locationSlice";
 import { getRequest } from "../../config/apiFunctions";
 import { CUSTOMER, POST } from "../../config/endPoints";
+import { setNotifications } from "../../redux/slices/notificationSlice";
 
 export const WebHead = () => {
   const { t } = useTranslation();
@@ -30,6 +31,7 @@ export const WebHead = () => {
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
+  const { notifications } = useSelector((state) => state.notification);
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -37,7 +39,6 @@ export const WebHead = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [suggestionList, setSuggestionList] = useState([]);
-  const [counter, setCounter] = useState({});
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
@@ -97,7 +98,7 @@ export const WebHead = () => {
   const handlegetCounter = async (url) => {
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
-      setCounter(response?.data?.data);
+      dispatch(setNotifications(response?.data?.data));
     }
   };
 
@@ -151,8 +152,6 @@ export const WebHead = () => {
   const isCreateOrUpdate =
     location.pathname === ROUTE.CREATE_POST ||
     location.pathname.startsWith(ROUTE.UPDATE_POST);
-
-  console.log("counter", counter);
 
   return (
     <>
@@ -438,17 +437,17 @@ export const WebHead = () => {
                           <div className="flex gap-7 items-center px-0 lg:px-7">
                             <Link to={ROUTE.NOTIFICATIONS} className="relative">
                               <img src={notification} alt="icon" />
-                              {counter?.notificationCount > 0 && (
+                              {notifications?.notificationCount > 0 && (
                                 <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
-                                  {counter?.notificationCount}
+                                  {notifications?.notificationCount}
                                 </p>
                               )}
                             </Link>
                             <Link to={ROUTE.WISHLIST} className="relative">
                               <img src={wishlist} alt="icon" />
-                              {counter?.wishlistCount > 0 && (
+                              {notifications?.wishlistCount > 0 && (
                                 <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
-                                  {counter?.wishlistCount}
+                                  {notifications?.wishlistCount}
                                 </p>
                               )}
                             </Link>

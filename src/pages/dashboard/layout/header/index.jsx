@@ -28,6 +28,7 @@ export const DashboardHeader = () => {
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
+  const { notifications } = useSelector((state) => state.notification);
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -457,15 +458,25 @@ export const DashboardHeader = () => {
                           <div className="flex gap-7 items-center justify-center lg:px-7 py-3 lg:py-0">
                             <Link
                               to={ROUTE.NOTIFICATIONS}
-                              className="h-9 w-9 flex justify-center items-center lg:size-auto"
+                              className="h-9 w-9 flex justify-center items-center lg:size-auto relative"
                             >
                               <img src={notification} alt="icon" />
+                              {notifications?.notificationCount > 0 && (
+                                <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                                  {notifications?.notificationCount}
+                                </p>
+                              )}
                             </Link>
                             <Link
                               to={ROUTE.WISHLIST}
-                              className="h-9 w-9 flex justify-center items-center lg:size-auto"
+                              className="h-9 w-9 flex justify-center items-center lg:size-auto relative"
                             >
                               <img src={wishlist} alt="icon" />
+                              {notifications?.wishlistCount > 0 && (
+                                <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                                  {notifications?.wishlistCount}
+                                </p>
+                              )}
                             </Link>
                             <Link
                               to={ROUTE.MY_ADS}

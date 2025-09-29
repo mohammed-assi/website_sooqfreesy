@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ProductCard } from "../../../common/card/ProductCard";
 import { getRequest } from "../../../config/apiFunctions";
-import { POST } from "../../../config/endPoints";
+import { CUSTOMER, POST } from "../../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
 import { ScreenLoader } from "../../../utils/screenLoader";
+import { useDispatch } from "react-redux";
+import { setNotifications } from "../../../redux/slices/notificationSlice";
 
 export const MyWishlist = () => {
   const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const dispatch = useDispatch();
   const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -38,6 +41,10 @@ export const MyWishlist = () => {
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
         getAllPostsCallBack();
+        const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
+        if (res?.data?.success && res?.data?.statusCode === 200) {
+          dispatch(setNotifications(res?.data?.data));
+        }
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);

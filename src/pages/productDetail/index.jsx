@@ -27,20 +27,22 @@ import { ROUTE } from "../../config/constants";
 import { InfoModal } from "../../common/modal/InfoModal";
 import { ReportListModal } from "../../components/productDetails/ReportListModal";
 import { getRequest } from "../../config/apiFunctions";
-import { POST, REPORT_LIST } from "../../config/endPoints";
+import { CUSTOMER, POST, REPORT_LIST } from "../../config/endPoints";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LoginModal from "../../components/auth/LoginModal";
 import moment from "moment/moment";
 import { ShareModal } from "../../components/productDetails/ShareModal";
 import { ScreenLoader } from "../../utils/screenLoader";
 import NotFoundPage from "../notFoundPage";
+import { setNotifications } from "../../redux/slices/notificationSlice";
 
 export const ProductDetail = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const location = useLocation();
+  const dispatch = useDispatch();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const shareURL = import.meta.env.VITE_APP_SHARE_URL;
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
@@ -110,6 +112,10 @@ export const ProductDetail = () => {
           showSuccessToast(response?.data?.message);
           getAllPostsCallBack();
           getPostDeatilsCallBack();
+          const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
+          if (res?.data?.success && res?.data?.statusCode === 200) {
+            dispatch(setNotifications(res?.data?.data));
+          }
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);

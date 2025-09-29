@@ -4,14 +4,16 @@ import { GetApplications } from "../../components/Home/GetApplications";
 import { ImageSlider } from "../../components/Home/ImageSlider";
 import { Products } from "../../components/Home/Products";
 import { getRequest } from "../../config/apiFunctions";
-import { POST } from "../../config/endPoints";
+import { CUSTOMER, POST } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import LoginModal from "../../components/auth/LoginModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ScreenLoader } from "../../utils/screenLoader";
+import { setNotifications } from "../../redux/slices/notificationSlice";
 
 export const HomePage = () => {
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const dispatch = useDispatch();
   const { accessToken } = useSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
@@ -45,6 +47,10 @@ export const HomePage = () => {
           showSuccessToast(response?.data?.message);
           getAllPostsCallBack();
           setLoading(false);
+          const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
+          if (res?.data?.success && res?.data?.statusCode === 200) {
+            dispatch(setNotifications(res?.data?.data));
+          }
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);

@@ -11,11 +11,12 @@ import { getRequest } from "../../config/apiFunctions";
 import { CUSTOMER, POST } from "../../config/endPoints";
 import { useLocation, useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LoginModal from "../../components/auth/LoginModal";
 import { ScreenLoader } from "../../utils/screenLoader";
 import useSearchDebounce from "../../utils/searchDebounce";
 import { City, Country, State } from "country-state-city";
+import { setNotifications } from "../../redux/slices/notificationSlice";
 
 export const ProductPage = () => {
   // const location = useLocation();
@@ -288,6 +289,7 @@ export const ProductPage = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -591,6 +593,10 @@ export const ProductPage = () => {
         lastRequestKeyRef.current = null;
         const urlForCurrent = buildUrlForRequest(currentPage);
         getAllPosts(urlForCurrent);
+        const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
+        if (res?.data?.success && res?.data?.statusCode === 200) {
+          dispatch(setNotifications(res?.data?.data));
+        }
       } else {
         showErrorToast("Unable to update wishlist");
       }
