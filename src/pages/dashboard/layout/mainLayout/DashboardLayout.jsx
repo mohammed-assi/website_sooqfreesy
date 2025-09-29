@@ -11,7 +11,7 @@ export const DashboardLayout = () => {
     <>
       <div className="sticky top-0 left-0 w-full z-50">
         <Header className="lg:!max-w-[calc(100%_-_100px)]" />
-        <DashboardHeader setOpenSideBar={setOpenSideBar} />
+        <DashboardHeader setOpenSideBar={setOpenSideBar} openSideBar={openSideBar} />
       </div>
       <div className="flex">
         <Sidebar openSideBar={openSideBar} />
