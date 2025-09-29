@@ -8,10 +8,13 @@ import { showErrorToast } from "../../../utils/toastUtils";
 import { getRequest } from "../../../config/apiFunctions";
 import { ScreenLoader } from "../../../utils/screenLoader";
 import moment from "moment/moment";
+import { setNotifications } from "../../../redux/slices/notificationSlice";
+import { useDispatch } from "react-redux";
 
 export const Notifictions = () => {
   const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [showSettingModal, setShowSetttingModal] = useState(false);
   const [notificationSettingsData, setNotificationSettingData] = useState({});
@@ -56,12 +59,40 @@ export const Notifictions = () => {
     getNotificationData(NOTIFICATION.GET);
   };
 
+  const handleMarkNotificationRead = async (id) => {
+    try {
+      const response = await getRequest(
+        `${NOTIFICATION.READ_NOTIFICATION}?notificationId=${id}`
+      );
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
+        if (res?.data?.success && res?.data?.statusCode === 200) {
+          dispatch(setNotifications(res?.data?.data));
+        }
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
+  const handleMarkAllNotificationRead = async () => {
+    try {
+      const response = await getRequest(`${NOTIFICATION.MARK_ALL_READ}`);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
+        if (res?.data?.success && res?.data?.statusCode === 200) {
+          dispatch(setNotifications(res?.data?.data));
+        }
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+    }
+  };
+
   useEffect(() => {
     getNotificationSettingDataCallback();
     getgetNotificationDataCallback();
   }, []);
-
-  console.log("notificationList", notificationList);
 
   return (
     <>
@@ -71,16 +102,27 @@ export const Notifictions = () => {
         <div className="p-5">
           <div className="flex items-center justify-between">
             <h1 className="main-heading">{t("notification")}</h1>
-            <button onClick={() => setShowSetttingModal(true)}>
-              <img src={notificationSetting} alt="icon" />
-            </button>
+            <div className="text-end">
+              <button onClick={() => setShowSetttingModal(true)}>
+                <img src={notificationSetting} alt="icon" />
+              </button>
+              <p
+                onClick={handleMarkAllNotificationRead}
+                className="text-primary text-sm cursor-pointer hover:underline transition"
+              >
+                {t("markAllRead")}
+              </p>
+            </div>
           </div>
           <div className="py-8 grid grid-cols-1 gap-6">
             {notificationList?.length ? (
               notificationList?.map((item, i) => (
                 <div
                   key={i}
-                  className="flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6"
+                  onClick={() => {
+                    handleMarkNotificationRead(item.id);
+                  }}
+                  className="flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer"
                 >
                   <div className="flex gap-5">
                     <img

@@ -309,6 +309,7 @@ const resources = {
       or: "Or",
       oops: "Oops! The page you are looking for does not exist.",
       gotohome: "Go to Home",
+      markAllRead: "Mark all as read",
     },
   },
   ar: {

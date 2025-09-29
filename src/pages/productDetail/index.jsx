@@ -151,8 +151,11 @@ export const ProductDetail = () => {
   useEffect(() => {
     setShareLink(`${shareURL}${location.pathname}`);
   }, [location]);
+
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
+
+  console.log("postDetailData-->", postDetailData);
 
   return (
     <>

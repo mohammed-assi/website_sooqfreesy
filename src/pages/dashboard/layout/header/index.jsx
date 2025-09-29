@@ -18,6 +18,9 @@ import { showInfoToast, showSuccessToast } from "../../../../utils/toastUtils";
 import { clearUser } from "../../../../redux/slices/userSlice";
 import { ROUTE } from "../../../../config/constants";
 import { clearLocationCoords } from "../../../../redux/slices/locationSlice";
+import { getRequest } from "../../../../config/apiFunctions";
+import { setNotifications } from "../../../../redux/slices/notificationSlice";
+import { CUSTOMER } from "../../../../config/endPoints";
 
 export const DashboardHeader = () => {
   const { t } = useTranslation();
@@ -74,6 +77,17 @@ export const DashboardHeader = () => {
     setOpen(false);
     showSuccessToast(t("logOutMsg"));
   };
+
+  const handlegetCounter = async (url) => {
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      dispatch(setNotifications(response?.data?.data));
+    }
+  };
+
+  useEffect(() => {
+    handlegetCounter(CUSTOMER.NOTIFICTIN_COUNT);
+  }, [accessToken]);
 
   return (
     <>

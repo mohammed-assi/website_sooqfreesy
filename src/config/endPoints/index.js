@@ -35,7 +35,7 @@ export const CUSTOMER = {
   CREATE_REVIEW: `${BASEURL}/customer/reviews/create`,
   GET_REVIEWS: `${BASEURL}/customer/reviews/get-customer-reviews`,
 
-  NOTIFICTIN_COUNT: `${BASEURL}/customer/notifications-and-wishlist/count`
+  NOTIFICTIN_COUNT: `${BASEURL}/customer/notifications-and-wishlist/count`,
 };
 
 export const REPORT_LIST = {
@@ -68,4 +68,7 @@ export const CONTENT = {
 
 export const NOTIFICATION = {
   GET: `${BASEURL}/notification/get-all`,
+
+  READ_NOTIFICATION: `${BASEURL}/notification/read-notification`,
+  MARK_ALL_READ: `${BASEURL}/notification/mark-all-read`,
 };
