@@ -22,7 +22,7 @@ import { getRequest } from "../../../../config/apiFunctions";
 import { setNotifications } from "../../../../redux/slices/notificationSlice";
 import { CUSTOMER } from "../../../../config/endPoints";
 
-export const DashboardHeader = () => {
+export const DashboardHeader = ({setOpenSideBar, openSideBar}) => {
   const { t } = useTranslation();
   const dropdownRef = useRef(null);
   const searchRef = useRef(null);
@@ -287,14 +287,14 @@ export const DashboardHeader = () => {
       </div> */}
       <header className="header bg-white">
         <div className="">
-          <nav className="navigation-wrap flex gap-3 lg:gap-7 items-center py-2.5 lg:py-6">
+          <nav className="navigation-wrap flex gap-3 lg:gap-7 items-center py-2.5 lg:py-6 border-b border-gray-100">
             <div className="item-left px-3 lg:px-9 border-r border-r-gray-300">
               <Link to="/">
                 <img src={logo} className="h-12 object-contain" alt="logo" />
               </Link>
             </div>
             <div className="item-right flex items-center justify-end lg:justify-between gap-3 lg:gap-8 w-full pr-3 lg:pr-[62px]">
-              <button className="lg:hidden p-2 bg-gray-100 rounded-lg">
+              <button className="lg:hidden p-2 bg-gray-100 rounded-lg" onClick={() => setOpenSideBar(!openSideBar)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="size-5"

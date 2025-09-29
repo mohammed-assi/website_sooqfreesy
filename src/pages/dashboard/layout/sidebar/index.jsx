@@ -43,7 +43,7 @@ const Sidebar = ({...props}) => {
   }, [location.pathname]);
 
   return (
-    <aside className="w-64 shadow-md h-full lg:h-[calc(100vh-110px)] fixed top-[100px] lg:sticky lg:top-[120px] pt-6 z-10 bg-white transform lg:transform-none -translate-x-full lg:translate-x-0 transition-transform" {...props}>
+    <aside className={`w-64 shadow-md h-full lg:h-[calc(100vh-110px)] fixed top-[100px] lg:sticky lg:top-[120px] pt-6 z-10 bg-white transform lg:transform-none -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out ${props.openSideBar ? "translate-x-0" : ""}`}>
       <nav className="flex flex-col">
         {menuItems.map((item) => (
           <button
