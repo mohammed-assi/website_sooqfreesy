@@ -29,7 +29,11 @@ import { ReportListModal } from "../../components/productDetails/ReportListModal
 import { getRequest } from "../../config/apiFunctions";
 import { CUSTOMER, POST, REPORT_LIST } from "../../config/endPoints";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import {
+  showErrorToast,
+  showInfoToast,
+  showSuccessToast,
+} from "../../utils/toastUtils";
 import { useDispatch, useSelector } from "react-redux";
 import LoginModal from "../../components/auth/LoginModal";
 import moment from "moment/moment";
@@ -296,7 +300,7 @@ export const ProductDetail = () => {
                 {postDetailData?.nearby_location}
               </div>
 
-              <button
+              {/* <button
                 onClick={() => {
                   if (accessToken) {
                     setShowNotifyModal(true);
@@ -317,7 +321,7 @@ export const ProductDetail = () => {
                 <img src={notified ? whitebell : primaryBell} alt="icon" />{" "}
                 {t("priceDrops")}{" "}
                 {notified && <img src={whitecheck} alt="icon" />}
-              </button>
+              </button> */}
 
               <div className="grid grid-cols-3 gap-3 text-sm text-gray-700">
                 {postDetailData?.content &&
@@ -335,13 +339,14 @@ export const ProductDetail = () => {
 
               <button
                 onClick={() => {
-                  if (accessToken) {
+                  if (postDetailData?.user?.userid === userInfo?.id) {
+                    showInfoToast(t("reportOwn"));
+                  } else if (accessToken) {
                     setShowReportListModal(true);
                   } else {
                     setShowLoginModal(true);
                   }
                 }}
-                disabled={postDetailData?.user?.userid === userInfo?.id}
                 className="w-full p-3 font-bold text-red-600 rounded-lg flex items-center justify-center gap-2 bg-gray-200"
               >
                 <img src={report} alt="icon" /> {t("reportListing")}
@@ -451,13 +456,14 @@ export const ProductDetail = () => {
                     </button>
                     <button
                       onClick={() => {
-                        if (accessToken) {
+                        if (postDetailData?.user?.userid === userInfo?.id) {
+                          showInfoToast(t("cantReview"))
+                        } else if (accessToken) {
                           setShowReviewModal(true);
                         } else {
                           setShowLoginModal(true);
                         }
                       }}
-                      disabled={postDetailData?.user?.userid === userInfo?.id}
                       className="flex gap-1 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
                     >
                       <img src={whitestar} alt="icon" className="h-5 w-5" />{" "}

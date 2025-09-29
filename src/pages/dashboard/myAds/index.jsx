@@ -10,7 +10,7 @@ import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
 
 export const MyAds = () => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(0);
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const [allPosts, setAllPosts] = useState([]);
   const [postcounts, setPostCounts] = useState({});
@@ -21,6 +21,10 @@ export const MyAds = () => {
   const [deleteId, setDeleteId] = useState(null);
 
   const tabs = [
+    {
+      id: 0,
+      label: `${t("inactive")} (${postcounts?.UNAPPROVED})`,
+    },
     {
       id: 1,
       label: `${t("active")} (${postcounts?.APPROVED})`,

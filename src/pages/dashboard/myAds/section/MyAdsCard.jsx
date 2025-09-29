@@ -18,7 +18,7 @@ const MyAdsCard = ({
   handleMarkSoldPost,
   activeTab,
 }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const menuRef = useRef(null);
   const navigate = useNavigate();
   const [showMenuItem, setShowMenuItem] = useState(false);
@@ -32,8 +32,6 @@ const MyAdsCard = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  console.log("activeTab", activeTab);
 
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
@@ -77,14 +75,17 @@ const MyAdsCard = ({
         </Link>
         <button
           onClick={() => setShowMenuItem(true)}
-          className="absolute top-4 right-3"
+          className={`${i18n?.language === "ar" ? "left-3" : "right-3"}
+            absolute top-4`}
         >
           <img src={menu} alt="icon" />
         </button>
         {showMenuItem && (
           <div
             ref={menuRef}
-            className="absolute top-4 right-3 bg-white shadow-xl py-3 px-2 rounded-lg m-w-33"
+            className={`${
+              i18n?.language === "ar" ? "left-3" : "right-3"
+            } absolute top-4 bg-white shadow-xl py-3 px-2 rounded-lg m-w-33`}
           >
             <ul className="space-y-2">
               <li
@@ -92,9 +93,9 @@ const MyAdsCard = ({
                 className={`text-gray-700 flex items-center cursor-pointer px-2 py-1 hover:text-black border-b border-gray-200 gap-3`}
               >
                 <img src={deleteIcon} alt="icon" />
-                <span>Delete</span>
+                <span>{t("delete")}</span>
               </li>
-              {activeTab !== 3 && (
+              {(activeTab === 0 || activeTab === 2) && (
                 <li
                   onClick={() => {
                     navigate(`${ROUTE.UPDATE_POST}/${item.id}`, {
@@ -103,15 +104,15 @@ const MyAdsCard = ({
                   }}
                   className={`text-gray-700 flex items-center cursor-pointer px-2 py-1 hover:text-black border-b border-gray-200 gap-3`}
                 >
-                  <img src={edit} alt="icon" /> <span>Edit</span>
+                  <img src={edit} alt="icon" /> <span>{t("edit")}</span>
                 </li>
               )}
-              {activeTab !== 3 && activeTab !== 2 && (
+              {activeTab === 1 && (
                 <li
                   onClick={() => handleMarkSoldPost(item.id)}
                   className={`text-gray-700 flex items-center cursor-pointer px-2 py-1 hover:text-black gap-3`}
                 >
-                  <img src={marksold} alt="icon" /> <span>Mark as sold</span>
+                  <img src={marksold} alt="icon" /> <span>{t("markSold")}</span>
                 </li>
               )}
             </ul>

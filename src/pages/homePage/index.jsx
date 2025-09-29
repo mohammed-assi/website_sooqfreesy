@@ -10,14 +10,24 @@ import LoginModal from "../../components/auth/LoginModal";
 import { useDispatch, useSelector } from "react-redux";
 import { ScreenLoader } from "../../utils/screenLoader";
 import { setNotifications } from "../../redux/slices/notificationSlice";
+import { useTranslation } from "react-i18next";
 
 export const HomePage = () => {
+  const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const dispatch = useDispatch();
   const { accessToken } = useSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("forYou");
+  const reduxCoords = useSelector((state) => state.location.coords);
+
+  const tabs = [
+    { id: "forYou", label: t("forYou") },
+    { id: "nearby", label: t("nearby") },
+    { id: "worldwide", label: t("worldwide") },
+  ];
 
   const getAllPosts = async (url) => {
     setLoading(true);
@@ -29,7 +39,22 @@ export const HomePage = () => {
   };
 
   const getAllPostsCallBack = () => {
-    getAllPosts(`${POST.GET_ALL}?page=${1}&limit=8`);
+    let filters = {};
+
+    if (activeTab === "forYou") {
+      filters = { foryou: true };
+    } else if (activeTab === "nearby") {
+      filters = {
+        country: reduxCoords?.country ? reduxCoords?.country : "",
+        nearby: true,
+      };
+    }
+    const queryString = Object.keys(filters).length
+      ? `&filters=${encodeURIComponent(JSON.stringify(filters))}`
+      : "";
+
+    const url = `${POST.GET_ALL}?page=1&limit=8${queryString}`;
+    getAllPosts(url);
   };
 
   const handleLikeUnlikePost = async (data) => {
@@ -65,7 +90,9 @@ export const HomePage = () => {
 
   useEffect(() => {
     getAllPostsCallBack();
-  }, [accessToken]);
+  }, [accessToken, activeTab]);
+
+  console.log("reduxCoords", reduxCoords);
 
   return (
     <>
@@ -79,6 +106,9 @@ export const HomePage = () => {
             allPosts={allPosts}
             imagePath={imagePath}
             handleLikeUnlikePost={handleLikeUnlikePost}
+            setActiveTab={setActiveTab}
+            activeTab={activeTab}
+            tabs={tabs}
           />
           <GetApplications />
 

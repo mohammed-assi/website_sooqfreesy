@@ -25,7 +25,7 @@ import {
 } from "libphonenumber-js";
 
 export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const schema = yup.object().shape({
     fullName: yup.string().when("$action", {
       is: "username",
@@ -425,7 +425,11 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none"
               />
               {userNameAvailable?.data?.available && (
-                <div className="absolute right-0 top-0">
+                <div
+                  className={`${
+                    i18n?.language === "ar" ? "left-0" : "right-0"
+                  } absolute top-0`}
+                >
                   <button
                     type="submit"
                     name="action"
@@ -472,12 +476,20 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 </p>
               )}
               {userInfo?.is_email_verified && userMail === userInfo?.email && (
-                <div className="absolute right-3 top-3">
+                <div
+                  className={`${
+                    i18n?.language === "ar" ? "left-3" : "right-3"
+                  } absolute top-3`}
+                >
                   <img src={verified} alt="verified icon" />
                 </div>
               )}
               {userMail !== userInfo?.email && userMail?.length > 0 && (
-                <div className="absolute right-0 top-0">
+                <div
+                  className={`${
+                    i18n?.language === "ar" ? "left-0" : "right-0"
+                  } absolute top-0`}
+                >
                   <button
                     onClick={() => handleVerifyMailNumber("email")}
                     type="button"
@@ -539,13 +551,21 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               )}
               {userInfo?.is_phone_verified &&
                 phoneNumber === userInfo.phone && (
-                  <div className="absolute right-3 top-3">
+                  <div
+                    className={`${
+                      i18n?.language === "ar" ? "left-3" : "right-3"
+                    } absolute top-3`}
+                  >
                     <img src={verified} alt="verified icon" />
                   </div>
                 )}
 
               {phoneNumber !== userInfo?.phone && phoneNumber?.length > 0 && (
-                <div className="absolute right-0 top-0 h-full">
+                <div
+                  className={`${
+                    i18n?.language === "ar" ? "left-0" : "right-0"
+                  } absolute top-0 h-full`}
+                >
                   <button
                     onClick={async () => {
                       const isValid = await trigger("phone");
@@ -574,7 +594,11 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 value="******"
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none"
               />
-              <div className="absolute right-0 top-0">
+              <div
+                className={`${
+                  i18n?.language === "ar" ? "left-0" : "right-0"
+                } absolute top-0`}
+              >
                 <button
                   onClick={() => setShowChangePassModal(true)}
                   type="button"
@@ -626,7 +650,11 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                   />
                 )}
               />
-              <div className="absolute right-3 top-3">
+              <div
+                className={`${
+                  i18n?.language === "ar" ? "left-3" : "right-3"
+                } absolute top-3`}
+              >
                 <i className="fa-solid fa-calendar-lines fa-lg text-gray-700" />
               </div>
               {errors.dob && (

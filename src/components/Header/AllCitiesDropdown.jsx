@@ -71,7 +71,7 @@ export const AllCitiesDropdown = () => {
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 cursor-pointer text-xs md:text-sm"
       >
-        {reduxCoords?.country || "Choose location"}
+        {reduxCoords?.country || t('chooseLocation')}
         <i className="fa-solid fa-angle-down fa-sm ml-auto" />
       </button>
 

@@ -45,8 +45,10 @@ export const CreatePost = () => {
 
   const baseSchema = {
     country: Yup.string().required(t("countryRequired")),
-    state: Yup.string().required(t("stateRequired")),
-    city: Yup.string().required(t("cityRequired")),
+    // state: Yup.string().required(t("stateRequired")),
+    // city: Yup.string().required(t("cityRequired")),
+    state: Yup.string(),
+    city: Yup.string(),
     location: Yup.string().required(t("locationRequired")),
     buildingNumber: Yup.string(),
     apartmentNumber: Yup.string(),
@@ -208,15 +210,15 @@ export const CreatePost = () => {
     formData.append("phone", data.phone || "9876543210");
     // formData.append("city", selectedCity.label || "Mohali");
     // formData.append("country", coords?.country || "Syria");
-    formData.append("city", data.city);
-    formData.append("state", data.state);
-    formData.append("country", data.country );
+    formData.append("city", data.city || data.country);
+    formData.append("state", data.state || data.country);
+    formData.append("country", data.country);
 
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || 34.8021);
     formData.append("latitude", coords?.lat || 38.9968);
-    formData.append("building_street_name", data.buildingNumber);
-    formData.append("apartment_villa_no", data.apartmentNumber);
+    formData.append("building_street_name", data.buildingNumber || "");
+    formData.append("apartment_villa_no", data.apartmentNumber || "");
     formData.append("category_id", categoryData?.id);
     formData.append("sub_category_id", subCategoryId);
     formData.append("post_type", postType);

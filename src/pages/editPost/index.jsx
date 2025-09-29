@@ -53,8 +53,10 @@ export const EditPost = () => {
 
   const baseSchema = {
     country: Yup.string().required(t("countryRequired")),
-    state: Yup.string().required(t("stateRequired")),
-    city: Yup.string().required(t("cityRequired")),
+    // state: Yup.string().required(t("stateRequired")),
+    // city: Yup.string().required(t("cityRequired")),
+    state: Yup.string(),
+    city: Yup.string(),
     location: Yup.string().required(t("locationRequired")),
     buildingNumber: Yup.string(),
     apartmentNumber: Yup.string(),
@@ -221,15 +223,15 @@ export const EditPost = () => {
     formData.append("phone", data.phone || "9876543210");
     // formData.append("city", selectedCity.label || "Mohali");
     // formData.append("country", coords?.country || "Syria");
-    formData.append("city", data.city);
-    formData.append("state", data.state);
+    formData.append("city", data.city || data.country);
+    formData.append("state", data.state || data.country);
     formData.append("country", data.country);
 
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || postDetailData?.longitude);
     formData.append("latitude", coords?.lat || postDetailData?.latitude);
-    formData.append("building_street_name", data.buildingNumber);
-    formData.append("apartment_villa_no", data.apartmentNumber);
+    formData.append("building_street_name", data.buildingNumber || "");
+    formData.append("apartment_villa_no", data.apartmentNumber || "");
     formData.append(
       "category_id",
       categoryData?.id || postDetailData?.category_id
@@ -291,6 +293,7 @@ export const EditPost = () => {
 
       if (res?.data?.statusCode === 200) {
         showSuccessToast(res?.data?.message);
+        getPostDeatilsCallBack();
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);

@@ -10,11 +10,14 @@ import { ScreenLoader } from "../../../utils/screenLoader";
 import moment from "moment/moment";
 import { setNotifications } from "../../../redux/slices/notificationSlice";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { ROUTE } from "../../../config/constants";
 
 export const Notifictions = () => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showSettingModal, setShowSetttingModal] = useState(false);
   const [notificationSettingsData, setNotificationSettingData] = useState({});
@@ -83,6 +86,7 @@ export const Notifictions = () => {
         if (res?.data?.success && res?.data?.statusCode === 200) {
           dispatch(setNotifications(res?.data?.data));
         }
+        getgetNotificationDataCallback();
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);
@@ -121,8 +125,15 @@ export const Notifictions = () => {
                   key={i}
                   onClick={() => {
                     handleMarkNotificationRead(item.id);
+                    if (item.type === "REVIEW") {
+                      navigate(ROUTE.USER_PROFILE);
+                    } else if (item.type === "POST") {
+                      navigate(ROUTE.MY_ADS);
+                    }
                   }}
-                  className="flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer relative"
+                  className={`${
+                    item?.is_read ? "" : "bg-cyan-50"
+                  } flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer relative`}
                 >
                   <div className="flex gap-5">
                     <img
@@ -140,7 +151,11 @@ export const Notifictions = () => {
                       <p className="text-gray-600 w-full">{item.message}</p>
                     </div>
                   </div>
-                  <p className="text-gray-600 w-[100px] text-right text-xs absolute top-2.5 right-2.5">
+                  <p
+                    className={`${
+                      i18n?.language === "ar" ? "left-2.5" : "right-2.5"
+                    } text-gray-600 w-[100px] text-right text-xs absolute top-2.5`}
+                  >
                     {moment(item.created_at).fromNow()}
                   </p>
                 </div>

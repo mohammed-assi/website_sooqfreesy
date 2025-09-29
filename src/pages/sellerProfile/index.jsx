@@ -269,7 +269,7 @@ export const SellerProfile = () => {
   // console.log("modalFilter", modalFilter);
   // console.log("sellerReviews", sellerReviews);
 
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -616,7 +616,11 @@ export const SellerProfile = () => {
                   {sellerProfile?.phone || "7777777777"}
                 </button>
 
-                <div className="absolute top-5 right-4">
+                <div
+                  className={`${
+                    i18n.language === "ar" ? "left-4" : "right-4"
+                  } absolute top-5`}
+                >
                   <button
                     onClick={() => setShowReportButton(!showReportButton)}
                     className="text-gray-700"
@@ -625,7 +629,11 @@ export const SellerProfile = () => {
                   </button>
                 </div>
                 {showReportButton && (
-                  <div className="absolute top-12 right-4 z-10">
+                  <div
+                    className={`${
+                      i18n.language === "ar" ? "left-4" : "right-4"
+                    } absolute top-12 z-10`}
+                  >
                     <button
                       onClick={() => {
                         if (accessToken) {

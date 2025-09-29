@@ -8,7 +8,7 @@ import whatsapp from "../../assets/Social/whatsapp.svg";
 import { Link } from "react-router-dom";
 
 export const ShareModal = ({ onClose, shareLink }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const encodedUrl = encodeURIComponent(shareLink);
 
   const shareLinks = {
@@ -34,7 +34,9 @@ export const ShareModal = ({ onClose, shareLink }) => {
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-6 text-gray-400 hover:text-gray-600"
+          className={`${
+            i18n.language === "ar" ? "left-6" : "right-6 "
+          } absolute top-4 text-gray-400 hover:text-gray-600`}
         >
           <i className="fa-solid fa-xmark fa-lg" />
         </button>

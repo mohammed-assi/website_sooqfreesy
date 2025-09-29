@@ -1,16 +1,15 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ProductCard } from "../../common/card/ProductCard";
 
-export const Products = ({ allPosts, imagePath, handleLikeUnlikePost }) => {
+export const Products = ({
+  allPosts,
+  imagePath,
+  handleLikeUnlikePost,
+  setActiveTab,
+  activeTab,
+  tabs,
+}) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState("forYou");
-
-  const tabs = [
-    { id: "forYou", label: t("forYou") },
-    { id: "nearby", label: t("nearby") },
-    { id: "worldwide", label: t("worldwide") },
-  ];
 
   return (
     <div className="spacer-x py-20">
@@ -29,7 +28,9 @@ export const Products = ({ allPosts, imagePath, handleLikeUnlikePost }) => {
               {tab.label}
               <span
                 className={`absolute left-0 -bottom-[.0625rem] h-[.0625rem] w-full rounded-full transition-colors ${
-                  activeTab === tab.id ? "bg-primary h-[.125rem]" : "bg-gray-300"
+                  activeTab === tab.id
+                    ? "bg-primary h-[.125rem]"
+                    : "bg-gray-300"
                 }`}
               />
             </p>
@@ -37,23 +38,33 @@ export const Products = ({ allPosts, imagePath, handleLikeUnlikePost }) => {
         </div>
 
         <div className="pt-8 text-center">
-          {(activeTab === "forYou" ||
-            activeTab === "nearby" ||
-            activeTab === "worldwide") && (
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {allPosts?.length > 0 ? (
+              allPosts?.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                  imagePath={imagePath}
+                  handleLikeUnlikePost={handleLikeUnlikePost}
+                />
+              ))
+            ) : (
+              <p className="text-center text-gray-600">{t("noDataFound")}</p>
+            )}
+          </div> */}
+          {allPosts?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {allPosts?.length > 0 ? (
-                allPosts?.map((item) => (
-                  <ProductCard
-                    key={item.id}
-                    item={item}
-                    imagePath={imagePath}
-                    handleLikeUnlikePost={handleLikeUnlikePost}
-                  />
-                ))
-              ) : (
-                <p>{t("noDataFound")}</p>
-              )}
+              {allPosts?.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  item={item}
+                  imagePath={imagePath}
+                  handleLikeUnlikePost={handleLikeUnlikePost}
+                />
+              ))}
             </div>
+          ) : (
+            <p className="text-center text-gray-600">{t("noDataFound")}</p>
           )}
         </div>
       </div>

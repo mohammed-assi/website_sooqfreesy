@@ -16,7 +16,9 @@ const RatingSummary = ({ average, totalReviews, breakdown }) => {
 
       <div className="flex items-center gap-6 py-3">
         <div className="text-center">
-          <p className="text-[56px] font-bold">{average}</p>
+          <p className="text-[56px] font-bold">
+            {average ? Number(average).toFixed(1) : 0}
+          </p>
           <RatingStar starValue={average} />
         </div>
 

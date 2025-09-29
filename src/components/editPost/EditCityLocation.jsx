@@ -31,7 +31,7 @@ export const EditCityLocation = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex gap-7 pt-4 flex-wrap">
+      <div className="flex gap-7 pt-4 flex-wrap md:flex-nowrap">
         <div className="w-full p-5 shadow-lg rounded-lg">
           <h3 className="text-2xl font-bold">{t("chooseLocation")}</h3>
           <p className="text-gray-600">{t("placeYourAd")}</p>
@@ -85,7 +85,7 @@ export const EditCityLocation = ({
             {/* State */}
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                {t("state")} <span className="text-red-600">*</span>
+                {t("state")}
               </label>
               {states?.length ? (
                 <select
@@ -122,7 +122,7 @@ export const EditCityLocation = ({
             {/* City */}
             <div className="py-3">
               <label className="block mb-2 text-md font-bold">
-                {t("city")} <span className="text-red-600">*</span>
+                {t("city")}
               </label>
               {cities?.length ? (
                 <select

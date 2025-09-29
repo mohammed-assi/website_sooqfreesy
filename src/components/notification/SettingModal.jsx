@@ -11,7 +11,7 @@ const SettingModal = ({
   settingData,
   getNotificationSettingDataCallback,
 }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [settings, setSettings] = useState(settingData);
 
   const handleToggle = async (field) => {
@@ -63,7 +63,9 @@ const SettingModal = ({
           <h2 className="text-xl font-bold">{t("notificationSettings")}</h2>
           <button
             onClick={onClose}
-            className="absolute top-8 right-6 text-gray-400 hover:text-gray-600"
+            className={`${
+              i18n?.language === "ar" ? "left-6" : "right-6"
+            } absolute top-8  text-gray-400 hover:text-gray-600`}
           >
             <i className="fa-solid fa-xmark fa-lg" />
           </button>
