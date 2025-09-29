@@ -22,7 +22,7 @@ import "swiper/css/thumbs";
 import { ProductCard } from "../../common/card/ProductCard";
 import { AddReviewModal } from "../../components/productDetails/AddReviewModal";
 import RatingStar from "../../common/ratingStar/RatingStar";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 import { InfoModal } from "../../common/modal/InfoModal";
 import { ReportListModal } from "../../components/productDetails/ReportListModal";
@@ -43,10 +43,12 @@ export const ProductDetail = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const shareURL = import.meta.env.VITE_APP_SHARE_URL;
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const { accessToken } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -59,10 +61,6 @@ export const ProductDetail = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [reportList, setReportList] = useState("");
   const [shareLink, setShareLink] = useState("");
-
-  const relatedPosts = allPosts?.filter(
-    (post) => post.sub_category_id === postDetailData?.sub_category_id
-  );
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_API_KEY,
@@ -79,7 +77,9 @@ export const ProductDetail = () => {
   };
 
   const getAllPostsCallBack = () => {
-    getAllPosts(`${POST.GET_ALL}?page=${1}&limit=20`);
+    getAllPosts(
+      `${POST.GET_SIMILAR_POST}/${postDetailData?.id}?page=${1}&limit=8`
+    );
   };
 
   const getPostDeatils = async (url) => {
@@ -145,8 +145,10 @@ export const ProductDetail = () => {
   }, [id]);
 
   useEffect(() => {
-    getAllPostsCallBack();
-  }, [accessToken]);
+    if (postDetailData?.id) {
+      getAllPostsCallBack();
+    }
+  }, [postDetailData]);
 
   useEffect(() => {
     setShareLink(`${shareURL}${location.pathname}`);
@@ -154,8 +156,6 @@ export const ProductDetail = () => {
 
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
-
-  console.log("postDetailData-->", postDetailData);
 
   return (
     <>
@@ -305,7 +305,9 @@ export const ProductDetail = () => {
                     setShowLoginModal(true);
                   }
                 }}
-                disabled={notified}
+                disabled={
+                  postDetailData?.user?.userid === userInfo?.id || notified
+                }
                 className={`w-full p-3 font-bold underline rounded-lg flex items-center justify-center gap-2  ${
                   notified
                     ? "bg-primary text-white"
@@ -339,6 +341,7 @@ export const ProductDetail = () => {
                     setShowLoginModal(true);
                   }
                 }}
+                disabled={postDetailData?.user?.userid === userInfo?.id}
                 className="w-full p-3 font-bold text-red-600 rounded-lg flex items-center justify-center gap-2 bg-gray-200"
               >
                 <img src={report} alt="icon" /> {t("reportListing")}
@@ -380,7 +383,22 @@ export const ProductDetail = () => {
                 </div>
 
                 <div className="py-4">
-                  <h3 className="font-bold text-xl">{t("postOwner")}</h3> 
+                  {/* <h3 className="font-bold text-xl">{t("postOwner")}</h3> */}
+
+                  {postDetailData?.post_type === "SALE" && (
+                    <h3 className="font-bold text-xl">
+                      {postDetailData?.user_type === "AGENT"
+                        ? t("agent")
+                        : t("owner")}
+                    </h3>
+                  )}
+                  {postDetailData?.post_type === "RENT" && (
+                    <h3 className="font-bold text-xl">
+                      {postDetailData?.user_type === "AGENT"
+                        ? t("agent")
+                        : t("landlord")}
+                    </h3>
+                  )}
                   <div className="flex items-center gap-3 py-2">
                     <div className="w-40 h-40 flex items-center justify-center">
                       <img
@@ -393,8 +411,15 @@ export const ProductDetail = () => {
                         className="h-full w-full rounded-lg object-cover"
                       />
                     </div>
-                    <Link
-                      to={`${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`}
+                    <div
+                      onClick={() => {
+                        if (postDetailData?.user?.userid !== userInfo?.id) {
+                          navigate(
+                            `${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`
+                          );
+                        }
+                      }}
+                      className="cursor-pointer"
                     >
                       <h3 className="text-xl font-bold">
                         {postDetailData?.user?.username}
@@ -411,7 +436,7 @@ export const ProductDetail = () => {
                           "MM/DD/yyyy"
                         )}
                       </p>
-                    </Link>
+                    </div>
                   </div>
 
                   <div className="flex gap-1">
@@ -432,6 +457,7 @@ export const ProductDetail = () => {
                           setShowLoginModal(true);
                         }
                       }}
+                      disabled={postDetailData?.user?.userid === userInfo?.id}
                       className="flex gap-1 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
                     >
                       <img src={whitestar} alt="icon" className="h-5 w-5" />{" "}
@@ -451,8 +477,8 @@ export const ProductDetail = () => {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedPosts?.length > 0 ? (
-                relatedPosts?.map((item) => (
+              {allPosts?.length > 0 ? (
+                allPosts?.map((item) => (
                   <ProductCard
                     key={item.id}
                     item={item}

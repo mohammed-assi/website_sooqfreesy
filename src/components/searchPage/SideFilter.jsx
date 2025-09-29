@@ -315,37 +315,60 @@ export const SideFilter = ({
           {/* Min Input */}
           <div className="flex flex-col w-[50%] text-base font-bold">
             {t("min")}
-            <input
-              type="number"
-              min="0"
-              max="25000"
-              value={filters.priceRange[0]}
-              onChange={(e) => {
-                let newMin = Number(e.target.value);
-                if (newMin > filters.priceRange[1])
-                  newMin = filters.priceRange[1];
-                handleChange("priceRange", [newMin, filters.priceRange[1]]);
-              }}
-              className="mt-1 h-[48px] bg-[#F5F5F5] px-4 text-base font-normal rounded-md focus:outline-none no-arrow"
-            />
+            <div className="relative">
+              <p className="absolute top-4 left-2 font-normal">$</p>
+              <input
+                type="number"
+                min="0"
+                max="25000"
+                value={filters.priceRange[0] > 0 && filters.priceRange[0]}
+                onChange={(e) => {
+                  let newMin = Number(e.target.value);
+                  if (newMin < 0) newMin = 0;
+                  if (newMin > 25000) newMin = 25000;
+                  handleChange("priceRange", [newMin, filters.priceRange[1]]);
+                }}
+                onBlur={() => {
+                  if (filters.priceRange[0] > filters.priceRange[1]) {
+                    handleChange("priceRange", [
+                      filters.priceRange[1],
+                      filters.priceRange[1],
+                    ]);
+                  }
+                }}
+                className="mt-1 h-[48px] bg-[#F5F5F5] px-4 text-base font-normal rounded-md focus:outline-none no-arrow ml-1 w-full"
+              />
+            </div>
           </div>
 
           {/* Max Input */}
           <div className="flex flex-col w-[50%] text-base font-bold">
             {t("max")}
-            <input
-              type="number"
-              min="0"
-              max="25000"
-              value={filters.priceRange[1]}
-              onChange={(e) => {
-                let newMax = Number(e.target.value);
-                if (newMax < filters.priceRange[0])
-                  newMax = filters.priceRange[0];
-                handleChange("priceRange", [filters.priceRange[0], newMax]);
-              }}
-              className="mt-1 h-[48px] bg-[#F5F5F5] px-4 text-base font-normal rounded-md focus:outline-none no-arrow"
-            />
+            <div className="relative">
+              <p className="absolute top-4 left-2 font-normal">$</p>
+              <input
+                type="number"
+                min="0"
+                max="25000"
+                value={filters.priceRange[1] > 0 && filters.priceRange[1]}
+                onChange={(e) => {
+                  let newMax = Number(e.target.value);
+                  if (newMax < 0) newMax = 0;
+                  if (newMax > 25000) newMax = 25000;
+                  handleChange("priceRange", [filters.priceRange[0], newMax]);
+                }}
+                onBlur={() => {
+                  // Auto-correct if max < min
+                  if (filters.priceRange[1] < filters.priceRange[0]) {
+                    handleChange("priceRange", [
+                      filters.priceRange[0],
+                      filters.priceRange[0],
+                    ]);
+                  }
+                }}
+                className="mt-1 ml-1 h-[48px] bg-[#F5F5F5] px-4 text-base font-normal rounded-md focus:outline-none no-arrow w-full"
+              />
+            </div>
           </div>
         </div>
       </div>

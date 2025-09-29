@@ -15,6 +15,8 @@ export const AUTH = {
   FORGOT_PASSWORD: `${BASEURL}${PREFIX}/forgot-password`,
   RESET_PASSWORD: `${BASEURL}${PREFIX}/reset-password`,
   RESEND_OTP: `${BASEURL}${PREFIX}/resend-otp`,
+
+  RESEND_VERICATION_OTP: `${BASEURL}${PREFIX}/resend-verification-otp`,
 };
 
 export const CUSTOMER = {
@@ -60,6 +62,8 @@ export const POST = {
   DELETE_IMG: `${BASEURL}/post/delete-file`,
 
   GET_SUGGESTION: `${BASEURL}/post/get-search-suggestion`,
+
+  GET_SIMILAR_POST: `${BASEURL}/post/get-similar-posts`,
 };
 
 export const CONTENT = {

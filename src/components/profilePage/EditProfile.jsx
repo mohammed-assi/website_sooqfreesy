@@ -221,7 +221,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
       };
     }
     try {
-      const response = await postRequest(AUTH.RESEND_OTP, payload);
+      const response = await postRequest(AUTH.RESEND_VERICATION_OTP, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
         setTimer(30);
@@ -491,7 +491,9 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
           </div>
 
           <div className="flex flex-col justify-start items-start md:flex-row gap-3 md:gap-10 md:items-center pb-6">
-            <label className="text-gray-700 md:w-1/5">{t("phoneNofield")}</label>
+            <label className="text-gray-700 md:w-1/5">
+              {t("phoneNofield")}
+            </label>
             <div className="w-full md:w-4/5 relative">
               <div className="flex gap-3">
                 <div>
