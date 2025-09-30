@@ -10,6 +10,7 @@ import { Pagination } from "swiper/modules";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ROUTE } from "../../../../config/constants";
+import moment from "moment/moment";
 
 const MyAdsCard = ({
   item,
@@ -72,6 +73,26 @@ const MyAdsCard = ({
           <p className="bg-primary text-white text-xs font-medium px-3 py-1 rounded-full mt-2 inline-block">
             {item.sub_categoryName}
           </p>
+          {activeTab === 0 && (
+            <p className="text-sm text-gray-700 mt-2 line-clamp-2">
+              {t("created")}: {moment(item.created_at).format("MM/DD/yyyy")}
+            </p>
+          )}
+          {activeTab === 1 && item.updated_at && (
+            <p className="text-sm text-gray-700 mt-2 line-clamp-2">
+              {t("update")}: {moment(item.updated_at).format("MM/DD/yyyy")}
+            </p>
+          )}
+          {activeTab === 2 && item.updated_at && (
+            <p className="text-sm text-gray-700 mt-2 line-clamp-2">
+              {t("rejectAt")}: {moment(item.updated_at).format("MM/DD/yyyy")}
+            </p>
+          )}
+          {activeTab === 3 && item.updated_at && (
+            <p className="text-sm text-gray-700 mt-2 line-clamp-2">
+              {t("soldAt")}: {moment(item.updated_at).format("MM/DD/yyyy")}
+            </p>
+          )}
         </Link>
         <button
           onClick={() => setShowMenuItem(true)}

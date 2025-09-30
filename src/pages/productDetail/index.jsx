@@ -161,6 +161,8 @@ export const ProductDetail = () => {
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
 
+  console.log("postDetailData", postDetailData?.timeline);
+
   return (
     <>
       <div className="spacer-x">
@@ -255,6 +257,19 @@ export const ProductDetail = () => {
                   {postDetailData?.description}
                 </p>
               </div>
+
+              {postDetailData?.timeline?.length > 0 && (
+                <div className="mt-10 w-full">
+                  <h3 className="font-bold text-xl text-red-500 pb-2">
+                    {t("rejectAt")}
+                  </h3>
+                  {postDetailData?.timeline?.map((item, i) => (
+                    <p key={i} className="text-gray-600">
+                      {item?.text}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="lg:w-1/3 w-full ps-5 space-y-4">
@@ -335,6 +350,24 @@ export const ProductDetail = () => {
                       </div>
                     )
                   )}
+                <div className="flex flex-col text-center items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2 capitalize">
+                  <span className="font-semibold leading-none pb-2">
+                    {t("location")}
+                  </span>
+                  {postDetailData?.country}
+                </div>
+                <div className="flex flex-col text-center items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2 capitalize">
+                  <span className="font-semibold leading-none pb-2">
+                    {t("userType")}
+                  </span>
+                  {postDetailData?.user_type.toLowerCase()}
+                </div>
+                <div className="flex flex-col text-center items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2 capitalize">
+                  <span className="font-semibold leading-none pb-2">
+                    {t("post")}
+                  </span>
+                  {moment(postDetailData?.created_at).format("MM/DD/yyyy")}
+                </div>
               </div>
 
               <button

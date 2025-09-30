@@ -63,6 +63,7 @@ export const MyAds = () => {
       if (res?.data?.statusCode === 200) {
         showSuccessToast(res?.data?.message);
         getAllPostsCallBack();
+        setActiveTab(3);
       }
     } catch (error) {
       showErrorToast(error?.response?.data?.message);

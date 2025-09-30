@@ -318,6 +318,14 @@ const resources = {
       readMore: "Read more",
       reportOwn: "You can’t report your own post",
       cantReview: "You can’t review your own post",
+
+      location: "Location",
+      userType: "User Type",
+      post: "Post",
+      created: "Created",
+      update: "Updated",
+      rejectAt: "Rejected",
+      soldAt: "Sold",
     },
   },
   ar: {
@@ -630,6 +638,13 @@ const resources = {
       readMore: "قراءة المزيد",
       reportOwn: "لا يمكنك الإبلاغ عن منشورك الخاص",
       cantReview: "لا يمكنك مراجعة منشورك الخاص",
+      location: "الموقع",
+      userType: "نوع المستخدم",
+      post: "منشور",
+      created: "تم الإنشاء",
+      update: "تم التحديث",
+      rejectAt: "مرفوض",
+      soldAt: "تم البيع",
     },
   },
 };

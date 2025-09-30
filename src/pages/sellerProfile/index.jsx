@@ -275,6 +275,7 @@ export const SellerProfile = () => {
   const dispatch = useDispatch();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.user);
   const reduxCoords = useSelector((state) => state.location.coords);
 
   const [loading, setLoading] = useState(false);
@@ -616,18 +617,20 @@ export const SellerProfile = () => {
                   {sellerProfile?.phone || "7777777777"}
                 </button>
 
-                <div
-                  className={`${
-                    i18n.language === "ar" ? "left-4" : "right-4"
-                  } absolute top-5`}
-                >
-                  <button
-                    onClick={() => setShowReportButton(!showReportButton)}
-                    className="text-gray-700"
+                {userInfo?.id !== sellerProfile?.id && (
+                  <div
+                    className={`${
+                      i18n.language === "ar" ? "left-4" : "right-4"
+                    } absolute top-5`}
                   >
-                    <img src={menu} alt="userImg" className="w-6 h-6" />
-                  </button>
-                </div>
+                    <button
+                      onClick={() => setShowReportButton(!showReportButton)}
+                      className="text-gray-700"
+                    >
+                      <img src={menu} alt="userImg" className="w-6 h-6" />
+                    </button>
+                  </div>
+                )}
                 {showReportButton && (
                   <div
                     className={`${

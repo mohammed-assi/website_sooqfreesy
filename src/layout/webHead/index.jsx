@@ -72,7 +72,7 @@ export const WebHead = () => {
     if (searchValue !== "") {
       navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: searchValue } });
     }
-    setSearchValue("");
+    // setSearchValue("");
     setSuggestionList([]);
   };
 
@@ -137,13 +137,13 @@ export const WebHead = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 150);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setIsScrolled(window.scrollY > 150);
+  //   };
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   const isCreateOrUpdate =
     location.pathname === ROUTE.CREATE_POST ||
@@ -376,11 +376,7 @@ export const WebHead = () => {
                   >
                     <img src={logo} className="mb-auto lg:hidden h-7" alt="" />
                     <div
-                      className={`search-wrap relative w-full hidden lg:block mb-auto lg:w-auto lg:mb-0 lg:me-auto opacity-0 pointer-events-none transition-all ${
-                        isScrolled && location.pathname !== ROUTE.CREATE_POST
-                          ? "!pointer-events-auto opacity-100 visible"
-                          : ""
-                      }`}
+                      className={`search-wrap relative w-full hidden lg:block mb-auto lg:w-auto lg:mb-0 lg:me-auto opacity-0 pointer-events-none transition-all !pointer-events-auto opacity-100 visible`}
                       ref={searchRef}
                     >
                       <div className="rounded-lg px-4 py-3 flex justify-between items-center bg-gray-100">
