@@ -47,7 +47,6 @@ export const Notifictions = () => {
     try {
       const response = await getRequest(url);
       if (response?.data?.success && response?.data?.statusCode === 200) {
-        console.log("response", response);
         setNotificationList(response?.data?.data);
         setLoading(false);
       }

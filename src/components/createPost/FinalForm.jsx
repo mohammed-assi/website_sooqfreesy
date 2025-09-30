@@ -22,7 +22,6 @@ export const FinalForm = ({
   setShowLocationValidation,
   trigger,
   userCountry,
-  setSelectedCity,
   showLocationValidation,
 }) => {
   const { t } = useTranslation();
@@ -286,7 +285,6 @@ export const FinalForm = ({
                       },
                     }}
                     onChange={() => {
-                      setSelectedCity("");
                       setUserLocation("");
                       setCoords({ lat: null, lng: null, country: null });
                     }}

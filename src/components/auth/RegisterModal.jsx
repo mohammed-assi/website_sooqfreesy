@@ -40,6 +40,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     min: 9,
     max: 9,
   });
+  const [otp, setOtp] = useState("");
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -72,7 +73,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         schema
           .required(t("usernameRequired"))
           .min(3, t("usernameMin"))
-          .matches(/^[a-zA-Z0-9]+$/, t("usernameAlphaNumOnly")),
+          .matches(/^[a-zA-Z0-9_]+$/, t("usernameAlphaNumOnly")),
     }),
     email: Yup.string().when("$tab", {
       is: 2,
@@ -157,6 +158,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     try {
       const response = await postRequest(apiUrl, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
+        setOtp(response?.data?.data?.otp);
         if (activeTab === 1) {
           showSuccessToast(response?.data?.message);
           setShowOtpModal(true);
@@ -222,7 +224,6 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     }
   };
 
-  console.log("phoneNumber", phoneNumber);
   const handleResendOtp = async () => {
     if (timer > 0) return;
     setLoading(true);
@@ -239,8 +240,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     }
     try {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
-      console.log("response", response);
       if (response?.data?.success && response?.data?.statusCode === 200) {
+        setOtp(response?.data?.data?.otp);
         showSuccessToast(response?.data?.message);
         setLoading(false);
         setCode(["", "", "", ""]);
@@ -253,9 +254,15 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   };
 
   const handleCheckUserName = async (url) => {
-    const response = await getRequest(url);
-    if (response?.data?.success && response?.data?.statusCode === 200) {
-      setUserNameAvailable(response?.data);
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setUserNameAvailable(response?.data);
+      }
+    } catch (error) {
+      console.log(error);
+      showErrorToast(error?.response?.data?.message);
+      setUserNameAvailable(error?.response?.data?.data);
     }
   };
 
@@ -614,6 +621,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         handleResend={handleResendOtp}
         loading={loading}
         timer={timer}
+        otp={otp}
       />
 
       {showConfirmationModal && (

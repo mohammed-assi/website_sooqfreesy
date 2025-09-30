@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import Autocomplete from "react-google-autocomplete";
 import { useSelector } from "react-redux";
 import { Country } from "country-state-city";
+import { useState } from "react";
 
 export const SideFilter = ({
   allCategory,
@@ -23,7 +24,52 @@ export const SideFilter = ({
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const reduxCoords = useSelector((state) => state.location.coords);
 
-  console.log("filters", filters);
+  // const locationRef = useRef(null);
+  const [stateBounds, setStateBounds] = useState(null);
+  const [cityBounds, setCityBounds] = useState(null);
+
+  const getBoundsFromLatLng = (lat, lng, radiusInKm = 10) => {
+    const latChange = radiusInKm / 111;
+    const lngChange = radiusInKm / (111 * Math.cos((lat * Math.PI) / 150));
+
+    return {
+      north: lat + latChange,
+      south: lat - latChange,
+      east: lng + lngChange,
+      west: lng - lngChange,
+    };
+  };
+
+  const fetchBounds = async (name, country) => {
+    try {
+      const res = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          name + "," + country
+        )}&key=${GOOGLE_API_KEY}`
+      );
+      const data = await res.json();
+
+      if (data.results[0]?.geometry?.bounds) {
+        const { northeast, southwest } = data.results[0].geometry.bounds;
+        return {
+          north: northeast.lat,
+          south: southwest.lat,
+          east: northeast.lng,
+          west: southwest.lng,
+        };
+      }
+
+      if (data.results[0]?.geometry?.location) {
+        const { lat, lng } = data.results[0].geometry.location;
+        return getBoundsFromLatLng(lat, lng, 20); // fallback: 20 km box
+      }
+
+      return null;
+    } catch (err) {
+      console.error("Failed to fetch bounds", err);
+      return null;
+    }
+  };
 
   return (
     <aside className="bg-white shadow rounded-lg p-3 space-y-7">
@@ -35,7 +81,22 @@ export const SideFilter = ({
           <select
             className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
             value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
+            onChange={async (e) => {
+              const stateName = e.target.value;
+              setSelectedState(stateName);
+              setSelectedCity(""); // reset city when state changes
+              setCityBounds(null);
+
+              if (stateName && reduxCoords?.country) {
+                const bounds = await fetchBounds(
+                  stateName,
+                  reduxCoords.country
+                );
+                setStateBounds(bounds);
+              } else {
+                setStateBounds(null);
+              }
+            }}
           >
             <option value="">{t("selectState")}</option>
             {states.map((s) => (
@@ -59,7 +120,17 @@ export const SideFilter = ({
           <select
             className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
             value={selectedCity}
-            onChange={(e) => setSelectedCity(e.target.value)}
+            onChange={async (e) => {
+              const cityName = e.target.value;
+              setSelectedCity(cityName);
+
+              if (cityName && reduxCoords?.country) {
+                const bounds = await fetchBounds(cityName, reduxCoords.country);
+                setCityBounds(bounds);
+              } else {
+                setCityBounds(null);
+              }
+            }}
           >
             <option value="">{t("selectCityField")}</option>
             {cities.map((c) => (
@@ -120,6 +191,8 @@ export const SideFilter = ({
                       ?.isoCode.toLowerCase(),
                   }
                 : {},
+              bounds: cityBounds || stateBounds || null,
+              strictBounds: !!(cityBounds || stateBounds),
             }}
             className="w-full text-black rounded p-3 pr-11 bg-gray-100 focus:outline-none"
           />

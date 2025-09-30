@@ -254,6 +254,7 @@ export const EditPost = () => {
       country_code,
       phone,
       city,
+      state,
       country,
       location,
       longitude,
@@ -489,8 +490,6 @@ export const EditPost = () => {
     }
   }, [postDetailData, reset]);
 
-  console.log("postDetailData", postDetailData);
-
   return (
     <>
       {loading ? (
@@ -671,6 +670,7 @@ export const EditPost = () => {
                 categoryData={categoryData}
                 imagePath={imagePath}
                 handleChooseRentSale={handleChooseRentSale}
+                postDetailData={postDetailData}
               />
             )}
 
@@ -690,6 +690,7 @@ export const EditPost = () => {
               <EditLandlordAgent
                 handleChooseLandlordAgent={handleChooseLandlordAgent}
                 categoryData={categoryData}
+                postDetailData={postDetailData}
               />
             )}
 

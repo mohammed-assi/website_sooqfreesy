@@ -16,7 +16,7 @@ export const EditCategory = ({
             className="cursor-pointer"
           >
             <div
-              className={`p-3 border rounded-lg h-60 ${
+              className={`p-3 border rounded-lg h-60 border-gray-200 ${
                 postDetailData?.category_id === item.id
                   ? "border-primary"
                   : "border-gray-200"
@@ -28,9 +28,7 @@ export const EditCategory = ({
                 className="h-full w-full object-cover rounded-lg"
               />
             </div>
-            <h3 className="text-center pt-4 font-bold text-xl">
-              {item.name}
-            </h3>
+            <h3 className="text-center pt-4 font-bold text-xl">{item.name}</h3>
           </div>
         ))}
       </div>

@@ -433,7 +433,13 @@ export const ProductDetail = () => {
                         <RatingStar
                           starValue={postDetailData?.user?.averageRating}
                         />{" "}
-                        <p>({postDetailData?.user?.averageRating})</p>
+                        <p>
+                          (
+                          {Number(postDetailData?.user?.averageRating).toFixed(
+                            1
+                          )}
+                          )
+                        </p>
                       </div>
                       <p className="text-sm text-gray-500 py-2">
                         {t("memberSince")}{" "}
@@ -457,7 +463,7 @@ export const ProductDetail = () => {
                     <button
                       onClick={() => {
                         if (postDetailData?.user?.userid === userInfo?.id) {
-                          showInfoToast(t("cantReview"))
+                          showInfoToast(t("cantReview"));
                         } else if (accessToken) {
                           setShowReviewModal(true);
                         } else {

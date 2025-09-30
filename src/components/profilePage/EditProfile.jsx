@@ -32,8 +32,8 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
       then: (schema) =>
         schema
           .min(3, t("usernameMin"))
-          .required(t("usernameRequired"))
-          .matches(/^[a-zA-Z0-9]+$/, t("usernameAlphaNumOnly")),
+          // .required(t("usernameRequired"))
+          .matches(/^[a-zA-Z0-9_]+$/, t("usernameAlphaNumOnly")),
       otherwise: (schema) => schema.notRequired().nullable(),
     }),
     email: yup
@@ -43,19 +43,22 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
         if (!value) return true;
         return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
       }),
-    phone: yup.string().test("is-valid", t("phoneInvalid"), function (value) {
-      if (!value) return false;
+    phone: yup
+      .string()
+      .nullable()
+      .test("is-valid", t("phoneInvalid"), function (value) {
+        if (!value) return true;
 
-      try {
-        const phoneNumber = parsePhoneNumberFromString(
-          value,
-          countryMeta.code.toUpperCase()
-        );
-        return phoneNumber?.isValid() || false;
-      } catch {
-        return false;
-      }
-    }),
+        try {
+          const phoneNumber = parsePhoneNumberFromString(
+            value,
+            countryMeta.code.toUpperCase()
+          );
+          return phoneNumber?.isValid() || false;
+        } catch {
+          return false;
+        }
+      }),
     gender: yup.string().when("$action", {
       is: "profile",
       then: (schema) => schema.required(t("genderRequired")),
@@ -90,6 +93,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     min: 9,
     max: 9,
   });
+  const [otp, setotp] = useState("");
 
   const {
     register,
@@ -210,7 +214,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const handleResendOtp = async () => {
     if (timer > 0) return;
     let payload;
-    if (phoneNumber) {
+    if (activeTab === 1) {
       payload = {
         country_code: `+${countryCode}`,
         phone: phoneNumber,
@@ -223,6 +227,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     try {
       const response = await postRequest(AUTH.RESEND_VERICATION_OTP, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
+        setotp(response?.data?.data?.otp);
         showSuccessToast(response?.data?.message);
         setTimer(30);
         setCode(["", "", "", ""]);
@@ -251,6 +256,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     try {
       const response = await postRequest(CUSTOMER.SEND_OTP, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
+        setotp(response?.data?.data?.otp);
         showSuccessToast(response?.data?.message);
         setShowOtpModal(true);
       }
@@ -314,9 +320,14 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   };
 
   const handleCheckUserName = async (url) => {
-    const response = await getRequest(url);
-    if (response?.data?.success && response?.data?.statusCode === 200) {
-      setUserNameAvailable(response?.data);
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setUserNameAvailable(response?.data);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+      setUserNameAvailable(error?.response?.data?.data);
     }
   };
 
@@ -706,6 +717,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
         handleResend={handleResendOtp}
         loading={verifyLoading}
         timer={timer}
+        otp={otp}
       />
     </div>
   );

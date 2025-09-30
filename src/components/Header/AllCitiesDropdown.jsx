@@ -66,12 +66,12 @@ export const AllCitiesDropdown = () => {
   }, []);
 
   return (
-    <div className="relative inline-block text-left" useRef={dropdownRef}>
+    <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 cursor-pointer text-xs md:text-sm"
       >
-        {reduxCoords?.country || t('chooseLocation')}
+        {reduxCoords?.country || t("chooseLocation")}
         <i className="fa-solid fa-angle-down fa-sm ml-auto" />
       </button>
 

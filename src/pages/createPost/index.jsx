@@ -30,7 +30,6 @@ export const CreatePost = () => {
   const [subCategoryId, setSubCategoryId] = useState(null);
   const [saleRentId, setSaleRentId] = useState(null);
   const [landlordAgentId, setLandlordAgentId] = useState(null);
-  const [selectedCity, setSelectedCity] = useState("");
   const [categoryList, setCategoryList] = useState([]);
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [formData, setFormData] = useState({});
@@ -172,6 +171,7 @@ export const CreatePost = () => {
 
   const selectedCountry = watch("country");
   const selectedState = watch("state");
+
   const pictures = watch("pictures") || [];
 
   const handleNext = async () => {
@@ -235,6 +235,7 @@ export const CreatePost = () => {
       country_code,
       phone,
       city,
+      state,
       country,
       location,
       longitude,
@@ -255,7 +256,7 @@ export const CreatePost = () => {
 
       if (response?.data?.success && response?.data?.statusCode === 200) {
         showSuccessToast(response?.data?.message);
-        navigate(ROUTE.ROOT);
+        navigate(ROUTE.MY_ADS);
         reset();
         setLoading(false);
       }
@@ -520,8 +521,6 @@ export const CreatePost = () => {
           !showLandlordAgent &&
           !showFinalForm && (
             <SelectCityLocation
-              selectedCity={selectedCity}
-              setSelectedCity={setSelectedCity}
               register={register}
               errors={errors}
               onSubmit={onSubmit}
@@ -598,7 +597,6 @@ export const CreatePost = () => {
             setShowLocationValidation={setShowLocationValidation}
             trigger={trigger}
             userCountry={userCountry}
-            setSelectedCity={setSelectedCity}
             showLocationValidation={showLocationValidation}
           />
         )}

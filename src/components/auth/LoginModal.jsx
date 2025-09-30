@@ -36,6 +36,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
     min: 9,
     max: 9,
   });
+  const [otp, setOtp] = useState("");
 
   const tabs = [
     { id: 1, label: t("phone") },
@@ -121,6 +122,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
       const response = await postRequest(apiUrl, payload);
 
       if (response?.data?.success && response?.data?.statusCode === 200) {
+        setOtp(response?.data?.data?.otp);
         if (activeTab === 1) {
           setShowOtpModal(true);
         } else {
@@ -162,7 +164,6 @@ function LoginModal({ show, hide, setShowLoginModal }) {
       };
       try {
         const response = await postRequest(AUTH.LOGIN_PHONE_VERIFY, payload);
-        console.log("response", response);
         if (response?.data?.success && response?.data?.statusCode === 200) {
           const res = await axios.get(AUTH.GET_PROFILE, {
             headers: {
@@ -202,6 +203,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
     try {
       const response = await postRequest(AUTH.RESEND_OTP, payload);
       if (response?.data?.success && response?.data?.statusCode === 200) {
+        setOtp(response?.data?.data?.otp);
         showSuccessToast(response?.data?.message);
         setCode(["", "", "", ""]);
         setTimer(30);
@@ -463,6 +465,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
         handleResend={handleResendOtp}
         loading={loading}
         timer={timer}
+        otp={otp}
       />
     </>
   );

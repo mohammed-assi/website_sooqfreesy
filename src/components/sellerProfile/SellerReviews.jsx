@@ -50,7 +50,7 @@ const ReviewItem = ({ item, imagePath }) => {
 
       <p className="text-gray-500 py-2">
         {displayText}
-        {shouldTruncate && !expanded && "..."}
+        {/* {shouldTruncate && !expanded && "..."} */}
       </p>
 
       {shouldTruncate && (

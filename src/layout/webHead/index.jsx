@@ -17,14 +17,13 @@ import { logout } from "../../redux/slices/authSlice";
 import { showInfoToast, showSuccessToast } from "../../utils/toastUtils";
 import { clearUser } from "../../redux/slices/userSlice";
 import { ROUTE } from "../../config/constants";
-import { clearLocationCoords } from "../../redux/slices/locationSlice";
 import { getRequest } from "../../config/apiFunctions";
 import { CUSTOMER, POST } from "../../config/endPoints";
 import { setNotifications } from "../../redux/slices/notificationSlice";
 
 export const WebHead = () => {
   const { t } = useTranslation();
-  const dropdownRef = useRef(null);
+  const profileDropdownRef = useRef(null);
   const searchRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,7 +62,6 @@ export const WebHead = () => {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearUser());
-    dispatch(clearLocationCoords());
     navigate(ROUTE.ROOT);
     setOpen(false);
     showSuccessToast(t("logOutMsg"));
@@ -113,19 +111,30 @@ export const WebHead = () => {
   }, [searchValue]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
+    const handleClickOutside = (event) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        searchRef.current &&
-        !searchRef.current.contains(event.target)
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target)
       ) {
         setOpen(false);
+      }
+
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
         setSearchOpen(false);
       }
-    }
+    };
+
+    const handleScroll = () => {
+      setOpen(false);
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -134,19 +143,6 @@ export const WebHead = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpen(false);
-      }
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setSearchOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const isCreateOrUpdate =
@@ -431,7 +427,7 @@ export const WebHead = () => {
                     <div className="menu-buttons w-full flex flex-col lg:w-auto lg:flex-row items-center gap-3 lg:gap-6">
                       <div
                         className="relative flex flex-col-reverse lg:block w-full lg:w-auto"
-                        ref={dropdownRef}
+                        ref={profileDropdownRef}
                       >
                         {accessToken ? (
                           <div className="flex gap-7 items-center px-0 lg:px-7">

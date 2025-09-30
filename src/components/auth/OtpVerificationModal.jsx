@@ -14,6 +14,7 @@ export const OtpVerificationModal = ({
   handleResend,
   loading,
   timer,
+  otp
 }) => {
   const { t } = useTranslation();
   const inputsRef = useRef([]);
@@ -56,6 +57,7 @@ export const OtpVerificationModal = ({
       >
         <div className="flex h-full items-center justify-center">
           <div className="w-full">
+          <p className="text-center py-2">OTP: {otp}</p>
             <form
               onSubmit={handleSubmit}
               className="flex flex-col items-center gap-4"

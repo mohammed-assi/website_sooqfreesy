@@ -62,8 +62,6 @@ export const ProfilePage = () => {
     breakdown[item.rating] = item.count;
   });
 
-  console.log("reviewsList?.averageRating", reviewsList);
-
   return (
     <>
       {loading ? (
@@ -98,7 +96,7 @@ export const ProfilePage = () => {
                       }
                     />{" "}
                     {reviewsList?.averageRating && (
-                      <p>({reviewsList?.averageRating})</p>
+                      <p>({Number(reviewsList?.averageRating).toFixed(1)})</p>
                     )}
                   </div>
                 )}

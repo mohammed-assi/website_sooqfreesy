@@ -28,7 +28,7 @@ export const ListingFilter = ({
   setCoords,
   selectedLocation,
   subCategoryList,
-  handleApplyFilters
+  handleApplyFilters,
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("listing");
@@ -102,17 +102,21 @@ export const ListingFilter = ({
               subCategoryList={subCategoryList}
             />
             <div className="lg:col-span-3">
-              <div className="grid grid-cols-1 gap-6">
-                {allPosts?.map((item) => (
-                  <ProductListCard
-                    key={item.id}
-                    item={item}
-                    imagePath={imagePath}
-                    handleLikeUnlikePost={handleLikeUnlikePost}
-                    showWishlist={true}
-                  />
-                ))}
-              </div>
+              {allPosts?.length > 0 ? (
+                <div className="grid grid-cols-1 gap-6">
+                  {allPosts?.map((item) => (
+                    <ProductListCard
+                      key={item.id}
+                      item={item}
+                      imagePath={imagePath}
+                      handleLikeUnlikePost={handleLikeUnlikePost}
+                      showWishlist={true}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-gray-600">{t("noDataFound")}</p>
+              )}
             </div>
           </div>
         )}

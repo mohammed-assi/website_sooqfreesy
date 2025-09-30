@@ -77,7 +77,6 @@ function ForgotPasswordModal({
   };
 
   const handleResendOtp = async () => {
-    console.log("emterere");
     if (timer > 0) return;
     setLoading(true);
     const payload = {

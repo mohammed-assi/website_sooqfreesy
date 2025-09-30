@@ -26,8 +26,6 @@ export const ReportListModal = ({ onClose, reportList, postDetailData }) => {
     }
   };
 
-  console.log("reportList", reportList);
-
   return (
     <>
       <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-3">

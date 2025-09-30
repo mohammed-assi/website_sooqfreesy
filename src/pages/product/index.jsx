@@ -326,7 +326,7 @@ export const ProductPage = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [coords, setCoords] = useState({ lat: null, lng: null, country: null });
   const [subCategoryList, setSubCategoryList] = useState([]);
-  const hasInitialized = useRef(false);
+  // const hasInitialized = useRef(false);
 
   const handleChange = (key, value) => {
     setFilters((prev) => ({
@@ -406,6 +406,8 @@ export const ProductPage = () => {
     if (filters.priceRange?.[0]) filterObj.price_min = filters.priceRange[0];
     if (filters.priceRange?.[1]) filterObj.price_max = filters.priceRange[1];
 
+    if (reduxCoords?.country) filterObj.country = reduxCoords?.country;
+
     if (selectedCity) filterObj.city = selectedCity;
     else if (filters.city) filterObj.city = filters.city;
 
@@ -430,6 +432,7 @@ export const ProductPage = () => {
     selectedCity,
     selectedState,
     coords,
+    reduxCoords,
   ]);
 
   const buildUrlForRequest = useCallback(
@@ -454,10 +457,10 @@ export const ProductPage = () => {
   );
 
   useEffect(() => {
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-      return; // skip first render
-    }
+    // if (!hasInitialized.current) {
+    //   hasInitialized.current = true;
+    //   return;
+    // }
 
     if (requestTimerRef.current) {
       clearTimeout(requestTimerRef.current);
@@ -502,6 +505,21 @@ export const ProductPage = () => {
     coords,
   ]);
 
+  useEffect(() => {
+    const fetchInitialPosts = () => {
+      const filterObj = buildFilterObject();
+
+      let url =
+        Object.keys(filterObj).length === 0
+          ? `${POST.GET_ALL}?page=1&limit=12`
+          : buildUrlForRequest(1, false);
+
+      getAllPosts(url);
+    };
+
+    fetchInitialPosts();
+  }, []);
+
   useLayoutEffect(() => {
     if (location.state?.searchText) {
       hasUsedSearchText.current = true;
@@ -509,21 +527,21 @@ export const ProductPage = () => {
       setSearchTextDebounce(location.state.searchText);
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, []);
+  }, [location, navigate, setSearchTextDebounce]);
 
   const handleApplyFilters = () => {
     const url = buildUrlForRequest(currentPage, true);
     getAllPosts(url);
   };
 
-  useEffect(() => {
-    if (location.state?.searchText) {
-      hasUsedSearchText.current = true;
-      setSearchText(location.state.searchText);
-      setSearchTextDebounce(location.state.searchText);
-      navigate(location.pathname, { replace: true, state: {} });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (location.state?.searchText) {
+  //     hasUsedSearchText.current = true;
+  //     setSearchText(location.state.searchText);
+  //     setSearchTextDebounce(location.state.searchText);
+  //     navigate(location.pathname, { replace: true, state: {} });
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (
@@ -636,57 +654,57 @@ export const ProductPage = () => {
     }
   }, [selectedState, states]);
 
+  console.log("location", location);
+
+  if (loading) return <ScreenLoader />;
+
   return (
     <>
-      {loading ? (
-        <ScreenLoader />
-      ) : (
-        <div className="spacer-x">
-          <SearchTopFilter
-            categories={allSubCategory}
-            toggleGrid={toggleGrid}
-            setToggleGrid={setToggleGrid}
-            handleSelectSubcatIds={handleSelectSubcatIds}
-            subcategoryIds={subcategoryIds}
-            setFiltersModal={setFiltersModal}
-            searchText={searchText}
-            setSearchText={setSearchText}
-            setSearchTextDebounce={setSearchTextDebounce}
-            filters={filters}
-            handleApplyFilters={handleApplyFilters}
-          />
-          <ProductFilter
-            toggleGrid={toggleGrid}
-            allPosts={allPosts}
-            imagePath={imagePath}
-            setCurrentPage={setCurrentPage}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            allCategory={allCategory}
-            handleChange={handleChange}
-            filters={filters}
-            handleLikeUnlikePost={handleLikeUnlikePost}
-            setSearchTextDebounce={setSearchTextDebounce}
-            searchTextDebounce={searchTextDebounce}
-            states={states}
-            selectedState={selectedState}
-            setSelectedState={setSelectedState}
-            cities={cities}
-            selectedCity={selectedCity}
-            setSelectedCity={setSelectedCity}
-            setSelectedLocation={setSelectedLocation}
-            setCoords={setCoords}
-            selectedLocation={selectedLocation}
-            subCategoryList={subCategoryList}
-          />
+      <div className="spacer-x">
+        <SearchTopFilter
+          categories={allSubCategory}
+          toggleGrid={toggleGrid}
+          setToggleGrid={setToggleGrid}
+          handleSelectSubcatIds={handleSelectSubcatIds}
+          subcategoryIds={subcategoryIds}
+          setFiltersModal={setFiltersModal}
+          searchText={searchText}
+          setSearchText={setSearchText}
+          setSearchTextDebounce={setSearchTextDebounce}
+          filters={filters}
+          handleApplyFilters={handleApplyFilters}
+        />
+        <ProductFilter
+          toggleGrid={toggleGrid}
+          allPosts={allPosts}
+          imagePath={imagePath}
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          allCategory={allCategory}
+          handleChange={handleChange}
+          filters={filters}
+          handleLikeUnlikePost={handleLikeUnlikePost}
+          setSearchTextDebounce={setSearchTextDebounce}
+          searchTextDebounce={searchTextDebounce}
+          states={states}
+          selectedState={selectedState}
+          setSelectedState={setSelectedState}
+          cities={cities}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+          setSelectedLocation={setSelectedLocation}
+          setCoords={setCoords}
+          selectedLocation={selectedLocation}
+          subCategoryList={subCategoryList}
+        />
 
-          <LoginModal
-            show={showLoginModal}
-            hide={() => setShowLoginModal(false)}
-            setShowLoginModal={setShowLoginModal}
-          />
-        </div>
-      )}
+        <LoginModal
+          show={showLoginModal}
+          hide={() => setShowLoginModal(false)}
+          setShowLoginModal={setShowLoginModal}
+        />
+      </div>
     </>
   );
 };

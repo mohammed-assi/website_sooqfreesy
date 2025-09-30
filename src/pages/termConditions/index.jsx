@@ -24,7 +24,6 @@ export const TermConditions = () => {
     getPageData(`${CONTENT.GET}?type=TERMS_CONDITIONS`);
   }, []);
 
-  console.log("pageData", pageData);
   return (
     <>
       {loading ? (

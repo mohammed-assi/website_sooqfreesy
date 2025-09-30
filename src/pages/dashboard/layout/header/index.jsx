@@ -17,14 +17,14 @@ import { logout } from "../../../../redux/slices/authSlice";
 import { showInfoToast, showSuccessToast } from "../../../../utils/toastUtils";
 import { clearUser } from "../../../../redux/slices/userSlice";
 import { ROUTE } from "../../../../config/constants";
-import { clearLocationCoords } from "../../../../redux/slices/locationSlice";
 import { getRequest } from "../../../../config/apiFunctions";
 import { setNotifications } from "../../../../redux/slices/notificationSlice";
 import { CUSTOMER } from "../../../../config/endPoints";
 
-export const DashboardHeader = ({setOpenSideBar, openSideBar}) => {
+export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
   const { t } = useTranslation();
-  const dropdownRef = useRef(null);
+  const profileDropdownRef = useRef(null);
+  const loginDropdownRef = useRef(null);
   const searchRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,36 +33,37 @@ export const DashboardHeader = ({setOpenSideBar, openSideBar}) => {
   const { userInfo } = useSelector((state) => state.user);
   const { notifications } = useSelector((state) => state.notification);
   const [open, setOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleMenuToggle = () => {
-    setMenuOpen(!menuOpen);
-  };
+const handleMenuToggle = () => setMenuOpen(!menuOpen);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        searchRef.current &&
-        !searchRef.current.contains(event.target)
-      ) {
-        setOpen(false);
-      }
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (
+      profileDropdownRef.current &&
+      !profileDropdownRef.current.contains(event.target) &&
+      loginDropdownRef.current &&
+      !loginDropdownRef.current.contains(event.target) &&
+      searchRef.current &&
+      !searchRef.current.contains(event.target)
+    ) {
+      setOpen(false);
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 150);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  function handleScroll() {
+    setOpen(false);
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  window.addEventListener("scroll", handleScroll);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
 
   const handleShowLoginModal = () => {
     setShowLoginModal(true);
@@ -72,7 +73,6 @@ export const DashboardHeader = ({setOpenSideBar, openSideBar}) => {
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearUser());
-    dispatch(clearLocationCoords());
     navigate(ROUTE.ROOT);
     setOpen(false);
     showSuccessToast(t("logOutMsg"));
@@ -294,7 +294,10 @@ export const DashboardHeader = ({setOpenSideBar, openSideBar}) => {
               </Link>
             </div>
             <div className="item-right flex items-center justify-end lg:justify-between gap-3 lg:gap-8 w-full pr-3 lg:pr-[62px]">
-              <button className="lg:hidden p-2 bg-gray-100 rounded-lg" onClick={() => setOpenSideBar(!openSideBar)}>
+              <button
+                className="lg:hidden p-2 bg-gray-100 rounded-lg"
+                onClick={() => setOpenSideBar(!openSideBar)}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="size-5"
@@ -333,7 +336,7 @@ export const DashboardHeader = ({setOpenSideBar, openSideBar}) => {
                   {location.pathname !== ROUTE.CREATE_POST && (
                     <div
                       className="relative w-full lg:w-auto"
-                      ref={dropdownRef}
+                      ref={profileDropdownRef}
                     >
                       <div
                         className="cursor-pointer flex justify-center"
@@ -466,7 +469,7 @@ export const DashboardHeader = ({setOpenSideBar, openSideBar}) => {
                     <div className="flex flex-col lg:flex-row w-full lg:w-auto items-center mt-3 lg:mt-0">
                       <div
                         className="relative w-full lg:w-auto"
-                        ref={dropdownRef}
+                        ref={loginDropdownRef}
                       >
                         {accessToken ? (
                           <div className="flex gap-7 items-center justify-center lg:px-7 py-3 lg:py-0">

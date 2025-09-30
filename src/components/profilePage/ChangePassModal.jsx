@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/slices/userSlice";
 
 export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const schema = Yup.object().shape({
     password: userInfo?.is_password_set
@@ -115,7 +115,9 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
               onClose();
               reset();
             }}
-            className="absolute top-8 right-6 text-gray-400 hover:text-gray-600"
+            className={`${
+              i18n.language === "ar" ? "left-6" : "right-6"
+            } absolute top-8  text-gray-400 hover:text-gray-600`}
           >
             <i className="fa-solid fa-xmark fa-lg" />
           </button>
