@@ -66,7 +66,7 @@ export const AllCitiesDropdown = () => {
   }, []);
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
+    <div className="relative inline-block text-left">
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 cursor-pointer text-xs md:text-sm"
@@ -108,6 +108,7 @@ export const AllCitiesDropdown = () => {
                   const country = countryObj ? countryObj.long_name : "";
                   const newCoords = { lat, lng, country };
                   setLocation(place.formatted_address);
+                  console.log("newCoords", newCoords);
 
                   dispatch(setLocationCoords(newCoords));
                   setOpen(false);

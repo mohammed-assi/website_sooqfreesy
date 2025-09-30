@@ -45,7 +45,8 @@ export const HomePage = () => {
       filters = { foryou: true };
     } else if (activeTab === "nearby") {
       filters = {
-        country: reduxCoords?.country ? reduxCoords?.country : "",
+        latitude: reduxCoords?.lat || "",
+        longitude: reduxCoords?.lng || "",
         nearby: true,
       };
     }

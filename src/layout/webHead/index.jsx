@@ -39,6 +39,8 @@ export const WebHead = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [suggestionList, setSuggestionList] = useState([]);
 
+  const { i18n } = useTranslation();
+
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
   };
@@ -148,6 +150,17 @@ export const WebHead = () => {
   const isCreateOrUpdate =
     location.pathname === ROUTE.CREATE_POST ||
     location.pathname.startsWith(ROUTE.UPDATE_POST);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint in Tailwind
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
@@ -370,9 +383,8 @@ export const WebHead = () => {
               {!isCreateOrUpdate ? (
                 <>
                   <div
-                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 p-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${
-                      menuOpen ? "translate-x-0" : "-translate-x-full"
-                    } lg:translate-x-0`}
+                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 p-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${menuOpen ? "translate-x-0" : "-translate-x-full"
+                      } lg:translate-x-0`}
                   >
                     <img src={logo} className="mb-auto lg:hidden h-7" alt="" />
                     <div
@@ -479,8 +491,8 @@ export const WebHead = () => {
                             <i className="fa-solid fa-angle-down fa-sm ml-auto rotate-180 lg:rotate-0" />
                           </button>
                         )}
-                        {open && (
-                          <div className="static lg:absolute lg:px-4 -right-10 lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 p-2.5 lg:py-0 border border-gray-100 lg:border-0 mb-2.5 lg:mb-0">
+                        {(isMobile || open) && (
+                          <div className={`static lg:absolute lg:px-4 -right-10 lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 p-2.5 lg:py-0 border border-gray-100 lg:border-0 mb-2.5 lg:mb-0`}>
                             <div className="flex items-center gap-3 py-2 px-2 bg-gray-100 rounded-md lg:rounded-none lg:bg-transparent lg:py-4 lg:border-b lg:border-gray-200">
                               <div className="w-[50px] h-[40px] lg:w-[70px] lg:h-[60px] rounded flex items-center justify-center">
                                 <img
@@ -596,10 +608,9 @@ export const WebHead = () => {
                     </div>
                   </div>
                   <div
-                    className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
-                      menuOpen &&
+                    className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${menuOpen &&
                       "opacity-100 !pointer-events-auto cursor-pointer"
-                    }`}
+                      }`}
                     onClick={handleMenuToggle}
                   ></div>
                   <div

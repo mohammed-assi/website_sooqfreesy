@@ -61,15 +61,20 @@ export const Notifictions = () => {
     getNotificationData(NOTIFICATION.GET);
   };
 
-  const handleMarkNotificationRead = async (id) => {
+  const handleMarkNotificationRead = async (data) => {
     try {
       const response = await getRequest(
-        `${NOTIFICATION.READ_NOTIFICATION}?notificationId=${id}`
+        `${NOTIFICATION.READ_NOTIFICATION}?notificationId=${data?.id}`
       );
       if (response?.data?.success && response?.data?.statusCode === 200) {
         const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
         if (res?.data?.success && res?.data?.statusCode === 200) {
           dispatch(setNotifications(res?.data?.data));
+          if (data?.type === "REVIEW") {
+            navigate(ROUTE.USER_PROFILE);
+          } else if (data?.type === "POST") {
+            navigate(ROUTE.MY_ADS);
+          }
         }
       }
     } catch (error) {
@@ -97,6 +102,8 @@ export const Notifictions = () => {
     getgetNotificationDataCallback();
   }, []);
 
+  console.log("notificationList", notificationList);
+
   return (
     <>
       {loading ? (
@@ -123,11 +130,14 @@ export const Notifictions = () => {
                 <div
                   key={i}
                   onClick={() => {
-                    handleMarkNotificationRead(item.id);
-                    if (item.type === "REVIEW") {
-                      navigate(ROUTE.USER_PROFILE);
-                    } else if (item.type === "POST") {
-                      navigate(ROUTE.MY_ADS);
+                    if (item?.is_read) {
+                      if (item?.type === "REVIEW") {
+                        navigate(ROUTE.USER_PROFILE);
+                      } else if (item?.type === "POST") {
+                        navigate(ROUTE.MY_ADS);
+                      }
+                    } else {
+                      handleMarkNotificationRead(item);
                     }
                   }}
                   className={`${
