@@ -14,7 +14,7 @@ export const DashboardLayout = () => {
         <DashboardHeader setOpenSideBar={setOpenSideBar} openSideBar={openSideBar} />
       </div>
       <div className="flex">
-        <Sidebar openSideBar={openSideBar} />
+        <Sidebar openSideBar={openSideBar} setOpenSideBar={setOpenSideBar} />
 
         <div className="flex-1 lg:p-6 py-6 px-3 min-h-screen">
           <Outlet />

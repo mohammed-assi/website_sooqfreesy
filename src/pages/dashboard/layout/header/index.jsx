@@ -36,34 +36,36 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-const handleMenuToggle = () => setMenuOpen(!menuOpen);
+  const { i18n } = useTranslation();
 
-useEffect(() => {
-  function handleClickOutside(event) {
-    if (
-      profileDropdownRef.current &&
-      !profileDropdownRef.current.contains(event.target) &&
-      loginDropdownRef.current &&
-      !loginDropdownRef.current.contains(event.target) &&
-      searchRef.current &&
-      !searchRef.current.contains(event.target)
-    ) {
+  const handleMenuToggle = () => setMenuOpen(!menuOpen);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target) &&
+        loginDropdownRef.current &&
+        !loginDropdownRef.current.contains(event.target) &&
+        searchRef.current &&
+        !searchRef.current.contains(event.target)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    function handleScroll() {
       setOpen(false);
     }
-  }
 
-  function handleScroll() {
-    setOpen(false);
-  }
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
 
-  document.addEventListener("mousedown", handleClickOutside);
-  window.addEventListener("scroll", handleScroll);
-
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleShowLoginModal = () => {
     setShowLoginModal(true);
@@ -288,12 +290,16 @@ useEffect(() => {
       <header className="header bg-white">
         <div className="">
           <nav className="navigation-wrap flex gap-3 lg:gap-7 items-center py-2.5 lg:py-6 border-b border-gray-100">
-            <div className="item-left px-3 lg:px-9 border-r border-r-gray-300">
+            <div className={`item-left px-3 lg:px-9 ${i18n.language === "ar" ? "border-l border-l-gray-300" : "border-r border-r-gray-300"}`}>
               <Link to="/">
                 <img src={logo} className="h-12 object-contain" alt="logo" />
               </Link>
             </div>
-            <div className="item-right flex items-center justify-end lg:justify-between gap-3 lg:gap-8 w-full pr-3 lg:pr-[62px]">
+            <div
+              className={`item-right flex items-center ${i18n.language === "ar" ? "flex-row-reverse lg:justify-between" : "justify-end lg:justify-between"
+                } gap-3 lg:gap-8 w-full ${i18n.language === "ar" ? "pl-3 lg:pl-[62px]" : "pr-3 lg:pr-[62px]"
+                }`}
+            >
               <button
                 className="lg:hidden p-2 bg-gray-100 rounded-lg"
                 onClick={() => setOpenSideBar(!openSideBar)}
@@ -321,15 +327,16 @@ useEffect(() => {
               </button>
               <Link
                 to="/"
-                className="flex font-bold text-base gap-4 items-center lg:px-5 px-2.5 py-[10px] border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition flex-shrink-0 ml-auto lg:ml-auto"
+                className={`flex font-bold text-base gap-4 items-center lg:px-5 px-2.5 py-[10px] border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition flex-shrink-0 ${i18n.language === "ar" ? "mr-auto lg:mr-auto" : "ml-auto lg:ml-auto"
+                  }`}
               >
+
                 <i className="fa-solid fa-arrow-left text-xs md:text-lg" />
                 <p className="hidden lg:block">{t("backSouqSyria")}</p>
               </Link>
               <div
-                className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end flex-col bg-white shadow-lg top-0 left-0 h-full ${
-                  menuOpen ? "translate-x-0" : "-translate-x-full"
-                } lg:translate-x-0`}
+                className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end flex-col bg-white shadow-lg top-0 left-0 h-full ${menuOpen ? "translate-x-0" : "-translate-x-full"
+                  } lg:translate-x-0`}
               >
                 <img src={logo} className="mb-auto lg:hidden h-7" alt="" />
                 <div className="flex flex-col lg:flex-row items-center justify-between w-full">
@@ -366,7 +373,7 @@ useEffect(() => {
                         </div>
                       </div>
                       {open && (
-                        <div className="static lg:absolute lg:px-4 -right-10 lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 lg:py-0 border border-gray-100 lg:border-0 mb-0 px-0 mt-3">
+                        <div className={`${i18n.language === "ar" ? "-left-10" : "-right-10"} lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 lg:py-0 border border-gray-100 lg:border-0 mb-0 px-0 mt-3 absolute`}>
                           <div className="items-center gap-3 py-2 px-2 bg-gray-100 rounded-md lg:rounded-none lg:bg-transparent lg:py-4 lg:border-b lg:border-gray-200 hidden lg:flex">
                             <div className="w-[50px] h-[40px] lg:w-[70px] lg:h-[60px] rounded flex items-center justify-center">
                               <img
@@ -549,9 +556,8 @@ useEffect(() => {
                 </div>
               </div>
               <div
-                className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
-                  menuOpen && "opacity-100 !pointer-events-auto cursor-pointer"
-                }`}
+                className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${menuOpen && "opacity-100 !pointer-events-auto cursor-pointer"
+                  }`}
                 onClick={handleMenuToggle}
               ></div>
               <div className="hamburger lg:hidden" onClick={handleMenuToggle}>
