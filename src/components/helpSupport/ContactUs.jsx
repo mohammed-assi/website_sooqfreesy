@@ -11,7 +11,7 @@ import LoadingButton from "../../common/loadingButton/LoadingButton";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const ContactUs = () => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const schema = yup.object().shape({
     fullName: yup.string().required(t("fullNameRequired")),
     email: yup
@@ -232,6 +232,12 @@ export const ContactUs = () => {
                       code: country?.countryCode?.toUpperCase(),
                     });
                   }}
+                  inputProps={{
+                    style: {
+                      direction: "ltr",
+                      textAlign: i18n.language === "ar" ? "right" : "left",
+                    },
+                  }}
                 />
                 <span className="ml-1 me-3">+{countryCode}</span>
               </div>
@@ -247,7 +253,11 @@ export const ContactUs = () => {
                 onInput={(e) => {
                   e.target.value = e.target.value.replace(/\D/g, "");
                 }}
-                className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                className={`${
+                  i18n.language === "ar"
+                    ? "text-right pl-12"
+                    : "text-left pr-12"
+                } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                 placeholder={t("enterPhoneNo")}
               />
             </div>

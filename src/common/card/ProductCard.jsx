@@ -9,6 +9,7 @@ import { ROUTE } from "../../config/constants";
 import { useTranslation } from "react-i18next";
 
 export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
+  console.log("itemitemitem", item);
   const { t } = useTranslation();
   return (
     <div className="bg-white rounded-xl overflow-hidden relative">
@@ -61,7 +62,14 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
       <Link to={`${ROUTE.PRODUCT_PAGE}/${item?.id}`}>
         <div className="py-4 space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-lg font-bold">${item?.price}</p>
+            <p className="text-lg font-bold">
+              {item?.currency === "Syrian Pound"
+                ? "£"
+                : item?.currency === "Dollar"
+                ? "$"
+                : "$"}{" "}
+              {item?.price}
+            </p>
             <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
               {item?.sub_categoryName}
             </span>

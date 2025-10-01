@@ -19,7 +19,7 @@ import verified from "../../assets/icon/verified.svg";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const RegisterModal = ({ show, hide, showLoginModal }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(1);
   const [countryCode, setCountryCode] = useState(963);
@@ -397,6 +397,13 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                             code: country?.countryCode?.toUpperCase(),
                           });
                         }}
+                        inputProps={{
+                          style: {
+                            direction: "ltr",
+                            textAlign:
+                              i18n.language === "ar" ? "right" : "left",
+                          },
+                        }}
                       />
                       <span className="ml-1 me-3">+{countryCode}</span>
                     </div>
@@ -415,7 +422,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                         setPhoneNumber(onlyNums);
                         setValue("phone", onlyNums, { shouldValidate: true });
                       }}
-                      className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                      className={`${
+                        i18n.language === "ar"
+                          ? "text-right pl-12"
+                          : "text-left pr-12"
+                      } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                       placeholder={t("enterPhoneNo")}
                     />
                   </div>
@@ -495,21 +506,25 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                   <label className="block mb-2 text-md font-bold">
                     {t("password")}
                   </label>
-                  <div className="input-icon-grp">
+                  <div className="relative">
                     <input
                       {...register("password")}
                       type={toggle === true ? "password" : "text"}
                       id="password"
                       placeholder={t("enterPassword")}
-                      className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
+                      className={`${
+                        i18n.language === "ar" ? "pl-12" : "pr-12"
+                      } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                       autoComplete="off"
                     />
                     <i
-                      className={
+                      className={`${
                         toggle === true
                           ? "fa-regular fa-eye-slash show-pass"
                           : "fa-regular fa-eye show-pass"
-                      }
+                      } ${
+                        i18n?.language === "ar" ? "left-3" : "right-3"
+                      } absolute top-4  cursor-pointer text-center`}
                       onClick={handlepass}
                     />
                   </div>
@@ -524,19 +539,23 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                   <label className="block mb-2 text-md font-bold">
                     {t("confirmPassword")}
                   </label>
-                  <div className="input-icon-grp">
+                  <div className="relative">
                     <input
                       type={toggleConfirm === true ? "password" : "text"}
                       {...register("confirmPassword")}
                       placeholder={t("enterConfirmPassword")}
-                      className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
+                      className={`${
+                        i18n.language === "ar" ? "pl-12" : "pr-12"
+                      } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                     />
                     <i
-                      className={
+                      className={`${
                         toggleConfirm === true
                           ? "fa-regular fa-eye-slash show-pass"
                           : "fa-regular fa-eye show-pass"
-                      }
+                      } ${
+                        i18n?.language === "ar" ? "left-3" : "right-3"
+                      } absolute top-4  cursor-pointer text-center`}
                       onClick={handlepassConfirm}
                     />
                   </div>

@@ -3,12 +3,14 @@ import authReducer from "../slices/authSlice";
 import userReducer from "../slices/userSlice";
 import locationReducer from "../slices/locationSlice";
 import notificationReducer from "../slices/notificationSlice";
+import tokenReducer from "../slices/tokenSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   location: locationReducer,
   notification: notificationReducer,
+  fcmToken: tokenReducer,
 });
 
 export default rootReducer;

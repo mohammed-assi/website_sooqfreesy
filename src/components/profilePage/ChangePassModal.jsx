@@ -130,21 +130,25 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
                 <label className="block mb-2 text-base font-bold">
                   {t("password")}
                 </label>
-                <div className="input-icon-grp">
+                <div className="relative">
                   <input
                     {...register("password")}
                     type={toggle === true ? "password" : "text"}
                     id="password"
-                    className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
+                    className={`${
+                      i18n.language === "ar" ? "pl-12" : "pr-12"
+                    } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                     autoComplete="off"
                     placeholder={t("enterPassword")}
                   />
                   <i
-                    className={
+                    className={`${
                       toggle === true
                         ? "fa-regular fa-eye-slash show-pass"
                         : "fa-regular fa-eye show-pass"
-                    }
+                    } ${
+                      i18n?.language === "ar" ? "left-3" : "right-3"
+                    } absolute top-4  cursor-pointer text-center`}
                     onClick={handlepass}
                   />
                 </div>
@@ -160,21 +164,25 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
               <label className="block mb-2 text-base font-bold">
                 {t("newPassword")}
               </label>
-              <div className="input-icon-grp">
+              <div className="relative">
                 <input
                   {...register("newPassword")}
                   type={toggleNew === true ? "password" : "text"}
                   id="newPassword"
-                  className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
+                  className={`${
+                    i18n.language === "ar" ? "pl-12" : "pr-12"
+                  } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                   autoComplete="off"
                   placeholder={t("enterNewPass")}
                 />
                 <i
-                  className={
+                  className={`${
                     toggleNew === true
                       ? "fa-regular fa-eye-slash show-pass"
                       : "fa-regular fa-eye show-pass"
-                  }
+                  } ${
+                    i18n?.language === "ar" ? "left-3" : "right-3"
+                  } absolute top-4  cursor-pointer text-center`}
                   onClick={handlepassNew}
                 />
               </div>
@@ -189,19 +197,23 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
               <label className="block mb-2 text-base font-bold">
                 {t("confirmPassword")}
               </label>
-              <div className="input-icon-grp">
+              <div className="relative">
                 <input
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
-                  className="w-full h-[48px] rounded-md px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
+                  className={`${
+                    i18n.language === "ar" ? "pl-12" : "pr-12"
+                  } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                   placeholder={t("enterConfirmPassword")}
                 />
                 <i
-                  className={
+                  className={`${
                     toggleConfirm === true
                       ? "fa-regular fa-eye-slash show-pass"
                       : "fa-regular fa-eye show-pass"
-                  }
+                  } ${
+                    i18n?.language === "ar" ? "left-3" : "right-3"
+                  } absolute top-4  cursor-pointer text-center`}
                   onClick={handlepassConfirm}
                 />
               </div>

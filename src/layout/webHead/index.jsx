@@ -18,8 +18,11 @@ import { showInfoToast, showSuccessToast } from "../../utils/toastUtils";
 import { clearUser } from "../../redux/slices/userSlice";
 import { ROUTE } from "../../config/constants";
 import { getRequest } from "../../config/apiFunctions";
-import { CUSTOMER, POST } from "../../config/endPoints";
-import { setNotifications } from "../../redux/slices/notificationSlice";
+import { CUSTOMER, NOTIFICATION, POST } from "../../config/endPoints";
+import {
+  setCount,
+  setNotifications,
+} from "../../redux/slices/notificationSlice";
 
 export const WebHead = () => {
   const { t } = useTranslation();
@@ -31,6 +34,7 @@ export const WebHead = () => {
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
   const { notifications } = useSelector((state) => state.notification);
+  const { count } = useSelector((state) => state.notification);
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -104,6 +108,17 @@ export const WebHead = () => {
 
   useEffect(() => {
     handlegetCounter(CUSTOMER.NOTIFICTIN_COUNT);
+  }, [accessToken]);
+
+  const handlegetNotificationCount = async (url) => {
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      dispatch(setCount(response?.data?.data?.notificationCount));
+    }
+  };
+
+  useEffect(() => {
+    handlegetNotificationCount(NOTIFICATION.COUNTS);
   }, [accessToken]);
 
   useEffect(() => {
@@ -383,8 +398,9 @@ export const WebHead = () => {
               {!isCreateOrUpdate ? (
                 <>
                   <div
-                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 p-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${menuOpen ? "translate-x-0" : "-translate-x-full"
-                      } lg:translate-x-0`}
+                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 p-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${
+                      menuOpen ? "translate-x-0" : "-translate-x-full"
+                    } lg:translate-x-0`}
                   >
                     <img src={logo} className="mb-auto lg:hidden h-7" alt="" />
                     <div
@@ -441,9 +457,9 @@ export const WebHead = () => {
                           <div className="flex gap-7 items-center px-0 lg:px-7">
                             <Link to={ROUTE.NOTIFICATIONS} className="relative">
                               <img src={notification} alt="icon" />
-                              {notifications?.notificationCount > 0 && (
+                              {count > 0 && (
                                 <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
-                                  {notifications?.notificationCount}
+                                  {count}
                                 </p>
                               )}
                             </Link>
@@ -492,7 +508,9 @@ export const WebHead = () => {
                           </button>
                         )}
                         {(isMobile || open) && (
-                          <div className={`static lg:absolute lg:px-4 -right-10 lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 p-2.5 lg:py-0 border border-gray-100 lg:border-0 mb-2.5 lg:mb-0`}>
+                          <div
+                            className={`static lg:absolute lg:px-4 -right-10 lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 p-2.5 lg:py-0 border border-gray-100 lg:border-0 mb-2.5 lg:mb-0`}
+                          >
                             <div className="flex items-center gap-3 py-2 px-2 bg-gray-100 rounded-md lg:rounded-none lg:bg-transparent lg:py-4 lg:border-b lg:border-gray-200">
                               <div className="w-[50px] h-[40px] lg:w-[70px] lg:h-[60px] rounded flex items-center justify-center">
                                 <img
@@ -600,7 +618,7 @@ export const WebHead = () => {
                       >
                         <span className="icon w-full lg:w-auto justify-center rounded-sm">
                           <span>
-                            <i class="fa-solid fa-plus"></i>
+                            <i className="fa-solid fa-plus"></i>
                           </span>{" "}
                           {t("postAdButton")}
                         </span>
@@ -608,9 +626,10 @@ export const WebHead = () => {
                     </div>
                   </div>
                   <div
-                    className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${menuOpen &&
+                    className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
+                      menuOpen &&
                       "opacity-100 !pointer-events-auto cursor-pointer"
-                      }`}
+                    }`}
                     onClick={handleMenuToggle}
                   ></div>
                   <div

@@ -93,8 +93,6 @@ export const HomePage = () => {
     getAllPostsCallBack();
   }, [accessToken, activeTab]);
 
-  console.log("reduxCoords", reduxCoords);
-
   return (
     <>
       {loading ? (

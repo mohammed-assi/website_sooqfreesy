@@ -95,7 +95,6 @@
 //   return apiRequest(URL, payload, "delete", headers);
 // }
 
-
 import axios from "axios";
 import NProgress from "nprogress";
 import { LOCAL_STORAGE } from "../constants";
@@ -114,6 +113,8 @@ apiClient.interceptors.request.use((config) => {
   NProgress.start();
 
   const token = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
+  const fcmToken = localStorage.getItem(LOCAL_STORAGE.FCM_TOKEN);
+  console.log("fcmToken", fcmToken);
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
@@ -121,10 +122,19 @@ apiClient.interceptors.request.use((config) => {
   config.headers["Accept"] = "application/json";
   config.headers["Accept-Language"] = i18n.language || "en";
 
+  // if (fcmToken) {
+  //   config.headers["fcm_token"] = fcmToken;
+  //   config.headers["device_type"] = "web_app";
+  // }
+
   return config;
 });
 
-export const setupAxiosInterceptors = (dispatch, navigate, setShowSessionModal) => {
+export const setupAxiosInterceptors = (
+  dispatch,
+  navigate,
+  setShowSessionModal
+) => {
   apiClient.interceptors.response.use(
     (response) => {
       NProgress.done();
@@ -155,7 +165,12 @@ export function cancelRequest() {
   }
 }
 
-export async function apiRequest(endPoint, data = {}, method = "get", customHeaders = {}) {
+export async function apiRequest(
+  endPoint,
+  data = {},
+  method = "get",
+  customHeaders = {}
+) {
   return new Promise(async (resolve, reject) => {
     controller = new AbortController();
     const signal = controller.signal;
@@ -179,8 +194,13 @@ export async function apiRequest(endPoint, data = {}, method = "get", customHead
   });
 }
 
-export const getRequest = (URL, headers = {}) => apiRequest(URL, {}, "get", headers);
-export const postRequest = (URL, payload, headers = {}) => apiRequest(URL, payload, "post", headers);
-export const putRequest = (URL, payload, headers = {}) => apiRequest(URL, payload, "put", headers);
-export const patchRequest = (URL, payload, headers = {}) => apiRequest(URL, payload, "patch", headers);
-export const deleteRequest = (URL, payload = {}, headers = {}) => apiRequest(URL, payload, "delete", headers);
+export const getRequest = (URL, headers = {}) =>
+  apiRequest(URL, {}, "get", headers);
+export const postRequest = (URL, payload, headers = {}) =>
+  apiRequest(URL, payload, "post", headers);
+export const putRequest = (URL, payload, headers = {}) =>
+  apiRequest(URL, payload, "put", headers);
+export const patchRequest = (URL, payload, headers = {}) =>
+  apiRequest(URL, payload, "patch", headers);
+export const deleteRequest = (URL, payload = {}, headers = {}) =>
+  apiRequest(URL, payload, "delete", headers);

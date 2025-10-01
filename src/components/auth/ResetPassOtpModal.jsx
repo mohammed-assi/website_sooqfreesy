@@ -17,8 +17,9 @@ export const ResetPassOtpModal = ({
   userEmail,
   handleResend,
   timer,
+  otp,
 }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const inputsRef = useRef([]);
   const [code, setCode] = useState(["", "", "", ""]);
   const [toggle, setToggle] = useState(true);
@@ -133,6 +134,7 @@ export const ResetPassOtpModal = ({
         subtitle={`${t("emailVerificationSubtitle")} ${userEmail}`}
       >
         <div className="px-10 py-8">
+          <p className="text-center py-2">OTP: {otp}</p>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
@@ -179,21 +181,25 @@ export const ResetPassOtpModal = ({
               <label className="block mb-2 text-md font-bold">
                 {t("createNewPassword")}
               </label>
-              <div className="input-icon-grp">
+              <div className="relative">
                 <input
                   {...register("password")}
                   type={toggle === true ? "password" : "text"}
                   id="password"
                   placeholder={t("enterNewPass")}
-                  className="w-full h-[48px] rounded px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
+                  className={`${
+                    i18n.language === "ar" ? "pl-12" : "pr-12"
+                  } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                   autoComplete="off"
                 />
                 <i
-                  className={
+                  className={`${
                     toggle === true
                       ? "fa-regular fa-eye-slash show-pass"
                       : "fa-regular fa-eye show-pass"
-                  }
+                  } ${
+                    i18n?.language === "ar" ? "left-3" : "right-3"
+                  } absolute top-4  cursor-pointer text-center`}
                   onClick={handlepass}
                 />
               </div>
@@ -208,19 +214,23 @@ export const ResetPassOtpModal = ({
               <label className="block mb-2 text-md font-bold">
                 {t("reEnterNewPass")}
               </label>
-              <div className="input-icon-grp">
+              <div className="relative">
                 <input
                   type={toggleConfirm === true ? "password" : "text"}
                   {...register("confirmPassword")}
                   placeholder={t("reenterNewPass")}
-                  className="w-full h-[48px] rounded px-3 py-2 pr-11 bg-gray-100 focus:outline-none"
+                  className={`${
+                    i18n.language === "ar" ? "pl-12" : "pr-12"
+                  } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                 />
                 <i
-                  className={
+                  className={`${
                     toggleConfirm === true
                       ? "fa-regular fa-eye-slash show-pass"
                       : "fa-regular fa-eye show-pass"
-                  }
+                  } ${
+                    i18n?.language === "ar" ? "left-3" : "right-3"
+                  } absolute top-4  cursor-pointer text-center`}
                   onClick={handlepassConfirm}
                 />
               </div>

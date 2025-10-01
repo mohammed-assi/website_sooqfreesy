@@ -326,6 +326,7 @@ const resources = {
       update: "Updated",
       rejectAt: "Rejected",
       soldAt: "Sold",
+      verify: "Verify",
     },
   },
   ar: {
@@ -645,6 +646,7 @@ const resources = {
       update: "تم التحديث",
       rejectAt: "مرفوض",
       soldAt: "تم البيع",
+      verify: "تحقق",
     },
   },
 };

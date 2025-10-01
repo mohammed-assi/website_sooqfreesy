@@ -86,7 +86,7 @@ export const OtpVerificationModal = ({
                 disabled={loading}
                 className="bg-primary text-white hover:bg-primaryDark max-w-[354px] mt-3 h-[54px]"
               >
-                {t("Verify")}
+                {t("verify")}
               </LoadingButton>
             </form>
 

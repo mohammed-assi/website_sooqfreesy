@@ -58,7 +58,14 @@ const MyAdsCard = ({
 
       <div className="w-full md:w-3/6 p-4 relative">
         <Link to={`${ROUTE.PRODUCT_PAGE}/${item.id}`}>
-          <h2 className="text-2xl font-bold text-gray-900">${item.price}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            {item?.currency === "Syrian Pound"
+              ? "£"
+              : item?.currency === "Dollar"
+              ? "$"
+              : "$"}{" "}
+            {item.price}
+          </h2>
 
           <h3 className="text-xl font-bold text-gray-800 mt-3">{item.title}</h3>
 

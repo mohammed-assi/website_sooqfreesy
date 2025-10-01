@@ -19,7 +19,7 @@ export const SideFilter = ({
   selectedLocation,
   subCategoryList,
 }) => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const reduxCoords = useSelector((state) => state.location.coords);
@@ -159,7 +159,7 @@ export const SideFilter = ({
           placeholder={t("enterNearbyLocation")}
           className="w-full h-[48px] bg-[#f5f5f5] rounded-lg px-3 py-2 text-sm focus:outline-none"
         /> */}
-        <div className="input-icon-grp">
+        <div className="relative">
           <Autocomplete
             apiKey={GOOGLE_API_KEY}
             placeholder={t("nearbyLocation")}
@@ -194,9 +194,15 @@ export const SideFilter = ({
               bounds: cityBounds || stateBounds || null,
               strictBounds: !!(cityBounds || stateBounds),
             }}
-            className="w-full text-black rounded p-3 pr-11 bg-gray-100 focus:outline-none"
+            className={`${
+              i18n.language === "ar" ? "pl-11" : "pr-10"
+            } w-full text-black rounded p-3 bg-gray-100 focus:outline-none`}
           />
-          <i className="fa-solid fa-magnifying-glass" />
+          <i
+            className={`fa-solid fa-magnifying-glass ${
+              i18n.language === "ar" ? "left-2" : "right-2"
+            } absolute top-4 text-center`}
+          />
         </div>
       </div>
 

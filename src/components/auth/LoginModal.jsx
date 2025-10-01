@@ -17,9 +17,10 @@ import axios from "axios";
 import { setUser } from "../../redux/slices/userSlice";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { LOCAL_STORAGE } from "../../config/constants";
 
 function LoginModal({ show, hide, setShowLoginModal }) {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(1);
   const [countryCode, setCountryCode] = useState(963);
@@ -114,6 +115,8 @@ function LoginModal({ show, hide, setShowLoginModal }) {
       payload = {
         username: data.username,
         password: data.password,
+        fcm_token: localStorage.getItem(LOCAL_STORAGE.FCM_TOKEN),
+        device_type: "web-app",
       };
       apiUrl = AUTH.LOGIN_USERNAME;
     }
@@ -161,9 +164,12 @@ function LoginModal({ show, hide, setShowLoginModal }) {
         country_code: `+${countryCode}`,
         phone: phoneNumber,
         otp: fullCode,
+        fcm_token: localStorage.getItem(LOCAL_STORAGE.FCM_TOKEN),
+        device_type: "web-app",
       };
       try {
         const response = await postRequest(AUTH.LOGIN_PHONE_VERIFY, payload);
+
         if (response?.data?.success && response?.data?.statusCode === 200) {
           const res = await axios.get(AUTH.GET_PROFILE, {
             headers: {
@@ -180,6 +186,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           setCode(["", "", "", ""]);
           setShowOtpModal(false);
           setLoading(false);
+          setPhoneNumber(null);
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
@@ -315,6 +322,13 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                             code: country?.countryCode?.toUpperCase(),
                           });
                         }}
+                        inputProps={{
+                          style: {
+                            direction: "ltr",
+                            textAlign:
+                              i18n.language === "ar" ? "right" : "left",
+                          },
+                        }}
                       />
                       <span className="ml-1 me-3">+{countryCode}</span>
                     </div>
@@ -333,7 +347,11 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                         setPhoneNumber(onlyNums);
                         setValue("phone", onlyNums, { shouldValidate: true });
                       }}
-                      className="flex-1 w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                      className={`${
+                        i18n.language === "ar"
+                          ? "text-right pl-12"
+                          : "text-left pr-12"
+                      } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                       placeholder={t("enterPhoneNo")}
                     />
                   </div>
@@ -368,21 +386,25 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                   <label className="block mb-2 text-base text-black font-bold">
                     {t("password")}
                   </label>
-                  <div className="input-icon-grp">
+                  <div className="relative">
                     <input
                       {...register("password")}
                       type={toggle === true ? "password" : "text"}
                       id="password"
-                      className="w-full rounded h-[48px] px-4 pr-12 py-2 bg-gray-100 focus:outline-none"
+                      className={`${
+                        i18n.language === "ar" ? "pl-12" : "pr-12"
+                      } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                       autoComplete="off"
                       placeholder={t("enterPassword")}
                     />
                     <i
-                      className={
+                      className={`${
                         toggle === true
                           ? "fa-regular fa-eye-slash show-pass"
                           : "fa-regular fa-eye show-pass"
-                      }
+                      } ${
+                        i18n?.language === "ar" ? "left-3" : "right-3"
+                      } absolute top-4  cursor-pointer text-center`}
                       onClick={handlepass}
                     />
                   </div>

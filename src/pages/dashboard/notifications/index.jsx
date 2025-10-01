@@ -8,8 +8,11 @@ import { showErrorToast } from "../../../utils/toastUtils";
 import { getRequest } from "../../../config/apiFunctions";
 import { ScreenLoader } from "../../../utils/screenLoader";
 import moment from "moment/moment";
-import { setNotifications } from "../../../redux/slices/notificationSlice";
-import { useDispatch } from "react-redux";
+import {
+  setCount,
+  setNotifications,
+} from "../../../redux/slices/notificationSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../../config/constants";
 
@@ -22,6 +25,7 @@ export const Notifictions = () => {
   const [showSettingModal, setShowSetttingModal] = useState(false);
   const [notificationSettingsData, setNotificationSettingData] = useState({});
   const [notificationList, setNotificationList] = useState([]);
+  const { count } = useSelector((state) => state.notification);
 
   const getNotificationSettingData = async (url) => {
     setLoading(true);
@@ -70,6 +74,9 @@ export const Notifictions = () => {
         const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
         if (res?.data?.success && res?.data?.statusCode === 200) {
           dispatch(setNotifications(res?.data?.data));
+
+          handlegetNotificationCount(NOTIFICATION.COUNTS);
+          dispatch(setCount(count - 1));
           if (data?.type === "REVIEW") {
             navigate(ROUTE.USER_PROFILE);
           } else if (data?.type === "POST") {
@@ -88,6 +95,7 @@ export const Notifictions = () => {
       if (response?.data?.success && response?.data?.statusCode === 200) {
         const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
         if (res?.data?.success && res?.data?.statusCode === 200) {
+          handlegetNotificationCount(NOTIFICATION.COUNTS);
           dispatch(setNotifications(res?.data?.data));
         }
         getgetNotificationDataCallback();
@@ -102,7 +110,12 @@ export const Notifictions = () => {
     getgetNotificationDataCallback();
   }, []);
 
-  console.log("notificationList", notificationList);
+  const handlegetNotificationCount = async (url) => {
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      dispatch(setCount(response?.data?.data?.notificationCount));
+    }
+  };
 
   return (
     <>

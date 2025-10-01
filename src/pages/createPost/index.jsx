@@ -214,6 +214,8 @@ export const CreatePost = () => {
     formData.append("state", data.state || data.country);
     formData.append("country", data.country);
 
+    formData.append("currency", data.currency);
+
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || 34.8021);
     formData.append("latitude", coords?.lat || 38.9968);
@@ -247,6 +249,7 @@ export const CreatePost = () => {
       post_type,
       user_type,
       pictures,
+      currency,
       ...rest
     } = data;
 

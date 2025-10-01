@@ -227,6 +227,8 @@ export const EditPost = () => {
     formData.append("state", data.state || data.country);
     formData.append("country", data.country);
 
+    formData.append("currency", data.currency);
+
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || postDetailData?.longitude);
     formData.append("latitude", coords?.lat || postDetailData?.latitude);
@@ -266,6 +268,7 @@ export const EditPost = () => {
       post_type,
       user_type,
       pictures,
+      currency,
       ...rest
     } = data;
 

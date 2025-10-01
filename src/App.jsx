@@ -11,7 +11,18 @@ import infoModalIcon from "./assets/icon/sessionExpire.png";
 import { useTranslation } from "react-i18next";
 import ScrollToTop from "./utils/scrollToUp";
 import { setupAxiosInterceptors } from "./config/apiFunctions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  getMessaging,
+  getToken,
+  isSupported,
+  onMessage,
+} from "firebase/messaging";
+import { initializeApp } from "firebase/app";
+import { setFcmToken } from "./redux/slices/tokenSlice";
+import { showInfoToast } from "./utils/toastUtils";
+import { setCount } from "./redux/slices/notificationSlice";
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -19,6 +30,8 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showSessionModal, setShowSessionModal] = useState(false);
+  const [notification, setNotification] = useState();
+  const { count } = useSelector((state) => state.notification);
 
   useEffect(() => {
     NProgress.start();
@@ -47,6 +60,69 @@ function App() {
   useEffect(() => {
     setupAxiosInterceptors(dispatch, navigate, setShowSessionModal);
   }, [dispatch, navigate]);
+
+  useEffect(() => {
+    const setupFirebase = async () => {
+      const hasFirebaseMessagingSupport = await isSupported();
+
+      if (!hasFirebaseMessagingSupport) {
+        console.warn("Firebase Messaging is not supported in this browser.");
+        return;
+      }
+
+      if (Notification.permission === "denied") {
+        console.warn(
+          "Notifications are blocked. Please enable them in browser settings."
+        );
+        return;
+      }
+      const firebaseConfig = {
+        apiKey: import.meta.env.VITE_APP_FIREBASE_API_KEY,
+        authDomain: import.meta.env.VITE_APP_FIREBASE_AUTH_DOMAIN,
+        projectId: import.meta.env.VITE_APP_FIREBASE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_APP_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env
+          .VITE_APP_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_APP_FIREBASE_APP_ID,
+        measurementId: import.meta.env.VITE_APP_FIREBASE_MEASUREMENT_ID,
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const messaging = getMessaging(app);
+
+      try {
+        const registration = await navigator.serviceWorker.register(
+          "/firebase-messaging-sw.js"
+        );
+
+        const currentToken = await getToken(messaging, {
+          vapidKey: import.meta.env.VITE_APP_FIREBASE_VAPIDKEY,
+          serviceWorkerRegistration: registration,
+        });
+
+        if (currentToken) {
+          dispatch(setFcmToken(currentToken));
+        } else {
+          console.log("No registration token available.");
+        }
+      } catch (err) {
+        console.error("Error getting token:", err);
+      }
+      onMessage(messaging, (payload) => {
+        console.log("messageeeeee", payload);
+        setNotification(payload?.notification);
+      });
+    };
+
+    setupFirebase();
+  }, []);
+
+  useEffect(() => {
+    if (notification) {
+      showInfoToast(notification?.body);
+      dispatch(setCount(count + 1));
+    }
+  }, [notification]);
 
   return (
     <>

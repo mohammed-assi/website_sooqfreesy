@@ -161,8 +161,6 @@ export const ProductDetail = () => {
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
 
-  console.log("postDetailData", postDetailData?.timeline);
-
   return (
     <>
       <div className="spacer-x">
@@ -301,7 +299,12 @@ export const ProductDetail = () => {
 
               <div className="flex justify-between items-center">
                 <h2 className="main-heading text-primary">
-                  ${postDetailData?.price}
+                  {postDetailData?.currency === "Syrian Pound"
+                    ? "£"
+                    : postDetailData?.currency === "Dollar"
+                    ? "$"
+                    : "$"}{" "}
+                  {postDetailData?.price}
                 </h2>
                 <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
                   {postDetailData?.subCategoryName}

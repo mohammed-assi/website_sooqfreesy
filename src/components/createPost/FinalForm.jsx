@@ -241,17 +241,6 @@ export const FinalForm = ({
             <label className="block mb-2 text-md font-semibold">
               {t("nearbyLocation")} <span className="text-red-600">*</span>
             </label>
-            {/* <div className="input-icon-grp">
-              <input
-                {...register("location")}
-                type="text"
-                id="location"
-                disabled
-                className="w-full rounded p-3 pr-11 bg-gray-100 focus:outline-none"
-                autoComplete="off"
-              />
-              <i className="fa-solid fa-magnifying-glass" />
-            </div> */}
 
             <div className="input-icon-grp">
               <Controller
