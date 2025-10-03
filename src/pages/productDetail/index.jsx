@@ -299,11 +299,11 @@ export const ProductDetail = () => {
 
               <div className="flex justify-between items-center">
                 <h2 className="main-heading text-primary">
-                  {postDetailData?.currency === "Syrian Pound"
+                  {postDetailData?.currency === "SYP"
                     ? "£"
-                    : postDetailData?.currency === "Dollar"
-                      ? "$"
-                      : "$"}{" "}
+                    : postDetailData?.currency === "USD"
+                    ? "$"
+                    : "$"}{" "}
                   {postDetailData?.price}
                 </h2>
                 <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
@@ -404,9 +404,9 @@ export const ProductDetail = () => {
                         center={
                           postDetailData?.latitude && postDetailData?.longitude
                             ? {
-                              lat: Number(postDetailData?.latitude),
-                              lng: Number(postDetailData?.longitude),
-                            }
+                                lat: Number(postDetailData?.latitude),
+                                lng: Number(postDetailData?.longitude),
+                              }
                             : { lat: 0, lng: 0 }
                         }
                         zoom={14}

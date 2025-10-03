@@ -34,6 +34,8 @@ const MyAdsCard = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  console.log("itemitemitemitem", item);
+
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
       <div className="relative w-full md:w-3/6">
@@ -59,9 +61,9 @@ const MyAdsCard = ({
       <div className="w-full md:w-3/6 p-4 relative">
         <Link to={`${ROUTE.PRODUCT_PAGE}/${item.id}`}>
           <h2 className="text-2xl font-bold text-gray-900">
-            {item?.currency === "Syrian Pound"
+            {item?.currency === "SYP"
               ? "£"
-              : item?.currency === "Dollar"
+              : item?.currency === "USD"
               ? "$"
               : "$"}{" "}
             {item.price}

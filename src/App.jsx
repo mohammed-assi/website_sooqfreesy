@@ -23,6 +23,8 @@ import { initializeApp } from "firebase/app";
 import { setFcmToken } from "./redux/slices/tokenSlice";
 import { showInfoToast } from "./utils/toastUtils";
 import { setCount } from "./redux/slices/notificationSlice";
+import "moment/locale/ar";
+import moment from "moment/moment";
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -123,6 +125,10 @@ function App() {
       dispatch(setCount(count + 1));
     }
   }, [notification]);
+
+  useEffect(() => {
+    moment.locale(i18n.language);
+  }, [i18n.language]);
 
   return (
     <>

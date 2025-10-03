@@ -77,9 +77,9 @@ const ProductListCard = ({
           </span>
 
           <h2 className="text-2xl font-bold text-gray-900">
-            {item?.currency === "Syrian Pound"
+            {item?.currency === "SYP"
               ? "£"
-              : item?.currency === "Dollar"
+              : item?.currency === "USD"
               ? "$"
               : "$"}{" "}
             {item.price}

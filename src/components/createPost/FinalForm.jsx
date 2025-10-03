@@ -122,6 +122,7 @@ export const FinalForm = ({
           className="space-y-6 pt-4"
         >
           {formData?.form_data?.map((field, i) => {
+            console.log("fieldfieldfield", field);
             return (
               <div key={i}>
                 <label className="block mb-2 text-md font-semibold">
@@ -194,7 +195,7 @@ export const FinalForm = ({
                 )}
 
                 {/* Dropdown / Select */}
-                {field.type === "dropdown" && (
+                {field.type === "dropdown" && field.name !== "currency" && (
                   <select
                     {...register(field.name)}
                     className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
@@ -203,6 +204,20 @@ export const FinalForm = ({
                     {field?.options?.map((opt, idx) => (
                       <option key={idx} value={opt.value}>
                         {opt.label || opt.value}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                {field.type === "dropdown" && field.name === "currency" && (
+                  <select
+                    {...register(field.name)}
+                    className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
+                  >
+                    <option value="">-- {t("select")} --</option>
+                    {field?.options?.map((opt, idx) => (
+                      <option key={idx} value={opt.currencyValue}>
+                        {opt.value}
                       </option>
                     ))}
                   </select>

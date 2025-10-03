@@ -493,6 +493,8 @@ export const EditPost = () => {
     }
   }, [postDetailData, reset]);
 
+  console.log("postDetailData", postDetailData);
+
   return (
     <>
       {loading ? (

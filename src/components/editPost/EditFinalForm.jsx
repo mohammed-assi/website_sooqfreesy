@@ -202,7 +202,7 @@ export const EditFinalForm = ({
                 )}
 
                 {/* Dropdown / Select */}
-                {field.type === "dropdown" && (
+                {field.type === "dropdown" && field.name !== "currency" && (
                   <select
                     {...register(field.name)}
                     className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
@@ -210,7 +210,21 @@ export const EditFinalForm = ({
                     <option value="">-- {t("select")} --</option>
                     {field?.options?.map((opt, idx) => (
                       <option key={idx} value={opt.value}>
-                        {opt.label || opt.value}
+                        {opt.value}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                {field.type === "dropdown" && field.name === "currency" && (
+                  <select
+                    {...register(field.name)}
+                    className="w-full rounded p-3 bg-gray-100 focus:outline-none select-filter"
+                  >
+                    <option value="">-- {t("select")} --</option>
+                    {field?.options?.map((opt, idx) => (
+                      <option key={idx} value={opt.currencyValue}>
+                        {opt.value}
                       </option>
                     ))}
                   </select>

@@ -15,7 +15,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../../config/constants";
-import "moment/locale/ar";
 
 export const Notifictions = () => {
   const { i18n, t } = useTranslation();
@@ -110,10 +109,6 @@ export const Notifictions = () => {
     getNotificationSettingDataCallback();
     getgetNotificationDataCallback();
   }, []);
-
-  useEffect(() => {
-    moment.locale(i18n.language);
-  }, [i18n.language]);
 
   const handlegetNotificationCount = async (url) => {
     const response = await getRequest(url);

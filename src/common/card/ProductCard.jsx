@@ -63,9 +63,9 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
         <div className="py-4 space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-lg font-bold">
-              {item?.currency === "Syrian Pound"
+              {item?.currency === "SYP"
                 ? "£"
-                : item?.currency === "Dollar"
+                : item?.currency === "USD"
                 ? "$"
                 : "$"}{" "}
               {item?.price}
