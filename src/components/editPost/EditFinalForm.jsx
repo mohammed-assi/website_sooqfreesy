@@ -243,7 +243,7 @@ export const EditFinalForm = ({
             );
           })}
 
-          <h3 className="text-xl font-semibold">Location Details</h3>
+          <h3 className="text-xl font-semibold">{t("locationDetails")}</h3>
 
           <div>
             <label className="block mb-2 text-md font-semibold">

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../../../assets/icon/headerLogo.svg";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
@@ -23,6 +23,7 @@ import {
   setNotifications,
 } from "../../../../redux/slices/notificationSlice";
 import { CUSTOMER, NOTIFICATION } from "../../../../config/endPoints";
+import { set } from "nprogress";
 
 export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
   const searchRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation()
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
@@ -43,6 +45,10 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
   const { i18n } = useTranslation();
 
   const handleMenuToggle = () => setMenuOpen(!menuOpen);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location])
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -105,6 +111,18 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
   useEffect(() => {
     handlegetNotificationCount(NOTIFICATION.COUNTS);
   }, [accessToken]);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint in Tailwind
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
@@ -306,28 +324,25 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
         <div className="">
           <nav className="navigation-wrap flex gap-3 lg:gap-7 items-center py-2.5 lg:py-6 border-b border-gray-100">
             <div
-              className={`item-left px-3 lg:px-9 ${
-                i18n.language === "ar"
-                  ? "border-l border-l-gray-300"
-                  : "border-r border-r-gray-300"
-              }`}
+              className={`item-left px-3 lg:px-9 ${i18n.language === "ar"
+                ? "border-l border-l-gray-300"
+                : "border-r border-r-gray-300"
+                }`}
             >
               <Link to="/">
                 <img src={logo} className="h-12 object-contain" alt="logo" />
               </Link>
             </div>
             <div
-              className={`item-right flex items-center ${
-                i18n.language === "ar"
-                  ? "flex-row-reverse lg:justify-between"
-                  : "justify-end lg:justify-between"
-              } gap-3 lg:gap-8 w-full ${
-                i18n.language === "ar"
+              className={`item-right flex items-center ${i18n.language === "ar"
+                ? "flex-row-reverse lg:justify-between"
+                : "justify-end lg:justify-between"
+                } gap-3 lg:gap-8 w-full ${i18n.language === "ar"
                   ? "pl-3 lg:pl-[62px]"
                   : "pr-3 lg:pr-[62px]"
-              }`}
+                }`}
             >
-              <button
+              {/* <button
                 className="lg:hidden p-2 bg-gray-100 rounded-lg"
                 onClick={() => setOpenSideBar(!openSideBar)}
               >
@@ -351,24 +366,69 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
                     />
                   </g>
                 </svg>
+              </button> */}
+
+              {accessToken && <div className="flex items-center gap-4 w-full lg:hidden justify-end">
+                <Link to={ROUTE.NOTIFICATIONS} className="relative">
+                  <img src={notification} alt="icon" style={{ height: "24px", width: "24px" }} />
+                  {count > 0 && (
+                    <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                      {count}
+                    </p>
+                  )}
+                </Link>
+                <Link to={ROUTE.WISHLIST} className="relative">
+                  <img src={wishlist} alt="icon" style={{ height: "24px", width: "24px" }} />
+                  {notifications?.wishlistCount > 0 && (
+                    <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                      {notifications?.wishlistCount}
+                    </p>
+                  )}
+                </Link>
+                <Link
+                  to={ROUTE.MY_ADS} className="relative"
+                >
+                  <img src={ads} alt="icon" style={{ height: "24px", width: "24px" }} />
+                </Link></div>}
+
+              <button
+                onClick={() => {
+                  if (accessToken) {
+                    if (
+                      userInfo?.is_phone_verified &&
+                      userInfo?.username
+                    ) {
+                      navigate(ROUTE.CREATE_POST);
+                    } else {
+                      showInfoToast(t("verifyPhoneNumber"));
+                    }
+                  } else {
+                    setShowLoginModal(true);
+                  }
+                }}
+                className="custom-btn lg:w-auto flex lg:!hidden flex-shrink-0"
+              >
+                <span className="icon w-full lg:w-auto justify-center rounded-sm !px-2">
+                  <i className="fa-solid fa-plus inline-block"></i>
+                  {/* {t("postAdButton")} */}
+                </span>
               </button>
+
               <Link
                 to="/"
-                className={`flex font-bold text-base gap-4 items-center lg:px-5 px-2.5 py-[10px] border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition flex-shrink-0 ${
-                  i18n.language === "ar"
-                    ? "mr-auto lg:mr-auto"
-                    : "ml-auto lg:ml-auto"
-                }`}
+                className={`hidden lg:flex font-bold text-base gap-4 items-center lg:px-5 px-2.5 py-[10px] border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition flex-shrink-0 ${i18n.language === "ar"
+                  ? "mr-auto lg:mr-auto"
+                  : "ml-auto lg:ml-auto"
+                  }`}
               >
                 <i className="fa-solid fa-arrow-left text-xs md:text-lg" />
                 <p className="hidden lg:block">{t("backSouqSyria")}</p>
               </Link>
               <div
-                className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end flex-col bg-white shadow-lg top-0 left-0 h-full ${
-                  menuOpen ? "translate-x-0" : "-translate-x-full"
-                } lg:translate-x-0`}
+                className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end flex-col bg-white shadow-lg top-0 left-0 h-full ${menuOpen ? "translate-x-0" : "-translate-x-full"
+                  } lg:translate-x-0`}
               >
-                <img src={logo} className="mb-auto lg:hidden h-7" alt="" />
+                <img src={logo} className="mb-10 lg:hidden h-7" alt="" />
                 <div className="flex flex-col lg:flex-row items-center justify-between w-full">
                   {location.pathname !== ROUTE.CREATE_POST && (
                     <div
@@ -379,7 +439,7 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
                         className="cursor-pointer flex justify-center"
                         onClick={() => setOpen(!open)}
                       >
-                        <div className="flex items-center justify-between gap-2 w-full">
+                        <div className="flex items-center gap-3 py-2 px-2 bg-gray-100 rounded-md lg:rounded-none lg:bg-transparent lg:py-4 lg:border-gray-200 w-full justify-between">
                           <div className="flex items-center gap-2">
                             <img
                               src={
@@ -399,14 +459,13 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
                               </p>
                             </div>
                           </div>
-                          <i className="fa-solid fa-angle-down fa-sm" />
+                          <i className="fa-solid fa-angle-down fa-sm !hidden lg:!flex" />
                         </div>
                       </div>
-                      {open && (
+                      {(isMobile || open) && (
                         <div
-                          className={`${
-                            i18n.language === "ar" ? "-left-10" : "-right-10"
-                          } lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 lg:py-0 border border-gray-100 lg:border-0 mb-0 px-0 mt-3 absolute`}
+                          className={`${i18n.language === "ar" ? "-left-10" : "-right-10"
+                            } static lg:absolute lg:px-4 -right-10 lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 p-2.5 lg:py-0 border border-gray-100 lg:border-0 mb-0`}
                         >
                           <div className="items-center gap-3 py-2 px-2 bg-gray-100 rounded-md lg:rounded-none lg:bg-transparent lg:py-4 lg:border-b lg:border-gray-200 hidden lg:flex">
                             <div className="w-[50px] h-[40px] lg:w-[70px] lg:h-[60px] rounded flex items-center justify-center">
@@ -430,46 +489,54 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
                             </div>
                           </div>
 
-                          <ul className="p-2">
+                          <ul>
                             <li
                               onClick={() => {
                                 setOpen(false);
                                 navigate(ROUTE.USER_PROFILE);
                               }}
-                              className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                              className="px-2 py-2 lg:first:pt-4 lg:py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md border-b border-gray-100"
                             >
-                              <img src={profile} alt="icon" /> {t("profile")}
+                              <div className="flex items-center gap-3">
+                                <img src={profile} alt="icon" /> {t("profile")}
+                              </div>
                             </li>
                             <li
                               onClick={() => {
                                 setOpen(false);
                                 navigate(ROUTE.MY_ADS);
                               }}
-                              className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                              className="px-2 py-2 lg:first:pt-4 lg:py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md border-b border-gray-100"
                             >
-                              <img src={ads} alt="icon" />
-                              {t("myAds")}
+                              <div className="flex items-center gap-3">
+                                <img src={ads} alt="icon" />
+                                {t("myAds")}
+                              </div>
                             </li>
                             <li
                               onClick={() => {
                                 setOpen(false);
                                 navigate(ROUTE.WISHLIST);
                               }}
-                              className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                              className="px-2 py-2 lg:first:pt-4 lg:py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md border-b border-gray-100"
                             >
-                              <img src={wishlist} alt="icon" /> {t("wishlist")}
+                              <div className="flex items-center gap-3">
+                                <img src={wishlist} alt="icon" /> {t("wishlist")}
+                              </div>
                             </li>
                             <li
                               onClick={() => {
                                 setOpen(false);
                                 navigate(ROUTE.NOTIFICATIONS);
                               }}
-                              className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg border-b border-gray-100"
+                              className="px-2 py-2 lg:first:pt-4 lg:py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md border-b border-gray-100"
                             >
-                              <img src={notification} alt="icon" />
-                              {t("notification")}
+                              <div className="flex items-center gap-3 ">
+                                <img src={notification} alt="icon" />
+                                {t("notification")}
+                              </div>
                             </li>
-                            <li className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-100 rounded-lg">
+                            <li className="px-2 py-2 lg:pb-4 lg:py-4 cursor-pointer hover:bg-gray-100 hover:rounded-md">
                               <button
                                 onClick={() => {
                                   navigate(ROUTE.HELP_SUPPORT);
@@ -477,8 +544,10 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
                                 }}
                                 className="flex items-center gap-3 "
                               >
-                                <img src={support} alt="icon" />{" "}
-                                {t("helpSupport")}
+                                <div className="flex items-center gap-3">
+                                  <img src={support} alt="icon" />{" "}
+                                  {t("helpSupport")}
+                                </div>
                               </button>
                             </li>
                           </ul>
@@ -507,13 +576,13 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
                     </div>
                   )}
                   {location.pathname !== ROUTE.CREATE_POST ? (
-                    <div className="flex flex-col lg:flex-row w-full lg:w-auto items-center mt-3 lg:mt-0">
+                    <div className="flex flex-col lg:flex-row w-full lg:w-auto items-center lg:mt-0">
                       <div
                         className="relative w-full lg:w-auto"
                         ref={loginDropdownRef}
                       >
                         {accessToken ? (
-                          <div className="flex gap-7 items-center justify-center lg:px-7 py-3 lg:py-0">
+                          <div className="flex gap-7 items-center px-0 lg:px-7 py-4 lg:py-0 justify-around">
                             <Link
                               to={ROUTE.NOTIFICATIONS}
                               className="h-9 w-9 flex justify-center items-center lg:size-auto relative"
@@ -590,9 +659,8 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
                 </div>
               </div>
               <div
-                className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
-                  menuOpen && "opacity-100 !pointer-events-auto cursor-pointer"
-                }`}
+                className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${menuOpen && "opacity-100 !pointer-events-auto cursor-pointer"
+                  }`}
                 onClick={handleMenuToggle}
               ></div>
               <div className="hamburger lg:hidden" onClick={handleMenuToggle}>

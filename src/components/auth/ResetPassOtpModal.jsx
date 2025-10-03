@@ -133,7 +133,7 @@ export const ResetPassOtpModal = ({
         title={t("createPassTitle")}
         subtitle={`${t("emailVerificationSubtitle")} ${userEmail}`}
       >
-        <div className="px-10 py-8">
+        <div className="">
           <p className="text-center py-2">OTP: {otp}</p>
           <form
             onSubmit={handleSubmit(onSubmit)}

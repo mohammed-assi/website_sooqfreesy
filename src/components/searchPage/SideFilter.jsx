@@ -71,6 +71,42 @@ export const SideFilter = ({
     }
   };
 
+  // compute values (robust and safe)
+  const MAX_PRICE = 25000;
+  const a = Number(filters?.priceRange?.[0] ?? 0);
+  const b = Number(filters?.priceRange?.[1] ?? 0);
+
+  // ensure start <= end and both between 0 and MAX_PRICE
+  const startVal = Math.max(0, Math.min(a, b));
+  const endVal = Math.max(0, Math.min(Math.max(a, b), MAX_PRICE));
+
+  const start = (startVal / MAX_PRICE) * 100;
+  const end = (endVal / MAX_PRICE) * 100;
+
+  // robust RTL detection (guard document for SSR)
+  const isRtl = (typeof window !== "undefined") && (
+    (i18n?.dir && i18n.dir() === "rtl") ||
+    i18n?.language === "ar" ||
+    document?.documentElement?.dir === "rtl"
+  );
+
+  // inline style for the filled range: swap left/right on RTL
+  const filledStyle = isRtl
+    ? {
+      right: `${start}%`,
+      left: `${100 - end}%`,
+      top: "50%",
+      transform: "translateY(-50%)",
+    }
+    : {
+      left: `${start}%`,
+      right: `${100 - end}%`,
+      top: "50%",
+      transform: "translateY(-50%)",
+    };
+
+
+
   return (
     <aside className="bg-white shadow rounded-lg p-3 space-y-7">
       <h2 className="text-[1.5rem] font-bold mb-4">{t("filters")}</h2>
@@ -186,22 +222,20 @@ export const SideFilter = ({
               types: ["geocode"],
               componentRestrictions: reduxCoords?.country
                 ? {
-                    country: Country.getAllCountries()
-                      .find((c) => c.name === reduxCoords.country)
-                      ?.isoCode.toLowerCase(),
-                  }
+                  country: Country.getAllCountries()
+                    .find((c) => c.name === reduxCoords.country)
+                    ?.isoCode.toLowerCase(),
+                }
                 : {},
               bounds: cityBounds || stateBounds || null,
               strictBounds: !!(cityBounds || stateBounds),
             }}
-            className={`${
-              i18n.language === "ar" ? "pl-11" : "pr-10"
-            } w-full text-black rounded p-3 bg-gray-100 focus:outline-none`}
+            className={`${i18n.language === "ar" ? "pl-11" : "pr-10"
+              } w-full text-black rounded p-3 bg-gray-100 focus:outline-none`}
           />
           <i
-            className={`fa-solid fa-magnifying-glass ${
-              i18n.language === "ar" ? "left-2" : "right-2"
-            } absolute top-4 text-center`}
+            className={`fa-solid fa-magnifying-glass ${i18n.language === "ar" ? "left-2" : "right-2"
+              } absolute top-4 text-center`}
           />
         </div>
       </div>
@@ -212,22 +246,20 @@ export const SideFilter = ({
           <button
             type="button"
             onClick={() => handleChange("type", "SALE")}
-            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${
-              filters?.type === "SALE"
-                ? "bg-primary text-white"
-                : "hover:bg-gray-100"
-            }`}
+            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${filters?.type === "SALE"
+              ? "bg-primary text-white"
+              : "hover:bg-gray-100"
+              }`}
           >
             {t("forSale")}
           </button>
           <button
             type="button"
             onClick={() => handleChange("type", "RENT")}
-            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${
-              filters?.type === "RENT"
-                ? "bg-primary text-white"
-                : "hover:bg-gray-100"
-            }`}
+            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${filters?.type === "RENT"
+              ? "bg-primary text-white"
+              : "hover:bg-gray-100"
+              }`}
           >
             {t("forRent")}
           </button>
@@ -346,10 +378,7 @@ export const SideFilter = ({
           <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-300 rounded transform -translate-y-1/2"></div>
           <div
             className="absolute h-1 bg-[#00B4D8] top-[4px] rounded transform -translate-y-1/2"
-            style={{
-              left: `${(filters.priceRange[0] / 25000) * 100}%`,
-              right: `${100 - (filters.priceRange[1] / 25000) * 100}%`,
-            }}
+            style={filledStyle}
           ></div>
 
           {/* Min Range */}

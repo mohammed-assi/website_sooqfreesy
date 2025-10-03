@@ -27,7 +27,7 @@ const ReviewItem = ({ item, imagePath }) => {
   const [expanded, setExpanded] = useState(false);
 
   const text = item.review_text || "";
-  const shouldTruncate = text.length > 100;
+  const shouldTruncate = text.length > 200;
   const displayText = expanded ? text : text.slice(0, 200);
 
   return (

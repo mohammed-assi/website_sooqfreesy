@@ -267,17 +267,15 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                   setPhoneNumber(null);
                   setCountryCode(963);
                 }}
-                className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
-                  activeTab === tab.id
-                    ? "text-primary"
-                    : "text-gray-600 hover:text-primary"
-                }`}
+                className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${activeTab === tab.id
+                  ? "text-primary"
+                  : "text-gray-600 hover:text-primary"
+                  }`}
               >
                 {tab.label}
                 <span
-                  className={`absolute left-0 -bottom-[1px] h-[2px] w-full rounded-full transition-colors ${
-                    activeTab === tab.id ? "bg-primary" : "bg-transparent"
-                  }`}
+                  className={`absolute left-0 -bottom-[1px] h-[2px] w-full rounded-full transition-colors ${activeTab === tab.id ? "bg-primary" : "bg-transparent"
+                    }`}
                 />
               </button>
             ))}
@@ -314,7 +312,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                         enableSearch={true}
                         containerClass="!w-full"
                         inputClass="!hidden"
-                        buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                        buttonClass={`${i18n.language === "ar" ? "right-7" : ""} !bg-gray-100 !border-none !rounded !p-0`}
                         dropdownClass="custom-dropdown"
                         onChange={(value, country) => {
                           setCountryCode(country?.dialCode);
@@ -347,11 +345,10 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                         setPhoneNumber(onlyNums);
                         setValue("phone", onlyNums, { shouldValidate: true });
                       }}
-                      className={`${
-                        i18n.language === "ar"
-                          ? "text-right pl-12"
-                          : "text-left pr-12"
-                      } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                      className={`${i18n.language === "ar"
+                        ? "text-right pl-12"
+                        : "text-left pr-12"
+                        } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                       placeholder={t("enterPhoneNo")}
                     />
                   </div>
@@ -391,20 +388,17 @@ function LoginModal({ show, hide, setShowLoginModal }) {
                       {...register("password")}
                       type={toggle === true ? "password" : "text"}
                       id="password"
-                      className={`${
-                        i18n.language === "ar" ? "pl-12" : "pr-12"
-                      } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                      className={`${i18n.language === "ar" ? "pl-12" : "pr-12"
+                        } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                       autoComplete="off"
                       placeholder={t("enterPassword")}
                     />
                     <i
-                      className={`${
-                        toggle === true
-                          ? "fa-regular fa-eye-slash show-pass"
-                          : "fa-regular fa-eye show-pass"
-                      } ${
-                        i18n?.language === "ar" ? "left-3" : "right-3"
-                      } absolute top-4  cursor-pointer text-center`}
+                      className={`${toggle === true
+                        ? "fa-regular fa-eye-slash show-pass"
+                        : "fa-regular fa-eye show-pass"
+                        } ${i18n?.language === "ar" ? "left-3" : "right-3"
+                        } absolute top-4  cursor-pointer text-center`}
                       onClick={handlepass}
                     />
                   </div>

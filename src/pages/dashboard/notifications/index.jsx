@@ -15,6 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../../config/constants";
+import "moment/locale/ar";
 
 export const Notifictions = () => {
   const { i18n, t } = useTranslation();
@@ -110,6 +111,10 @@ export const Notifictions = () => {
     getgetNotificationDataCallback();
   }, []);
 
+  useEffect(() => {
+    moment.locale(i18n.language);
+  }, [i18n.language]);
+
   const handlegetNotificationCount = async (url) => {
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
@@ -153,9 +158,8 @@ export const Notifictions = () => {
                       handleMarkNotificationRead(item);
                     }
                   }}
-                  className={`${
-                    item?.is_read ? "" : "bg-cyan-50"
-                  } flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer relative`}
+                  className={`${item?.is_read ? "" : "bg-cyan-50"
+                    } flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer relative`}
                 >
                   <div className="flex gap-5">
                     <img
@@ -174,9 +178,8 @@ export const Notifictions = () => {
                     </div>
                   </div>
                   <p
-                    className={`${
-                      i18n?.language === "ar" ? "left-2.5" : "right-2.5"
-                    } text-gray-600 w-[100px] text-right text-xs absolute top-2.5`}
+                    className={`${i18n?.language === "ar" ? "left-2.5 text-left" : "right-2.5 text-right"
+                      } text-gray-600 w-[100px] text-xs absolute top-2.5 capitalize`}
                   >
                     {moment(item.created_at).fromNow()}
                   </p>

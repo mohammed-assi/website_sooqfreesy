@@ -13,8 +13,8 @@ export const AuthModal = ({ show, hide, title, subtitle, children }) => {
             <button
               onClick={hide}
               className={`${
-                i18n.language === "ar" ? "left-10" : "right-10"
-              } absolute top-10 text-gray-500 hover:text-gray-700 cursor-pointer`}
+                i18n.language === "ar" ? "lg:left-10 left-2" : "lg:right-10 right-2"
+              } absolute lg:top-10 top-2 text-gray-500 hover:text-gray-700 cursor-pointer`}
             >
               <i className="fa-solid fa-xmark fa-lg" />
             </button>
@@ -31,7 +31,7 @@ export const AuthModal = ({ show, hide, title, subtitle, children }) => {
               />
             </div>
 
-            <div className="w-full md:w-2/3 px-[68px] pt-[70px] pb-[50px]">
+            <div className="w-full md:w-2/3 lg:px-[68px] lg:pt-[70px] lg:pb-[50px] p-3 py-8">
               {children}
             </div>
           </div>

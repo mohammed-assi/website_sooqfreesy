@@ -113,7 +113,7 @@ export const ContactUs = () => {
 
   return (
     <div className="pb-8">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-[60%]">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 lg:w-[60%] w-full">
         <div className="">
           <label className="block mb-2 text-md font-bold">
             {t("needHelpWith")}
@@ -224,7 +224,7 @@ export const ContactUs = () => {
                   enableSearch={true}
                   containerClass="!w-full"
                   inputClass="!hidden"
-                  buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                  buttonClass={`${i18n.language === "ar" ? "right-7" : ""} !bg-gray-100 !border-none !rounded !p-0`}
                   dropdownClass="custom-dropdown"
                   onChange={(value, country) => {
                     setCountryCode(country?.dialCode);
@@ -253,11 +253,10 @@ export const ContactUs = () => {
                 onInput={(e) => {
                   e.target.value = e.target.value.replace(/\D/g, "");
                 }}
-                className={`${
-                  i18n.language === "ar"
-                    ? "text-right pl-12"
-                    : "text-left pr-12"
-                } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                className={`${i18n.language === "ar"
+                  ? "text-right pl-12"
+                  : "text-left pr-12"
+                  } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                 placeholder={t("enterPhoneNo")}
               />
             </div>

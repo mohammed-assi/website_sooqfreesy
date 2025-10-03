@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLocationCoords } from "../../redux/slices/locationSlice";
 
 export const AllCitiesDropdown = () => {
-  const { t } = useTranslation();
+  const {i18n, t } = useTranslation();
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const dispatch = useDispatch();
   const reduxCoords = useSelector((state) => state.location.coords);
@@ -76,7 +76,7 @@ export const AllCitiesDropdown = () => {
       </button>
 
       {open && (
-        <div className="absolute top-6 -left-6 lg:-right-15 mt-2 w-80 rounded-md bg-white shadow-lg border p-2 z-50">
+        <div className={`${i18n.language === "ar" ? "lg:right-0 -right-3.5" : "-left-6 lg:-right-15"} absolute top-6 mt-2 w-3xs lg:w-80 rounded-md bg-white shadow-lg border p-2 z-50`}>
           <div className="w-full space-y-2 p-2">
             <p className="text-gray-800">{t("provideLocation")}</p>
             <button

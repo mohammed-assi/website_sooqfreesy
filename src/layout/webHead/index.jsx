@@ -398,11 +398,10 @@ export const WebHead = () => {
               {!isCreateOrUpdate ? (
                 <>
                   <div
-                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 p-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${
-                      menuOpen ? "translate-x-0" : "-translate-x-full"
-                    } lg:translate-x-0`}
+                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 p-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${menuOpen ? "translate-x-0" : "-translate-x-full"
+                      } lg:translate-x-0`}
                   >
-                    <img src={logo} className="mb-auto lg:hidden h-7" alt="" />
+                    <img src={logo} className="mb-10 lg:hidden h-7" alt="" />
                     <div
                       className={`search-wrap relative w-full hidden lg:block mb-auto lg:w-auto lg:mb-0 lg:me-auto opacity-0 pointer-events-none transition-all !pointer-events-auto opacity-100 visible`}
                       ref={searchRef}
@@ -454,7 +453,7 @@ export const WebHead = () => {
                         ref={profileDropdownRef}
                       >
                         {accessToken ? (
-                          <div className="flex gap-7 items-center px-0 lg:px-7">
+                          <div className="flex gap-7 items-center px-0 lg:px-7 py-4 lg:py-0 justify-around">
                             <Link to={ROUTE.NOTIFICATIONS} className="relative">
                               <img src={notification} alt="icon" />
                               {count > 0 && (
@@ -475,7 +474,7 @@ export const WebHead = () => {
                               <img src={ads} alt="icon" />
                             </Link>
                             <div
-                              className="cursor-pointer flex justify-center ml-auto"
+                              className="cursor-pointer justify-center ml-auto hidden lg:flex"
                               onClick={() => setOpen(!open)}
                             >
                               <div className="flex items-center justify-center gap-2">
@@ -496,7 +495,7 @@ export const WebHead = () => {
                         ) : (
                           <button
                             onClick={() => setOpen(!open)}
-                            className="flex font-bold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition group w-full lg:w-auto"
+                            className="font-bold gap-4 items-center px-7 py-3 border-2 border-primary rounded text-primary hover:bg-primary hover:text-white cursor-pointer transition group w-full lg:w-auto hidden lg:flex"
                           >
                             <img
                               src={signin}
@@ -625,18 +624,64 @@ export const WebHead = () => {
                       </button>
                     </div>
                   </div>
-                  <div
-                    className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
-                      menuOpen &&
-                      "opacity-100 !pointer-events-auto cursor-pointer"
-                    }`}
-                    onClick={handleMenuToggle}
-                  ></div>
-                  <div
-                    className="hamburger lg:hidden"
-                    onClick={handleMenuToggle}
-                  >
-                    <i className="fa-solid fa-bars fa-lg" />
+                  <div className="flex items-center gap-4">
+                    {accessToken && <div className="flex items-center gap-4 w-full lg:hidden">
+                      <Link to={ROUTE.NOTIFICATIONS} className="relative">
+                        <img src={notification} alt="icon" style={{ height: "20px", width: "24px" }} />
+                        {count > 0 && (
+                          <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                            {count}
+                          </p>
+                        )}
+                      </Link>
+                      <Link to={ROUTE.WISHLIST} className="relative">
+                        <img src={wishlist} alt="icon" style={{ height: "24px", width: "24px" }} />
+                        {notifications?.wishlistCount > 0 && (
+                          <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                            {notifications?.wishlistCount}
+                          </p>
+                        )}
+                      </Link><Link
+                        to={ROUTE.MY_ADS} className="relative"
+                      >
+                        <img src={ads} alt="icon" style={{ height: "24px", width: "24px" }} />
+                      </Link></div>}
+                    <button
+                      onClick={() => {
+                        if (accessToken) {
+                          if (
+                            userInfo?.is_phone_verified &&
+                            userInfo?.username
+                          ) {
+                            navigate(ROUTE.CREATE_POST);
+                          } else {
+                            showInfoToast(t("verifyPhoneNumber"));
+                          }
+                        } else {
+                          setShowLoginModal(true);
+                        }
+                      }}
+                      className="custom-btn lg:w-auto flex lg:!hidden flex-shrink-0"
+                    >
+                      <span className="icon w-full lg:w-auto justify-center rounded-sm !px-2">
+                        <span>
+                          <i className="fa-solid fa-plus"></i>
+                        </span>{" "}
+                        {/* {t("postAdButton")} */}
+                      </span>
+                    </button>
+                    <div
+                      className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${menuOpen &&
+                        "opacity-100 !pointer-events-auto cursor-pointer"
+                        }`}
+                      onClick={handleMenuToggle}
+                    ></div>
+                    <div
+                      className="hamburger lg:hidden"
+                      onClick={handleMenuToggle}
+                    >
+                      <i className="fa-solid fa-bars fa-lg" />
+                    </div>
                   </div>
                 </>
               ) : (

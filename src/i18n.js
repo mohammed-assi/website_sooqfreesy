@@ -327,6 +327,7 @@ const resources = {
       rejectAt: "Rejected",
       soldAt: "Sold",
       verify: "Verify",
+      locationDetails: "Location Details"
     },
   },
   ar: {
@@ -647,6 +648,7 @@ const resources = {
       rejectAt: "مرفوض",
       soldAt: "تم البيع",
       verify: "تحقق",
+      locationDetails: "تفاصيل الموقع"
     },
   },
 };

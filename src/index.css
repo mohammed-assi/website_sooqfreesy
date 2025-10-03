@@ -290,7 +290,7 @@ span.search-emoji {
     overflow: auto;
     flex-direction: column;
     width: 300px;
-    justify-content: end;
+    justify-content: start;
     align-items: center;
     padding: 20px 10px;
     background: #fff;
@@ -312,4 +312,9 @@ input[type="number"].no-arrow {
   .main-heading {
     font-size: 24px;
   }
+}
+
+html[dir="rtl"] .Toastify__close-button {
+  right: auto;
+  left: 8px;
 }

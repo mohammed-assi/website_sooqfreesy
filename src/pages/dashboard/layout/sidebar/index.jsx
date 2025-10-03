@@ -47,7 +47,7 @@ const Sidebar = ({ ...props }) => {
 
   return (
     <aside
-      className={`w-64 shadow-md h-full lg:h-[calc(100vh-110px)] fixed pt-6 z-10 bg-white transition-transform duration-200 ease-in-out
+      className={`hidden lg:block w-64 shadow-md h-full lg:h-[calc(100vh-110px)] fixed pt-6 z-10 bg-white transition-transform duration-200 ease-in-out
     ${i18n.language === "ar" ? "top-[100px] right-0" : "top-[100px] left-0"}
     ${i18n.language === "ar"
           ? props.openSideBar

@@ -9,7 +9,7 @@ import { ROUTE } from "../../config/constants";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Banner = () => {
-  const { t } = useTranslation();
+  const { i18n ,t } = useTranslation();
   const navigate = useNavigate();
   const categories = [
     {
@@ -65,7 +65,7 @@ export const Banner = () => {
           />
           <button
             onClick={goToProductPage}
-            className="flex gap-3 items-center text-white bg-primary px-3 rounded-tr rounded-br cursor-pointer"
+            className={`flex gap-3 items-center text-white bg-primary px-3 cursor-pointer ${i18n.language === "ar" ? "rounded-tl rounded-bl flex-row-reverse" : "rounded-tr rounded-br"}`}
           >
             <i className="fa-regular fa-magnifying-glass" />
             {t("searchButton")}

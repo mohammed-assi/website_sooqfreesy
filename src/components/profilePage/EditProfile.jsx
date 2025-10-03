@@ -437,15 +437,14 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               />
               {userNameAvailable?.data?.available && (
                 <div
-                  className={`${
-                    i18n?.language === "ar" ? "left-0" : "right-0"
-                  } absolute top-0`}
+                  className={`${i18n?.language === "ar" ? "left-0" : "right-0"
+                    } absolute top-0`}
                 >
                   <button
                     type="submit"
                     name="action"
                     value="username"
-                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
+                    className={`w-full px-3 py-3 bg-primary text-white font-semibold ${i18n?.language === "ar" ? "rounded-l-lg" : "rounded-r-lg"} hover:bg-primaryDark transition`}
                     onClick={() => setCurrentAction("username")}
                   >
                     {t("saveChangesButton")}
@@ -488,23 +487,21 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               )}
               {userInfo?.is_email_verified && userMail === userInfo?.email && (
                 <div
-                  className={`${
-                    i18n?.language === "ar" ? "left-3" : "right-3"
-                  } absolute top-3`}
+                  className={`${i18n?.language === "ar" ? "left-3" : "right-3"
+                    } absolute top-3`}
                 >
                   <img src={verified} alt="verified icon" />
                 </div>
               )}
               {userMail !== userInfo?.email && userMail?.length > 0 && (
                 <div
-                  className={`${
-                    i18n?.language === "ar" ? "left-0" : "right-0"
-                  } absolute top-0`}
+                  className={`${i18n?.language === "ar" ? "left-0" : "right-0"
+                    } absolute top-0`}
                 >
                   <button
                     onClick={() => handleVerifyMailNumber("email")}
                     type="button"
-                    className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
+                    className={`w-full px-3 py-3 bg-primary text-white font-semibold ${i18n?.language === "ar" ? "rounded-l-lg" : "rounded-r-lg"} hover:bg-primaryDark transition`}
                   >
                     {t("verifyEmailButton")}
                   </button>
@@ -527,7 +524,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                       enableSearch={true}
                       containerClass="!w-full"
                       inputClass="!hidden"
-                      buttonClass="!bg-gray-100 !border-none !rounded !p-0"
+                      buttonClass={`${i18n.language === "ar" ? "right-7" : ""} !bg-gray-100 !border-none !rounded !p-0`}
                       dropdownClass="custom-dropdown"
                       onChange={(value, country) => {
                         setCountryCode(country?.dialCode);
@@ -556,11 +553,10 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                       setPhoneNumber(onlyNums);
                       setValue("phone", onlyNums, { shouldValidate: true });
                     }}
-                    className={`${
-                      i18n.language === "ar"
+                    className={`${i18n.language === "ar"
                         ? "text-right pl-12"
                         : "text-left pr-12"
-                    } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                      } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                     placeholder={t("enterPhoneNo")}
                   />
                 </div>
@@ -573,9 +569,8 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               {userInfo?.is_phone_verified &&
                 phoneNumber === userInfo.phone && (
                   <div
-                    className={`${
-                      i18n?.language === "ar" ? "left-3" : "right-3"
-                    } absolute top-3`}
+                    className={`${i18n?.language === "ar" ? "left-3" : "right-3"
+                      } absolute top-3`}
                   >
                     <img src={verified} alt="verified icon" />
                   </div>
@@ -583,9 +578,8 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
 
               {phoneNumber !== userInfo?.phone && phoneNumber?.length > 0 && (
                 <div
-                  className={`${
-                    i18n?.language === "ar" ? "left-0" : "right-0"
-                  } absolute top-0 h-full`}
+                  className={`${i18n?.language === "ar" ? "left-0" : "right-0"
+                    } absolute top-0 h-full`}
                 >
                   <button
                     onClick={async () => {
@@ -597,7 +591,7 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                       }
                     }}
                     type="button"
-                    className="h-[48px] px-4 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
+                    className={`h-[48px] px-4 bg-primary text-white font-semibold ${i18n?.language === "ar" ? "rounded-l-lg" : "rounded-r-lg"} hover:bg-primaryDark transition`}
                   >
                     {t("verifyPhoneButton")}
                   </button>
@@ -616,14 +610,13 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 className="w-full rounded px-3 py-3 bg-gray-100 focus:outline-none"
               />
               <div
-                className={`${
-                  i18n?.language === "ar" ? "left-0" : "right-0"
-                } absolute top-0`}
+                className={`${i18n?.language === "ar" ? "left-0" : "right-0"
+                  } absolute top-0`}
               >
                 <button
                   onClick={() => setShowChangePassModal(true)}
                   type="button"
-                  className="w-full px-3 py-3 bg-primary text-white font-semibold rounded-lg rounded-tl-none rounded-bl-none hover:bg-primaryDark transition"
+                  className={`w-full px-3 py-3 bg-primary text-white font-semibold ${i18n?.language === "ar" ? "rounded-l-lg" : "rounded-r-lg"} hover:bg-primaryDark transition`}
                 >
                   {userInfo?.is_password_set
                     ? t("changePasswordButton")
@@ -672,9 +665,8 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
                 )}
               />
               <div
-                className={`${
-                  i18n?.language === "ar" ? "left-3" : "right-3"
-                } absolute top-3`}
+                className={`${i18n?.language === "ar" ? "left-3" : "right-3"
+                  } absolute top-3`}
               >
                 <i className="fa-solid fa-calendar-lines fa-lg text-gray-700" />
               </div>
