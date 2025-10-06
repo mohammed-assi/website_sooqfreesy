@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLocationCoords } from "../../redux/slices/locationSlice";
 
 export const AllCitiesDropdown = () => {
-  const {i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const dispatch = useDispatch();
   const reduxCoords = useSelector((state) => state.location.coords);
 
   const [open, setOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef(null); // attach to wrapper
   const [location, setLocation] = useState("");
 
   const handleUseMyLocation = () => {
@@ -54,29 +54,47 @@ export const AllCitiesDropdown = () => {
   };
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpen(false);
-      }
+    function isClickInsidePacContainer(target) {
+      // Google's autocomplete dropdown has class 'pac-container' (and children).
+      return !!target?.closest?.(".pac-container");
     }
+
+    function handleClickOutside(event) {
+      const target = event.target;
+      // if click is inside our wrapped component, don't close
+      if (dropdownRef.current && dropdownRef.current.contains(target)) return;
+      // if click is inside Google Places suggestion container, don't close
+      if (isClickInsidePacContainer(target)) return;
+
+      setOpen(false);
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, []);
 
   return (
-    <div className="relative inline-block text-left">
+    // attach ref to the root wrapper so the button + dropdown are considered inside
+    <div ref={dropdownRef} className="relative inline-block text-left">
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen((s) => !s)}
         className="flex items-center gap-2 cursor-pointer text-xs md:text-sm"
+        type="button"
       >
         {reduxCoords?.country || t("chooseLocation")}
         <i className="fa-solid fa-angle-down fa-sm ml-auto" />
       </button>
 
       {open && (
-        <div className={`${i18n.language === "ar" ? "lg:right-0 -right-3.5" : "-left-6 lg:-right-15"} absolute top-6 mt-2 w-3xs lg:w-80 rounded-md bg-white shadow-lg border p-2 z-50`}>
+        <div
+          className={`${i18n.language === "ar" ? "lg:right-0 -right-3.5" : "-left-6 lg:-right-15"
+            } absolute top-6 mt-2 w-3xs lg:w-80 rounded-md bg-white shadow-lg border p-2 z-50`}
+        >
           <div className="w-full space-y-2 p-2">
             <p className="text-gray-800">{t("provideLocation")}</p>
             <button

@@ -13,9 +13,9 @@ export const Footer = () => {
   return (
     <footer className="bg-primaryDark text-white">
       <div className="spacer-x py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 gap-y-7 md:flex md:justify-between">
-          <Link to={ROUTE.ROOT}>
-            <img src={logo} alt="SouqSyria" className="h-12 mb-4" />
+        <div className="grid grid-cols-2 sm:grid-cols-2 gap-3 gap-y-7 md:flex md:justify-between">
+          <Link to={ROUTE.ROOT} className="col-span-2 sm:col-span-1">
+            <img src={logo} alt="SouqSyria" className="h-12 mb-4 mx-auto sm:mx-0" />
           </Link>
 
           <div>
@@ -49,7 +49,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <div>
+          <div className="col-span-2 sm:col-span-1">
             <h3 className="font-bold text-lg mb-3">{t("contactInfo")}</h3>
 
             <ul className="space-y-3 text-sm">
