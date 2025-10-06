@@ -525,7 +525,10 @@ export const ProductPage = () => {
       hasUsedSearchText.current = true;
       setSearchText(location.state.searchText);
       setSearchTextDebounce(location.state.searchText);
-      navigate(location.pathname, { replace: true, state: {} });
+      // navigate(location.pathname, { replace: true, state: {} });
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 300);
     }
   }, [location, navigate, setSearchTextDebounce]);
 
@@ -584,7 +587,10 @@ export const ProductPage = () => {
           category: matchedId,
         }));
       }
-      navigate(location.pathname, { replace: true, state: {} });
+      // navigate(location.pathname, { replace: true, state: {} });
+      setTimeout(() => {
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 300);
     }
   }, [location?.state?.categoryName, allCategory, navigate, location.pathname]);
 
@@ -653,8 +659,6 @@ export const ProductPage = () => {
       }
     }
   }, [selectedState, states]);
-
-  console.log("location", location);
 
   if (loading) return <ScreenLoader />;
 

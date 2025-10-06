@@ -22,6 +22,7 @@ export const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("forYou");
   const reduxCoords = useSelector((state) => state.location.coords);
+  const [allCategory, setAllCategory] = useState([]);
 
   const tabs = [
     { id: "forYou", label: t("forYou") },
@@ -89,6 +90,21 @@ export const HomePage = () => {
     setLoading(false);
   };
 
+  const getAllCategory = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setAllCategory(response?.data?.data?.categories || []);
+      }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
+
+  useEffect(() => {
+    getAllCategory(CUSTOMER.CATEGORY_LIST);
+  }, []);
+
   useEffect(() => {
     getAllPostsCallBack();
   }, [accessToken, activeTab]);
@@ -99,7 +115,7 @@ export const HomePage = () => {
         <ScreenLoader />
       ) : (
         <>
-          <Banner />
+          <Banner allCategory={allCategory} />
           <ImageSlider />
           <Products
             allPosts={allPosts}

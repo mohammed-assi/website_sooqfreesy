@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import bannerLeft from "../../assets/image/bannerLeft.png";
 import bannerRight from "../../assets/image/bannerRight.png";
 import { useTranslation } from "react-i18next";
@@ -8,29 +8,51 @@ import other from "../../assets/icon/other.svg";
 import { ROUTE } from "../../config/constants";
 import { Link, useNavigate } from "react-router-dom";
 
-export const Banner = () => {
-  const { i18n ,t } = useTranslation();
+export const Banner = ({ allCategory }) => {
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
-  const categories = [
-    {
-      id: 1,
-      name: t("realEstate"),
-      icon: estate,
-      categoryName: "Real Estate",
-    },
-    {
-      id: 2,
-      name: t("vehicle"),
-      icon: vehicle,
-      categoryName: "Vehicle",
-    },
-    {
-      id: 3,
-      name: t("others"),
-      icon: other,
-      categoryName: "Other",
-    },
-  ];
+  // const categories = [
+  //   {
+  //     id: 1,
+  //     name: t("realEstate"),
+  //     icon: estate,
+  //     categoryName: "Real estate",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: t("vehicle"),
+  //     icon: vehicle,
+  //     categoryName: "Vehicle",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: t("others"),
+  //     icon: other,
+  //     categoryName: "Other",
+  //   },
+  // ];
+
+const iconMap = {
+  13: estate, // Real estate
+  3: vehicle, // Vehicle
+  2: other,   // Other
+};
+
+const allowedCategoryIds = [13, 3, 2];
+
+const categories = useMemo(() => {
+  if (!allCategory?.length) return [];
+
+  return allCategory
+    .filter((cat) => allowedCategoryIds.includes(cat.id)) // only 3 categories
+    .map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      icon: iconMap[cat.id] || other,
+      categoryName: cat.name,
+    }));
+}, [allCategory]);
+
   const [searchValue, setSearchValue] = useState("");
 
   const goToProductPage = () => {
@@ -40,6 +62,8 @@ export const Banner = () => {
       navigate(ROUTE.PRODUCT_PAGE);
     }
   };
+
+  console.log("allCategory", allCategory);
   return (
     <div
       // dir={i18n.language === "ar" ? "rtl" : "ltr"}
@@ -54,7 +78,9 @@ export const Banner = () => {
       </div>
 
       <div className="w-150 relative z-10 px-3">
-        <h1 className="font-bold text-3xl md:text-4xl lg:text-heading">{t("homeBannerHeading")}</h1>
+        <h1 className="font-bold text-3xl md:text-4xl lg:text-heading">
+          {t("homeBannerHeading")}
+        </h1>
 
         <div className="my-8 shadow-md  flex justify-between">
           <input
@@ -65,7 +91,11 @@ export const Banner = () => {
           />
           <button
             onClick={goToProductPage}
-            className={`flex gap-3 items-center text-white bg-primary px-3 cursor-pointer ${i18n.language === "ar" ? "rounded-tl rounded-bl flex-row-reverse" : "rounded-tr rounded-br"}`}
+            className={`flex gap-3 items-center text-white bg-primary px-3 cursor-pointer ${
+              i18n.language === "ar"
+                ? "rounded-tl rounded-bl flex-row-reverse"
+                : "rounded-tr rounded-br"
+            }`}
           >
             <i className="fa-regular fa-magnifying-glass" />
             {t("searchButton")}
