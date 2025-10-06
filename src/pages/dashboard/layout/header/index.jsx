@@ -467,7 +467,7 @@ export const DashboardHeader = ({ setOpenSideBar, openSideBar }) => {
                           className={`${i18n.language === "ar" ? "-left-10" : "-right-10"
                             } static lg:absolute lg:px-4 -right-10 lg:mt-2 lg:w-80 rounded-xl bg-white lg:shadow-lg z-50 p-2.5 lg:py-0 border border-gray-100 lg:border-0 mb-0`}
                         >
-                          <div className="items-center gap-3 py-2 px-2 bg-gray-100 rounded-md lg:rounded-none lg:bg-transparent lg:py-4 lg:border-b lg:border-gray-200 hidden lg:flex">
+                          <div className="items-center gap-3 py-2 px-2 bg-gray-100 rounded-md lg:rounded-none lg:bg-transparent lg:border-b lg:border-gray-200 hidden lg:flex">
                             <div className="w-[50px] h-[40px] lg:w-[70px] lg:h-[60px] rounded flex items-center justify-center">
                               <img
                                 src={
