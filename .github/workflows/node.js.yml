@@ -2,46 +2,32 @@ name: Node.js CI & Deploy
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
           cache: 'npm'
 
-      - name: Create .env file
+      - name: Create .env
+        run: echo "${{ secrets.DOTENV_FILE }}" > .env
+
+      - name: Install & Build
         run: |
-          echo "${{ secrets.DOTENV_FILE }}" > .env
+          npm i --force
+          npm run build --if-present
 
-      - name: Print Node.js version
-        run: |
-          node -v
-          npm -v
-
-      - name: Install dependencies
-        run: npm i --force
-
-      - name: Build project
-        working-directory: ./frontend  # अगर आपके project root में है तो हटा दें
-        run: npm run build --if-present
-
-      - name: Check build folder
-        run: |
-          echo "📂 Checking build folder..."
-          ls -la ./frontend/build || ls -la build || echo "⚠️ Build folder not found!"
+      - name: Check dist folder
+        run: ls -la dist || echo "⚠️ Dist folder not found!"
 
       - name: Setup SSH
         run: |
@@ -50,15 +36,13 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Clean old files on server
+      - name: Clean old files
         run: |
-          ssh -i ~/.ssh/id_rsa -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-            rm -rf /var/www/html/souq-syria/souq-syria-frontend/build/*
-            echo "🧹 Old build files removed."
-          EOF
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+          "rm -rf /var/www/html/souq-syria/souq-syria-frontend/build/*"
 
-      - name: Upload build folder to server
+      - name: Upload dist
         run: |
-          echo "🚀 Uploading build folder..."
-          scp -i ~/.ssh/id_rsa -P ${{ secrets.DEPLOY_PORT || 22 }} -r ./frontend/build/. ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/html/souq-syria/souq-syria-frontend/build
-          echo "✅ Build successfully deployed."
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.DEPLOY_PORT || 22 }} -r dist/. \
+          ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/html/souq-syria/souq-syria-frontend/build
+          echo "✅ Dist deployed successfully."
