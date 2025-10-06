@@ -1,11 +1,11 @@
-name: Node.js CI
+name: Node.js CI & Deploy
 
 on:
   push:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     strategy:
@@ -13,46 +13,52 @@ jobs:
         node-version: [18.x]
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-    - name: Create .env file
-      run: |
-        echo "${{ secrets.DOTENV_FILE }}" > .env
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.DOTENV_FILE }}" > .env
 
-    - name: Print Node.js version
-      run: |
-        node -v
-        npm -v
+      - name: Print Node.js version
+        run: |
+          node -v
+          npm -v
 
-    - name: Install dependencies
-      run: npm i --force
+      - name: Install dependencies
+        run: npm i --force
 
-    - name: Build
-      run: npm run build --if-present
+      - name: Build project
+        run: npm run build --if-present
 
-    - name: Setup SSH
-      run: |
-        echo "Setting up SSH key..."
-        mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+      - name: Check build folder
+        run: |
+          echo "📂 Listing build folder contents..."
+          ls -la build || echo "⚠️ Build folder not found!"
 
-    - name: Clean old files on server
-      run: |
-        ssh -i ~/.ssh/id_rsa -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-          rm -rf /var/www/html/souq-syria/souq-syria-frontend/build/* 
-          echo "🧹 Old files removed."
-        EOF
+      - name: Setup SSH
+        run: |
+          echo "Setting up SSH key..."
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
 
-    - name: Upload build with scp
-      run: |
-        scp -i ~/.ssh/id_rsa -P ${{ secrets.DEPLOY_PORT || 22 }} -r build/* ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/html/souq-syria/souq-syria-frontend/build
-        echo "🚀 Build deployed to server."
+      - name: Clean old files on server
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+            rm -rf /var/www/html/souq-syria/souq-syria-frontend/build/*
+            echo "🧹 Old build files removed."
+          EOF
+
+      - name: Upload build folder to server
+        run: |
+          echo "🚀 Uploading build folder..."
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.DEPLOY_PORT || 22 }} -r build/. ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/html/souq-syria/souq-syria-frontend/build
+          echo "✅ Build successfully deployed."
