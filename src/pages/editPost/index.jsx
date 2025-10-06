@@ -474,6 +474,7 @@ export const EditPost = () => {
         title: postDetailData.title || "",
         description: postDetailData.description || "",
         price: postDetailData.price || "",
+        currency: postDetailData.currency || "",
         phone: postDetailData.phone || "",
         country_code: postDetailData.country_code || "+963",
         ...postDetailData.content,
@@ -493,7 +494,7 @@ export const EditPost = () => {
     }
   }, [postDetailData, reset]);
 
-  console.log("postDetailData", postDetailData);
+  console.log("postDetailData---->", postDetailData);
 
   return (
     <>

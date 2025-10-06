@@ -57,7 +57,7 @@ const categories = useMemo(() => {
 
   const goToProductPage = () => {
     if (searchValue !== "") {
-      navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: searchValue } });
+      navigate(ROUTE.PRODUCT_PAGE, { state: { search: searchValue } });
     } else {
       navigate(ROUTE.PRODUCT_PAGE);
     }

@@ -15,7 +15,6 @@ export default function ProductFilter({
   handleChange,
   filters,
   handleLikeUnlikePost,
-  setSearchTextDebounce,
   searchTextDebounce,
   states,
   selectedState,
@@ -36,7 +35,6 @@ export default function ProductFilter({
           allCategory={allCategory}
           handleChange={handleChange}
           filters={filters}
-          setSearchTextDebounce={setSearchTextDebounce}
           searchTextDebounce={searchTextDebounce}
           states={states}
           selectedState={selectedState}

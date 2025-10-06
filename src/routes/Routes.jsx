@@ -36,8 +36,6 @@ export const Router = () => {
         <Route path={ROUTE.TERMS_CONDITIONS} element={<TermConditions />} />
         <Route path={ROUTE.PRIVACY_POLICY} element={<PrivacyPolicy />} />
         <Route path={ROUTE.HELP_SUPPORT} element={<HelpSupport />} />
-        {/* <Route path={ROUTE.CREATE_POST} element={<CreatePost />} />
-        <Route path={`${ROUTE.UPDATE_POST}/:id`} element={<EditPost />} /> */}
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTE.CREATE_POST} element={<CreatePost />} />
           <Route path={`${ROUTE.UPDATE_POST}/:id`} element={<EditPost />} />

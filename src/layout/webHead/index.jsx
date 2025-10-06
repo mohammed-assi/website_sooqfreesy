@@ -36,14 +36,12 @@ export const WebHead = () => {
   const { notifications } = useSelector((state) => state.notification);
   const { count } = useSelector((state) => state.notification);
   const [open, setOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  // const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [suggestionList, setSuggestionList] = useState([]);
-
-  const { i18n } = useTranslation();
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
@@ -73,14 +71,23 @@ export const WebHead = () => {
     showSuccessToast(t("logOutMsg"));
   };
 
-  const goToProductPage = () => {
+  // const goToProductPage = () => {
+  //   setSearchOpen(false);
+  //   if (searchValue !== "") {
+  //     navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: searchValue } });
+  //   }
+  //   setSuggestionList([]);
+  // };
+
+  const goToProductPage = (value) => {
+    const query = value || searchValue.trim();
+    if (!query) return;
     setSearchOpen(false);
-    if (searchValue !== "") {
-      navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: searchValue } });
-    }
-    // setSearchValue("");
     setSuggestionList([]);
+    setSearchValue(query);
+    navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: query } });
   };
+  console.log("searchValue---->", searchValue);
 
   const handleNavigate = (slug) => {
     if (accessToken) {
@@ -95,7 +102,9 @@ export const WebHead = () => {
   const handleCheckSuggestions = async (url) => {
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
-      setSuggestionList(response?.data?.data);
+      setSuggestionList(response?.data?.data || []);
+    } else {
+      setSuggestionList([]);
     }
   };
 
@@ -124,6 +133,8 @@ export const WebHead = () => {
   useEffect(() => {
     if (searchValue.length >= 2) {
       handleCheckSuggestions(`${POST.GET_SUGGESTION}?search=${searchValue}`);
+    } else {
+      setSuggestionList([]);
     }
   }, [searchValue]);
 
@@ -398,8 +409,9 @@ export const WebHead = () => {
               {!isCreateOrUpdate ? (
                 <>
                   <div
-                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 p-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${menuOpen ? "translate-x-0" : "-translate-x-full"
-                      } lg:translate-x-0`}
+                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 pl-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${
+                      menuOpen ? "translate-x-0" : "-translate-x-full"
+                    } lg:translate-x-0`}
                   >
                     <img src={logo} className="mb-10 lg:hidden h-7" alt="" />
                     <div
@@ -416,8 +428,8 @@ export const WebHead = () => {
                           className="w-full focus:outline-none "
                         />
                         <button
-                          onClick={goToProductPage}
-                          disabled={searchValue === ""}
+                          onClick={() => goToProductPage()}
+                          disabled={searchValue.trim() === ""}
                         >
                           <i className="fa-regular fa-magnifying-glass fa-lg" />
                         </button>
@@ -434,9 +446,9 @@ export const WebHead = () => {
                             {suggestionList?.map((item) => (
                               <li
                                 key={item}
-                                onClick={() => {
-                                  setSearchValue(item);
-                                  goToProductPage();
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  goToProductPage(item);
                                 }}
                                 className="px-4 py-3 text-gray-700 cursor-pointer hover:bg-gray-100 border-t border-gray-100"
                               >
@@ -625,28 +637,87 @@ export const WebHead = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    {accessToken && <div className="flex items-center gap-4 w-full lg:hidden">
-                      <Link to={ROUTE.NOTIFICATIONS} className="relative">
-                        <img src={notification} alt="icon" style={{ height: "20px", width: "24px" }} />
-                        {count > 0 && (
-                          <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
-                            {count}
-                          </p>
-                        )}
-                      </Link>
-                      <Link to={ROUTE.WISHLIST} className="relative">
-                        <img src={wishlist} alt="icon" style={{ height: "24px", width: "24px" }} />
-                        {notifications?.wishlistCount > 0 && (
-                          <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
-                            {notifications?.wishlistCount}
-                          </p>
-                        )}
-                      </Link><Link
-                        to={ROUTE.MY_ADS} className="relative"
-                      >
-                        <img src={ads} alt="icon" style={{ height: "24px", width: "24px" }} />
-                      </Link></div>}
-                    <button
+                    <div
+                      className={`search-wrap relative w-full lg:hidden mb-auto lg:w-auto lg:mb-0 lg:me-auto opacity-0 pointer-events-none transition-all !pointer-events-auto opacity-100 visible`}
+                      ref={searchRef}
+                    >
+                      <div className="rounded-lg md:px-4 md:py-3 px-3 py-2 flex justify-between items-center bg-gray-100">
+                        <input
+                          type="text"
+                          placeholder={t("searchButton")}
+                          value={searchValue}
+                          onChange={(e) => setSearchValue(e.target.value)}
+                          onFocus={() => setSearchOpen(true)}
+                          className="w-full focus:outline-none "
+                        />
+                        <button
+                          onClick={() => goToProductPage()}
+                          disabled={searchValue.trim() === ""}
+                        >
+                          <i className="fa-regular fa-magnifying-glass" />
+                        </button>
+                      </div>
+
+                      {searchOpen && suggestionList?.length > 0 && (
+                        <div className="absolute mt-2 rounded-xl bg-white shadow-lg z-50">
+                          <div className="p-4">
+                            <h3 className="font-semibold">
+                              {t("popularSearches")}
+                            </h3>
+                          </div>
+                          <ul className="">
+                            {suggestionList?.map((item) => (
+                              <li
+                                key={item}
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  goToProductPage(item);
+                                }}
+                                className="px-4 py-3 text-gray-700 cursor-pointer hover:bg-gray-100 border-t border-gray-100"
+                              >
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                    {accessToken && (
+                      <div className="flex items-center gap-4 lg:hidden">
+                        <Link to={ROUTE.NOTIFICATIONS} className="relative">
+                          <img
+                            src={notification}
+                            alt="icon"
+                            style={{ height: "20px", width: "24px" }}
+                          />
+                          {count > 0 && (
+                            <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                              {count}
+                            </p>
+                          )}
+                        </Link>
+                        {/* <Link to={ROUTE.WISHLIST} className="relative">
+                          <img
+                            src={wishlist}
+                            alt="icon"
+                            style={{ height: "24px", width: "24px" }}
+                          />
+                          {notifications?.wishlistCount > 0 && (
+                            <p className="absolute -top-1 -right-2 text-[12px] bg-primaryDark text-white rounded-full size-4 flex items-center justify-center">
+                              {notifications?.wishlistCount}
+                            </p>
+                          )}
+                        </Link>
+                        <Link to={ROUTE.MY_ADS} className="relative">
+                          <img
+                            src={ads}
+                            alt="icon"
+                            style={{ height: "24px", width: "24px" }}
+                          />
+                        </Link> */}
+                      </div>
+                    )}
+                    {/* <button
                       onClick={() => {
                         if (accessToken) {
                           if (
@@ -666,14 +737,14 @@ export const WebHead = () => {
                       <span className="icon w-full lg:w-auto justify-center rounded-sm !px-2">
                         <span>
                           <i className="fa-solid fa-plus"></i>
-                        </span>{" "}
-                        {/* {t("postAdButton")} */}
+                        </span>
                       </span>
-                    </button>
+                    </button> */}
                     <div
-                      className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${menuOpen &&
+                      className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
+                        menuOpen &&
                         "opacity-100 !pointer-events-auto cursor-pointer"
-                        }`}
+                      }`}
                       onClick={handleMenuToggle}
                     ></div>
                     <div

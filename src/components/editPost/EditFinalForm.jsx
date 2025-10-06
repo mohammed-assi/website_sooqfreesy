@@ -55,8 +55,8 @@ export const EditFinalForm = ({
   };
 
   return (
-    <div className="flex gap-7 pt-4 flex-wrap md:flex-nowrap">
-      <div className="lg:w-[50%] w-full p-5 shadow-lg rounded-lg">
+    <div className="flex gap-7 pt-4 flex-wrap md:flex-nowrap items-start">
+      <div className="lg:w-[50%] w-full p-5 shadow-lg rounded-lg lg:sticky lg:top-36">
         <h3 className="text-2xl font-semibold">{t("imagesPost")}</h3>
         <div className="border-b border-gray-200 pt-4"></div>
 

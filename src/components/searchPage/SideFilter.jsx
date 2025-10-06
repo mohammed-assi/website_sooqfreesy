@@ -188,13 +188,6 @@ export const SideFilter = ({
         <label className="block text-[1rem] font-bold mb-1">
           {t("nearbyLocation")}
         </label>
-        {/* <input
-          type="text"
-          defaultValue={searchTextDebounce}
-          onChange={(e) => setSearchTextDebounce(e.target.value)}
-          placeholder={t("enterNearbyLocation")}
-          className="w-full h-[48px] bg-[#f5f5f5] rounded-lg px-3 py-2 text-sm focus:outline-none"
-        /> */}
         <div className="relative">
           <Autocomplete
             apiKey={GOOGLE_API_KEY}
