@@ -48,11 +48,11 @@ jobs:
     - name: Clean old files on server
       run: |
         ssh -i ~/.ssh/id_rsa -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-          rm -rf /var/www/html/driveX_v1_intial/admin/*
+          rm -rf /var/www/html/souq-syria/souq-syria-frontend/build* 
           echo "🧹 Old files removed."
         EOF
 
     - name: Upload build with scp
       run: |
-        scp -i ~/.ssh/id_rsa -P ${{ secrets.DEPLOY_PORT || 22 }} -r dist/* ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/html/driveX_v1_intial/admin/
+        scp -i ~/.ssh/id_rsa -P ${{ secrets.DEPLOY_PORT || 22 }} -r build/* ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/html/souq-syria/souq-syria-frontend/build
         echo "🚀 Build deployed to server."
