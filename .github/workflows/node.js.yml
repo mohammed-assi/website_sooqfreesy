@@ -48,7 +48,7 @@ jobs:
     - name: Clean old files on server
       run: |
         ssh -i ~/.ssh/id_rsa -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
-          rm -rf /var/www/html/souq-syria/souq-syria-frontend/build* 
+          rm -rf /var/www/html/souq-syria/souq-syria-frontend/build/* 
           echo "🧹 Old files removed."
         EOF
 
