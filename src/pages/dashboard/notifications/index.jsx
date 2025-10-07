@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import defaultUser from "../../../assets/icon/defaultUser.svg";
-import notificationSetting from "../../../assets/icon/notificationSetting.svg";
+// import notificationSetting from "../../../assets/icon/notificationSetting.svg";
 import SettingModal from "../../../components/notification/SettingModal";
 import { useTranslation } from "react-i18next";
 import { CUSTOMER, NOTIFICATION } from "../../../config/endPoints";
-import { showErrorToast } from "../../../utils/toastUtils";
-import { getRequest } from "../../../config/apiFunctions";
+import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
+import { getRequest, putRequest } from "../../../config/apiFunctions";
 import { ScreenLoader } from "../../../utils/screenLoader";
 import moment from "moment/moment";
 import {
@@ -26,6 +26,29 @@ export const Notifictions = () => {
   const [notificationSettingsData, setNotificationSettingData] = useState({});
   const [notificationList, setNotificationList] = useState([]);
   const { count } = useSelector((state) => state.notification);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+
+  const handleToggle = async (e) => {
+    const isEnabled = e.target.checked;
+    setNotificationsEnabled(isEnabled);
+
+    const payload = {
+      allow_notification: isEnabled,
+    };
+
+    try {
+      const response = await putRequest(
+        `${NOTIFICATION.ALLOW_NOTIFICATION}`,
+        payload
+      );
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        showSuccessToast(response?.data?.message);
+        getNotificationAllowCallBack();
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message || "Something went wrong");
+    }
+  };
 
   const getNotificationSettingData = async (url) => {
     setLoading(true);
@@ -59,6 +82,25 @@ export const Notifictions = () => {
       setLoading(false);
     }
     setLoading(false);
+  };
+
+  const getNotificationAllow = async (url) => {
+    setLoading(true);
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setNotificationsEnabled(response?.data?.data?.allow_notification);
+        setLoading(false);
+      }
+    } catch (error) {
+      showErrorToast(error?.response?.data?.message);
+      setLoading(false);
+    }
+    setLoading(false);
+  };
+
+  const getNotificationAllowCallBack = () => {
+    getNotificationAllow(NOTIFICATION.GET_ALLOW_NOTIFICATION);
   };
 
   const getgetNotificationDataCallback = () => {
@@ -108,6 +150,7 @@ export const Notifictions = () => {
   useEffect(() => {
     getNotificationSettingDataCallback();
     getgetNotificationDataCallback();
+    getNotificationAllowCallBack();
   }, []);
 
   const handlegetNotificationCount = async (url) => {
@@ -116,6 +159,23 @@ export const Notifictions = () => {
       dispatch(setCount(response?.data?.data?.notificationCount));
     }
   };
+
+  // const handleAllowNotification = async () => {
+  //   const payload = {
+  //     allow_notification: notificationsEnabled ? true : false,
+  //   };
+  //   try {
+  //     const response = await putRequest(
+  //       `${NOTIFICATION.ALLOW_NOTIFICATION}`,
+  //       payload
+  //     );
+  //     if (response?.data?.success && response?.data?.statusCode === 200) {
+  //       showSuccessToast(response?.data?.message);
+  //     }
+  //   } catch (error) {
+  //     showErrorToast(error?.response?.data?.message);
+  //   }
+  // };
 
   return (
     <>
@@ -132,9 +192,18 @@ export const Notifictions = () => {
               >
                 {t("markAllRead")}
               </p>
-              <button onClick={() => setShowSetttingModal(true)}>
+              {/* <button onClick={() => setShowSetttingModal(true)}>
                 <img src={notificationSetting} alt="icon" />
-              </button>
+              </button> */}
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={notificationsEnabled}
+                  onChange={handleToggle}
+                />
+                <div class="group peer bg-white rounded-full duration-300 w-[33px] h-[19px] ring-1 ring-gray-500 after:duration-300 after:bg-gray-500 peer-checked:after:bg-primary peer-checked:ring-primary after:rounded-full after:absolute after:h-3 after:w-3 after:top-[5px] after:left-[3px] after:flex after:justify-center after:items-center peer-checked:after:translate-x-[14px] peer-hover:after:scale-95"></div>
+              </label>
             </div>
           </div>
           <div className="py-8 grid grid-cols-1 gap-6">
@@ -153,8 +222,9 @@ export const Notifictions = () => {
                       handleMarkNotificationRead(item);
                     }
                   }}
-                  className={`${item?.is_read ? "" : "bg-cyan-50"
-                    } flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer relative`}
+                  className={`${
+                    item?.is_read ? "" : "bg-cyan-50"
+                  } flex justify-between items-start gap-5 shadow-md rounded-md px-4 py-6 cursor-pointer relative`}
                 >
                   <div className="flex gap-5">
                     <img
@@ -173,8 +243,11 @@ export const Notifictions = () => {
                     </div>
                   </div>
                   <p
-                    className={`${i18n?.language === "ar" ? "left-2.5 text-left" : "right-2.5 text-right"
-                      } text-gray-600 w-[100px] text-xs absolute top-2.5 capitalize`}
+                    className={`${
+                      i18n?.language === "ar"
+                        ? "left-2.5 text-left"
+                        : "right-2.5 text-right"
+                    } text-gray-600 w-[100px] text-xs absolute top-2.5 capitalize`}
                   >
                     {moment(item.created_at).fromNow()}
                   </p>

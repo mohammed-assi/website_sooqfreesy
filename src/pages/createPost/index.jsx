@@ -205,7 +205,8 @@ export const CreatePost = () => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
-    formData.append("price", Number(data.price));
+    formData.append("price", data.price);
+    formData.append("price_syp", data.price_syp);
     formData.append("country_code", data.country_code || "+963");
     formData.append("phone", data.phone || "9876543210");
     // formData.append("city", selectedCity.label || "Mohali");
@@ -214,7 +215,7 @@ export const CreatePost = () => {
     formData.append("state", data.state || data.country);
     formData.append("country", data.country);
 
-    formData.append("currency", data.currency);
+    // formData.append("currency", data.currency);
 
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || 34.8021);
@@ -234,6 +235,7 @@ export const CreatePost = () => {
       title,
       description,
       price,
+      price_syp,
       country_code,
       phone,
       city,
@@ -249,7 +251,7 @@ export const CreatePost = () => {
       post_type,
       user_type,
       pictures,
-      currency,
+      // currency,
       ...rest
     } = data;
 

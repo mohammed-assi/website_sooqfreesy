@@ -77,4 +77,7 @@ export const NOTIFICATION = {
   MARK_ALL_READ: `${BASEURL}/notification/mark-all-read`,
 
   COUNTS: `${BASEURL}/notification/count`,
+
+  GET_ALLOW_NOTIFICATION: `${BASEURL}/notification/get-allow-notification`,
+  ALLOW_NOTIFICATION: `${BASEURL}/notification/update-allow-notification`,
 };

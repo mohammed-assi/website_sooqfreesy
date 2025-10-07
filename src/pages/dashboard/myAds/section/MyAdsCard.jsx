@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ROUTE } from "../../../../config/constants";
 import moment from "moment/moment";
+import { useSelector } from "react-redux";
 
 const MyAdsCard = ({
   item,
@@ -23,6 +24,7 @@ const MyAdsCard = ({
   const menuRef = useRef(null);
   const navigate = useNavigate();
   const [showMenuItem, setShowMenuItem] = useState(false);
+  const currency = useSelector((state) => state.currency.value);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -33,8 +35,6 @@ const MyAdsCard = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  console.log("itemitemitemitem", item);
 
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
@@ -61,12 +61,7 @@ const MyAdsCard = ({
       <div className="w-full md:w-3/6 p-4 relative">
         <Link to={`${ROUTE.PRODUCT_PAGE}/${item.id}`}>
           <h2 className="text-2xl font-bold text-gray-900">
-            {item?.currency === "SYP"
-              ? "£"
-              : item?.currency === "USD"
-              ? "$"
-              : "$"}{" "}
-            {item.price}
+            {currency === "SYP" ? "£" : "$"} {item.price}
           </h2>
 
           <h3 className="text-xl font-bold text-gray-800 mt-3">{item.title}</h3>

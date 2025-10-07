@@ -6,11 +6,11 @@ import heart from "../../assets/icon/wishlist.svg";
 import heartFilled from "../../assets/icon/heartFilled.svg";
 import locationicon from "../../assets/icon/silverLocation.svg";
 import darkLocation from "../../assets/icon/darkLocation.svg";
-import primaryBell from "../../assets/icon/primaryBell.svg";
+// import primaryBell from "../../assets/icon/primaryBell.svg";
 import report from "../../assets/icon/report.svg";
 import whitestar from "../../assets/icon/whitestar.svg";
-import whitebell from "../../assets/icon/whitebell.svg";
-import whitecheck from "../../assets/icon/whitecheck.svg";
+// import whitebell from "../../assets/icon/whitebell.svg";
+// import whitecheck from "../../assets/icon/whitecheck.svg";
 import defaultUser from "../../assets/icon/defaultUser.svg";
 import headerContact from "../../assets/icon/headerContact.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -53,12 +53,13 @@ export const ProductDetail = () => {
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
+  const currency = useSelector((state) => state.currency.value);
   const [loading, setLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showNotifyModal, setShowNotifyModal] = useState(false);
-  const [notified, setNotified] = useState(false);
+  // const [notified, setNotified] = useState(false);
   const [showReportListModal, setShowReportListModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const [postDetailData, setPostDetailData] = useState(null);
@@ -87,15 +88,30 @@ export const ProductDetail = () => {
   };
 
   const getPostDeatils = async (url) => {
+    // setLoading(true);
+    // const response = await getRequest(url);
+    // if (response?.data?.success && response?.data?.statusCode === 200) {
+    //   setPostDetailData(response?.data?.data?.post);
+    //   setLoading(false);
+    // } else {
+    //   setPostDetailData(null);
+    // }
+    // setLoading(false);
     setLoading(true);
-    const response = await getRequest(url);
-    if (response?.data?.success && response?.data?.statusCode === 200) {
-      setPostDetailData(response?.data?.data?.post);
-      setLoading(false);
-    } else {
+    try {
+      const response = await getRequest(url);
+
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setPostDetailData(response?.data?.data?.post);
+      } else {
+        setPostDetailData(null);
+      }
+    } catch (error) {
+      console.log(error);
       setPostDetailData(null);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const getPostDeatilsCallBack = () => {
@@ -145,18 +161,21 @@ export const ProductDetail = () => {
   }, []);
 
   useEffect(() => {
-    getPostDeatilsCallBack();
-  }, [id]);
+    if (id) {
+      getPostDeatilsCallBack();
+    }
+  }, [id, currency]);
 
   useEffect(() => {
     if (postDetailData?.id) {
       getAllPostsCallBack();
     }
-  }, [postDetailData]);
+  }, [postDetailData, currency]);
 
   useEffect(() => {
     setShareLink(`${shareURL}${location.pathname}`);
   }, [location]);
+
 
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
@@ -299,12 +318,8 @@ export const ProductDetail = () => {
 
               <div className="flex justify-between items-center">
                 <h2 className="main-heading text-primary">
-                  {postDetailData?.currency === "SYP"
-                    ? "£"
-                    : postDetailData?.currency === "USD"
-                    ? "$"
-                    : "$"}{" "}
-                  {postDetailData?.price}
+                  {currency === "SYP" ? "£" : "$"}{" "}
+                  {postDetailData?.currencyTypePrice}
                 </h2>
                 <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
                   {postDetailData?.subCategoryName}

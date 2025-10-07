@@ -7,11 +7,14 @@ import MyAdsCard from "./section/MyAdsCard";
 import { DeleteModal } from "./section/DeleteModal";
 import { InfoModal } from "../../../common/modal/InfoModal";
 import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
+import { useSelector } from "react-redux";
 
 export const MyAds = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const currency = useSelector((state) => state.currency.value);
+
   const [allPosts, setAllPosts] = useState([]);
   const [postcounts, setPostCounts] = useState({});
   const [loading, setLoading] = useState(false);
@@ -87,7 +90,7 @@ export const MyAds = () => {
 
   useEffect(() => {
     getAllPostsCallBack();
-  }, [activeTab]);
+  }, [activeTab, currency]);
 
   return (
     <>

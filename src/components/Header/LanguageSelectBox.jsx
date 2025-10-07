@@ -47,7 +47,11 @@ export const LanguageSelectBox = () => {
       </button>
 
       {open && (
-        <div className={`absolute top-6 ${i18n.language === "ar" ? "left-0" : "-right-7"} mt-2 w-40 rounded-md bg-white shadow-lg border p-2 z-50`}>
+        <div
+          className={`absolute top-6 ${
+            i18n.language === "ar" ? "left-0" : "-right-7"
+          } mt-2 w-40 rounded-md bg-white shadow-lg border p-2 z-50`}
+        >
           <p className="text-black text-sm mb-2">{t("chooseLang")}</p>
           <ul className="space-y-2">
             {languages.map((l) => (

@@ -11,10 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScreenLoader } from "../../utils/screenLoader";
 import { setNotifications } from "../../redux/slices/notificationSlice";
 import { useTranslation } from "react-i18next";
+import { LOCAL_STORAGE } from "../../config/constants";
 
 export const HomePage = () => {
   const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const currency = useSelector((state) => state.currency.value);
   const dispatch = useDispatch();
   const { accessToken } = useSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -107,7 +109,7 @@ export const HomePage = () => {
 
   useEffect(() => {
     getAllPostsCallBack();
-  }, [accessToken, activeTab]);
+  }, [accessToken, activeTab, currency]);
 
   return (
     <>

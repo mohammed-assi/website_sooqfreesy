@@ -218,7 +218,8 @@ export const EditPost = () => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
-    formData.append("price", Number(data.price));
+    formData.append("price", data.price);
+    formData.append("price_syp", data.price_syp);
     formData.append("country_code", data.country_code || "+963");
     formData.append("phone", data.phone || "9876543210");
     // formData.append("city", selectedCity.label || "Mohali");
@@ -227,7 +228,7 @@ export const EditPost = () => {
     formData.append("state", data.state || data.country);
     formData.append("country", data.country);
 
-    formData.append("currency", data.currency);
+    // formData.append("currency", data.currency);
 
     formData.append("nearby_location", data.location);
     formData.append("longitude", coords?.lng || postDetailData?.longitude);
@@ -253,6 +254,7 @@ export const EditPost = () => {
       title,
       description,
       price,
+      price_syp,
       country_code,
       phone,
       city,
@@ -268,7 +270,7 @@ export const EditPost = () => {
       post_type,
       user_type,
       pictures,
-      currency,
+      // currency,
       ...rest
     } = data;
 
@@ -474,7 +476,8 @@ export const EditPost = () => {
         title: postDetailData.title || "",
         description: postDetailData.description || "",
         price: postDetailData.price || "",
-        currency: postDetailData.currency || "",
+        price_syp: postDetailData.price_syp || "",
+        // currency: postDetailData.currency || "",
         phone: postDetailData.phone || "",
         country_code: postDetailData.country_code || "+963",
         ...postDetailData.content,

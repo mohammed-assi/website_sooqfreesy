@@ -7,10 +7,12 @@ import location from "../../assets/icon/silverLocation.svg";
 import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
-  console.log("itemitemitem", item);
   const { t } = useTranslation();
+
+  const currency = useSelector((state) => state.currency.value);
   return (
     <div className="bg-white rounded-xl overflow-hidden relative">
       {/* <Swiper
@@ -63,12 +65,7 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
         <div className="py-4 space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-lg font-bold">
-              {item?.currency === "SYP"
-                ? "£"
-                : item?.currency === "USD"
-                ? "$"
-                : "$"}{" "}
-              {item?.price}
+              {currency === "SYP" ? "£" : "$"} {item?.price}
             </p>
             <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
               {item?.sub_categoryName}

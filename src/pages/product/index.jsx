@@ -26,6 +26,7 @@ export const ProductPage = () => {
 
   const { accessToken } = useSelector((state) => state.auth);
   const reduxCoords = useSelector((state) => state.location.coords);
+  const currency = useSelector((state) => state.currency.value);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -211,7 +212,10 @@ export const ProductPage = () => {
     if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
 
     const filterObj = buildFilterObject();
-    const requestKey = JSON.stringify({ page: currentPage, filters: filterObj });
+    const requestKey = JSON.stringify({
+      page: currentPage,
+      filters: filterObj,
+    });
     if (lastRequestKeyRef.current === requestKey) return;
 
     requestTimerRef.current = setTimeout(() => {
@@ -388,9 +392,13 @@ export const ProductPage = () => {
     }
   }, [selectedState, states]);
 
-  if (loading) return <ScreenLoader />;
+  useEffect(() => {
+    if (!currency) return;
+    const url = buildUrlForRequest(currentPage, false);
+    getAllPosts(url);
+  }, [currency]);
 
-  console.log("loationnnnnn--->", location?.state);
+  if (loading) return <ScreenLoader />;
 
   return (
     <div className="spacer-x">

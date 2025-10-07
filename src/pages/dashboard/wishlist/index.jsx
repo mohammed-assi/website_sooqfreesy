@@ -5,12 +5,13 @@ import { getRequest } from "../../../config/apiFunctions";
 import { CUSTOMER, POST } from "../../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../../utils/toastUtils";
 import { ScreenLoader } from "../../../utils/screenLoader";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setNotifications } from "../../../redux/slices/notificationSlice";
 
 export const MyWishlist = () => {
   const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
+  const currency = useSelector((state) => state.currency.value);
   const dispatch = useDispatch();
   const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,7 +54,7 @@ export const MyWishlist = () => {
 
   useEffect(() => {
     getAllPostsCallBack();
-  }, []);
+  }, [currency]);
 
   return (
     <>

@@ -113,14 +113,17 @@ apiClient.interceptors.request.use((config) => {
   NProgress.start();
 
   const token = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
-  const fcmToken = localStorage.getItem(LOCAL_STORAGE.FCM_TOKEN);
-  console.log("fcmToken", fcmToken);
+  const currency = localStorage.getItem(LOCAL_STORAGE.CURRENCY);
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
 
   config.headers["Accept"] = "application/json";
   config.headers["Accept-Language"] = i18n.language || "en";
+
+  if (currency) {
+    config.headers["currency-type"] = currency;
+  }
 
   // if (fcmToken) {
   //   config.headers["fcm_token"] = fcmToken;

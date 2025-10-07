@@ -7,6 +7,7 @@ import heartFilled from "../../assets/icon/heartFilled.svg";
 import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 const ProductListCard = ({
   item,
@@ -15,6 +16,7 @@ const ProductListCard = ({
   showWishlist,
 }) => {
   const { i18n, t } = useTranslation();
+  const currency = useSelector((state) => state.currency.value);
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-sm border border-gray-200 p-2 overflow-hidden">
       <div className="relative w-full md:w-3/6">
@@ -77,12 +79,7 @@ const ProductListCard = ({
           </span>
 
           <h2 className="text-2xl font-bold text-gray-900">
-            {item?.currency === "SYP"
-              ? "£"
-              : item?.currency === "USD"
-              ? "$"
-              : "$"}{" "}
-            {item.price}
+            {currency === "SYP" ? "£" : "$"} {item.price}
           </h2>
 
           <h3 className="text-xl font-bold text-gray-800 mt-3">{item.title}</h3>

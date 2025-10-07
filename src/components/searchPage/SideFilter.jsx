@@ -23,6 +23,7 @@ export const SideFilter = ({
 
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const reduxCoords = useSelector((state) => state.location.coords);
+  const currency = useSelector((state) => state.currency.value);
 
   // const locationRef = useRef(null);
   const [stateBounds, setStateBounds] = useState(null);
@@ -84,28 +85,26 @@ export const SideFilter = ({
   const end = (endVal / MAX_PRICE) * 100;
 
   // robust RTL detection (guard document for SSR)
-  const isRtl = (typeof window !== "undefined") && (
-    (i18n?.dir && i18n.dir() === "rtl") ||
-    i18n?.language === "ar" ||
-    document?.documentElement?.dir === "rtl"
-  );
+  const isRtl =
+    typeof window !== "undefined" &&
+    ((i18n?.dir && i18n.dir() === "rtl") ||
+      i18n?.language === "ar" ||
+      document?.documentElement?.dir === "rtl");
 
   // inline style for the filled range: swap left/right on RTL
   const filledStyle = isRtl
     ? {
-      right: `${start}%`,
-      left: `${100 - end}%`,
-      top: "50%",
-      transform: "translateY(-50%)",
-    }
+        right: `${start}%`,
+        left: `${100 - end}%`,
+        top: "50%",
+        transform: "translateY(-50%)",
+      }
     : {
-      left: `${start}%`,
-      right: `${100 - end}%`,
-      top: "50%",
-      transform: "translateY(-50%)",
-    };
-
-
+        left: `${start}%`,
+        right: `${100 - end}%`,
+        top: "50%",
+        transform: "translateY(-50%)",
+      };
 
   return (
     <aside className="bg-white shadow rounded-lg p-3 space-y-7">
@@ -215,20 +214,22 @@ export const SideFilter = ({
               types: ["geocode"],
               componentRestrictions: reduxCoords?.country
                 ? {
-                  country: Country.getAllCountries()
-                    .find((c) => c.name === reduxCoords.country)
-                    ?.isoCode.toLowerCase(),
-                }
+                    country: Country.getAllCountries()
+                      .find((c) => c.name === reduxCoords.country)
+                      ?.isoCode.toLowerCase(),
+                  }
                 : {},
               bounds: cityBounds || stateBounds || null,
               strictBounds: !!(cityBounds || stateBounds),
             }}
-            className={`${i18n.language === "ar" ? "pl-11" : "pr-10"
-              } w-full text-black rounded p-3 bg-gray-100 focus:outline-none`}
+            className={`${
+              i18n.language === "ar" ? "pl-11" : "pr-10"
+            } w-full text-black rounded p-3 bg-gray-100 focus:outline-none`}
           />
           <i
-            className={`fa-solid fa-magnifying-glass ${i18n.language === "ar" ? "left-2" : "right-2"
-              } absolute top-4 text-center`}
+            className={`fa-solid fa-magnifying-glass ${
+              i18n.language === "ar" ? "left-2" : "right-2"
+            } absolute top-4 text-center`}
           />
         </div>
       </div>
@@ -239,20 +240,22 @@ export const SideFilter = ({
           <button
             type="button"
             onClick={() => handleChange("type", "SALE")}
-            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${filters?.type === "SALE"
-              ? "bg-primary text-white"
-              : "hover:bg-gray-100"
-              }`}
+            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${
+              filters?.type === "SALE"
+                ? "bg-primary text-white"
+                : "hover:bg-gray-100"
+            }`}
           >
             {t("forSale")}
           </button>
           <button
             type="button"
             onClick={() => handleChange("type", "RENT")}
-            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${filters?.type === "RENT"
-              ? "bg-primary text-white"
-              : "hover:bg-gray-100"
-              }`}
+            className={`flex-1 px-3 py-2 border border-[#DDDDDD] rounded-lg text-sm ${
+              filters?.type === "RENT"
+                ? "bg-primary text-white"
+                : "hover:bg-gray-100"
+            }`}
           >
             {t("forRent")}
           </button>
@@ -417,7 +420,9 @@ export const SideFilter = ({
           <div className="flex flex-col w-[50%] text-base font-bold">
             {t("min")}
             <div className="relative">
-              <p className="absolute top-4 left-2 font-normal">$</p>
+              <p className="absolute top-4 left-2 font-normal">
+                {currency === "SYP" ? "£" : "$"}
+              </p>
               <input
                 type="number"
                 min="0"
@@ -446,7 +451,9 @@ export const SideFilter = ({
           <div className="flex flex-col w-[50%] text-base font-bold">
             {t("max")}
             <div className="relative">
-              <p className="absolute top-4 left-2 font-normal">$</p>
+              <p className="absolute top-4 left-2 font-normal">
+                {currency === "SYP" ? "£" : "$"}
+              </p>
               <input
                 type="number"
                 min="0"
