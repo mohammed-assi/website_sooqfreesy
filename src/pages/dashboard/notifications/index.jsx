@@ -202,7 +202,7 @@ export const Notifictions = () => {
                   checked={notificationsEnabled}
                   onChange={handleToggle}
                 />
-                <div class="group peer bg-white rounded-full duration-300 w-[33px] h-[19px] ring-1 ring-gray-500 after:duration-300 after:bg-gray-500 peer-checked:after:bg-primary peer-checked:ring-primary after:rounded-full after:absolute after:h-3 after:w-3 after:top-[5px] after:left-[3px] after:flex after:justify-center after:items-center peer-checked:after:translate-x-[14px] peer-hover:after:scale-95"></div>
+                <div className="group peer bg-white rounded-full duration-300 w-[33px] h-[19px] ring-1 ring-gray-500 after:duration-300 after:bg-gray-500 peer-checked:after:bg-primary peer-checked:ring-primary after:rounded-full after:absolute after:h-3 after:w-3 after:top-[5px] after:left-[3px] after:flex after:justify-center after:items-center peer-checked:after:translate-x-[14px] peer-hover:after:scale-95"></div>
               </label>
             </div>
           </div>

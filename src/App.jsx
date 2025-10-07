@@ -18,6 +18,7 @@ import {
   getToken,
   isSupported,
   onMessage,
+  onBackgroundMessage,
 } from "firebase/messaging";
 import { initializeApp } from "firebase/app";
 import { setFcmToken } from "./redux/slices/tokenSlice";
@@ -111,7 +112,11 @@ function App() {
         console.error("Error getting token:", err);
       }
       onMessage(messaging, (payload) => {
-        console.log("messageeeeee", payload);
+        console.log("messaging", payload);
+        setNotification(payload?.notification);
+      });
+      onBackgroundMessage(messaging, (payload) => {
+        console.log("onBackgroundMessage", payload);
         setNotification(payload?.notification);
       });
     };
