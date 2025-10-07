@@ -46,19 +46,22 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
     phone: yup
       .string()
       .nullable()
-      .test("is-valid", t("phoneInvalid"), function (value) {
-        if (!value) return true;
+      .matches(/^\d+$/, t("phoneInvalid"))
+      .min(8, t("phoneInvalid"))
+      .max(12, t("phoneInvalid")),
+    // .test("is-valid", t("phoneInvalid"), function (value) {
+    //   if (!value) return true;
 
-        try {
-          const phoneNumber = parsePhoneNumberFromString(
-            value,
-            countryMeta.code.toUpperCase()
-          );
-          return phoneNumber?.isValid() || false;
-        } catch {
-          return false;
-        }
-      }),
+    //   try {
+    //     const phoneNumber = parsePhoneNumberFromString(
+    //       value,
+    //       countryMeta.code.toUpperCase()
+    //     );
+    //     return phoneNumber?.isValid() || false;
+    //   } catch {
+    //     return false;
+    //   }
+    // }),
     gender: yup.string().when("$action", {
       is: "profile",
       then: (schema) => schema.required(t("genderRequired")),

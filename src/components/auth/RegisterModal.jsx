@@ -53,19 +53,22 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
       then: (schema) =>
         schema
           .required(t("userPhoneRequired"))
-          .test("is-valid", t("phoneInvalid"), function (value) {
-            if (!value) return false;
+          .matches(/^\d+$/, t("phoneInvalid"))
+          .min(8, t("phoneInvalid"))
+          .max(12, t("phoneInvalid")),
+      // .test("is-valid", t("phoneInvalid"), function (value) {
+      //   if (!value) return false;
 
-            try {
-              const phoneNumber = parsePhoneNumberFromString(
-                value,
-                countryMeta.code.toUpperCase()
-              );
-              return phoneNumber?.isValid() || false;
-            } catch {
-              return false;
-            }
-          }),
+      //   try {
+      //     const phoneNumber = parsePhoneNumberFromString(
+      //       value,
+      //       countryMeta.code.toUpperCase()
+      //     );
+      //     return phoneNumber?.isValid() || false;
+      //   } catch {
+      //     return false;
+      //   }
+      // }),
     }),
     username: Yup.string().when("$tab", {
       is: 2,
@@ -335,15 +338,17 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                   setCountryCode(963);
                   setUserNameAvailable({});
                 }}
-                className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${activeTab === tab.id
-                  ? "text-primary"
-                  : "text-gray-600 hover:text-primary"
-                  }`}
+                className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
+                  activeTab === tab.id
+                    ? "text-primary"
+                    : "text-gray-600 hover:text-primary"
+                }`}
               >
                 {tab.label}
                 <span
-                  className={`absolute left-0 -bottom-[1px] h-[2px] w-full rounded-full transition-colors ${activeTab === tab.id ? "bg-primary" : "bg-transparent"
-                    }`}
+                  className={`absolute left-0 -bottom-[1px] h-[2px] w-full rounded-full transition-colors ${
+                    activeTab === tab.id ? "bg-primary" : "bg-transparent"
+                  }`}
                 />
               </button>
             ))}
@@ -387,7 +392,9 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                         enableSearch={true}
                         containerClass="!w-full"
                         inputClass="!hidden"
-                        buttonClass={`${i18n.language === "ar" ? "right-7" : ""} !bg-gray-100 !border-none !rounded !p-0`}
+                        buttonClass={`${
+                          i18n.language === "ar" ? "right-7" : ""
+                        } !bg-gray-100 !border-none !rounded !p-0`}
                         dropdownClass="custom-dropdown"
                         onChange={(value, country) => {
                           setCountryCode(country?.dialCode);
@@ -420,10 +427,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                         setPhoneNumber(onlyNums);
                         setValue("phone", onlyNums, { shouldValidate: true });
                       }}
-                      className={`${i18n.language === "ar"
-                        ? "text-right pl-12"
-                        : "text-left pr-12"
-                        } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                      className={`${
+                        i18n.language === "ar"
+                          ? "text-right pl-12"
+                          : "text-left pr-12"
+                      } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                       placeholder={t("enterPhoneNo")}
                     />
                   </div>
@@ -509,16 +517,19 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                       type={toggle === true ? "password" : "text"}
                       id="password"
                       placeholder={t("enterPassword")}
-                      className={`${i18n.language === "ar" ? "pl-12" : "pr-12"
-                        } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                      className={`${
+                        i18n.language === "ar" ? "pl-12" : "pr-12"
+                      } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                       autoComplete="off"
                     />
                     <i
-                      className={`${toggle === true
-                        ? "fa-regular fa-eye-slash show-pass"
-                        : "fa-regular fa-eye show-pass"
-                        } ${i18n?.language === "ar" ? "left-3" : "right-3"
-                        } absolute top-4  cursor-pointer text-center`}
+                      className={`${
+                        toggle === true
+                          ? "fa-regular fa-eye-slash show-pass"
+                          : "fa-regular fa-eye show-pass"
+                      } ${
+                        i18n?.language === "ar" ? "left-3" : "right-3"
+                      } absolute top-4  cursor-pointer text-center`}
                       onClick={handlepass}
                     />
                   </div>
@@ -538,15 +549,18 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                       type={toggleConfirm === true ? "password" : "text"}
                       {...register("confirmPassword")}
                       placeholder={t("enterConfirmPassword")}
-                      className={`${i18n.language === "ar" ? "pl-12" : "pr-12"
-                        } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                      className={`${
+                        i18n.language === "ar" ? "pl-12" : "pr-12"
+                      } w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                     />
                     <i
-                      className={`${toggleConfirm === true
-                        ? "fa-regular fa-eye-slash show-pass"
-                        : "fa-regular fa-eye show-pass"
-                        } ${i18n?.language === "ar" ? "left-3" : "right-3"
-                        } absolute top-4  cursor-pointer text-center`}
+                      className={`${
+                        toggleConfirm === true
+                          ? "fa-regular fa-eye-slash show-pass"
+                          : "fa-regular fa-eye show-pass"
+                      } ${
+                        i18n?.language === "ar" ? "left-3" : "right-3"
+                      } absolute top-4  cursor-pointer text-center`}
                       onClick={handlepassConfirm}
                     />
                   </div>

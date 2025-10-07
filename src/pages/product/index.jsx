@@ -166,7 +166,7 @@ export const ProductPage = () => {
     else if (filters.city) filterObj.city = filters.city;
     if (filters.type) filterObj.post_type = filters.type;
     if (searchTextDebounce) filterObj.searchtext = searchTextDebounce;
-    if (location?.state?.search) filterObj.search = location.state.search;
+    if (location?.state?.search) filterObj.searchtext = location.state.search;
     if (selectedState) filterObj.state = selectedState;
     if (coords?.lat) filterObj.latitude = Number(coords.lat);
     if (coords?.lng) filterObj.longitude = Number(coords.lng);

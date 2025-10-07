@@ -18,8 +18,9 @@ import {
   getToken,
   isSupported,
   onMessage,
-  onBackgroundMessage,
 } from "firebase/messaging";
+import { onBackgroundMessage } from "firebase/messaging/sw";
+
 import { initializeApp } from "firebase/app";
 import { setFcmToken } from "./redux/slices/tokenSlice";
 import { showInfoToast } from "./utils/toastUtils";
