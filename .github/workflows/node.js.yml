@@ -1,0 +1,48 @@
+name: Node.js CI & Deploy
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Create .env
+        run: echo "${{ secrets.DOTENV_FILE }}" > .env
+
+      - name: Install & Build
+        run: |
+          npm i --force
+          npm run build --if-present
+
+      - name: Check dist folder
+        run: ls -la dist || echo "⚠️ Dist folder not found!"
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Clean old files
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.DEPLOY_PORT || 22 }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+          "rm -rf /var/www/html/souq-syria/souq-syria-frontend/build/*"
+
+      - name: Upload dist
+        run: |
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.DEPLOY_PORT || 22 }} -r dist/. \
+          ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/html/souq-syria/souq-syria-frontend/build
+          echo "✅ Dist deployed successfully."
