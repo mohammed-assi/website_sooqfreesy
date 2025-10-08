@@ -120,7 +120,11 @@ export const Notifictions = () => {
           handlegetNotificationCount(NOTIFICATION.COUNTS);
           dispatch(setCount(count - 1));
           if (data?.type === "REVIEW") {
-            navigate(ROUTE.USER_PROFILE);
+            if (data?.listing_id !== null) {
+              navigate(`${ROUTE.PRODUCT_PAGE}/${Number(data?.listing_id)}`);
+            } else {
+              navigate(ROUTE.USER_PROFILE);
+            }
           } else if (data?.type === "POST") {
             navigate(ROUTE.MY_ADS);
           }
@@ -177,6 +181,7 @@ export const Notifictions = () => {
   //   }
   // };
 
+  console.log("notificationList", notificationList);
   return (
     <>
       {loading ? (
@@ -195,7 +200,7 @@ export const Notifictions = () => {
               {/* <button onClick={() => setShowSetttingModal(true)}>
                 <img src={notificationSetting} alt="icon" />
               </button> */}
-              <label class="relative inline-flex items-center cursor-pointer">
+              <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   className="sr-only peer"
@@ -214,7 +219,13 @@ export const Notifictions = () => {
                   onClick={() => {
                     if (item?.is_read) {
                       if (item?.type === "REVIEW") {
-                        navigate(ROUTE.USER_PROFILE);
+                        if (item?.listing_id) {
+                          navigate(
+                            `${ROUTE.PRODUCT_PAGE}/${Number(item?.listing_id)}`
+                          );
+                        } else {
+                          navigate(ROUTE.USER_PROFILE);
+                        }
                       } else if (item?.type === "POST") {
                         navigate(ROUTE.MY_ADS);
                       }

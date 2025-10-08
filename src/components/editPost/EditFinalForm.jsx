@@ -102,6 +102,7 @@ export const EditFinalForm = ({
           type="file"
           accept="image/*"
           ref={fileInputRef}
+          multiple
           onChange={handleFileChange}
           className="hidden"
         />

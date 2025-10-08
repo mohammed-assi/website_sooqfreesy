@@ -4,9 +4,11 @@ import { postRequest } from "../../config/apiFunctions";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import { useTranslation } from "react-i18next";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
+import { useParams } from "react-router-dom";
 
 export const AddReviewModal = ({ onClose, postDetailData }) => {
   const { i18n, t } = useTranslation();
+  const { id } = useParams();
   const [rating, setRating] = useState("");
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,6 +25,7 @@ export const AddReviewModal = ({ onClose, postDetailData }) => {
     } else {
       const payload = {
         seller_id: postDetailData?.user?.userid,
+        listing_id: id,
         rating: rating,
         review_text: feedback,
       };

@@ -93,6 +93,7 @@ export const FinalForm = ({
         <input
           type="file"
           accept="image/*"
+          multiple
           ref={fileInputRef}
           onChange={handleFileChange}
           className="hidden"
