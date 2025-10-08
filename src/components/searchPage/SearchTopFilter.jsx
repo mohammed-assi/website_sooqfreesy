@@ -48,7 +48,7 @@ export const SearchTopFilter = ({
           </button>
           <button
             onClick={() => setToggleGrid(!toggleGrid)}
-            className="p-2 rounded hover:bg-gray-100"
+            className="p-2 rounded hover:bg-gray-100 hidden md:block"
           >
             <img
               src={toggleGrid ? gridIcon : listIcon}
