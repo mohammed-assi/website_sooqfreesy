@@ -23,6 +23,7 @@ import {
   setCount,
   setNotifications,
 } from "../../redux/slices/notificationSlice";
+import Catbar from "../../components/Home/Catbar";
 
 export const WebHead = () => {
   const { t } = useTranslation();
@@ -42,6 +43,8 @@ export const WebHead = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [suggestionList, setSuggestionList] = useState([]);
+  const [allCategory, setAllCategory] = useState([]);
+
 
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
@@ -186,6 +189,21 @@ export const WebHead = () => {
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const getAllCategory = async (url) => {
+    try {
+      const response = await getRequest(url);
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        setAllCategory(response?.data?.data?.categories || []);
+      }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
+
+  useEffect(() => {
+    getAllCategory(CUSTOMER.CATEGORY_LIST);
   }, []);
 
   return (
@@ -766,6 +784,8 @@ export const WebHead = () => {
           </nav>
         </div>
       </header>
+                <Catbar allCategory={allCategory}/>
+      
 
       <LoginModal
         show={showLoginModal}

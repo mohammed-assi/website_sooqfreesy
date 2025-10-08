@@ -43,7 +43,7 @@ export const EditFinalForm = ({
       preview: URL.createObjectURL(file),
     }));
 
-    const updated = [...pictures, ...newPictures].slice(0, 5);
+    const updated = [...pictures, ...newPictures].slice(0, 10);
 
     setValue("pictures", updated, { shouldValidate: true });
     event.target.value = "";
@@ -106,7 +106,7 @@ export const EditFinalForm = ({
           onChange={handleFileChange}
           className="hidden"
         />
-        {pictures.length < 5 && (
+        {pictures.length < 10 && (
           <button
             type="button"
             onClick={handleButtonClick}

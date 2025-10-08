@@ -4,7 +4,8 @@ export const LOCAL_STORAGE = {
   REFRESH_TOKEN: "refresh_token",
   COORDS: "LOCATION_INFO",
   FCM_TOKEN: "fcm_token",
-  CURRENCY: "currency"
+  CURRENCY: "currency",
+  RECENT_VIEWS: 'recent_views'
 };
 
 export const ROUTE = {

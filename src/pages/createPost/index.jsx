@@ -61,7 +61,7 @@ export const CreatePost = () => {
         })
       )
       .min(1, t("oneImage"))
-      .max(5, t("fiveImages")),
+      .max(10, t("fiveImages")),
   };
 
   const step1Schema = Yup.object().shape({

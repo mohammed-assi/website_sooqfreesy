@@ -92,7 +92,7 @@ export const HelpSupport = () => {
         <ScreenLoader />
       ) : (
         <div className="spacer-x">
-          <div className="pt-15">
+          <div className="pt-10 md:pt-15">
             <h1 className="main-heading">{t("helpAndSupport")}</h1>
 
             <div className="flex py-8">

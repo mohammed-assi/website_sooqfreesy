@@ -23,7 +23,7 @@ import { ProductCard } from "../../common/card/ProductCard";
 import { AddReviewModal } from "../../components/productDetails/AddReviewModal";
 import RatingStar from "../../common/ratingStar/RatingStar";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { ROUTE } from "../../config/constants";
+import { LOCAL_STORAGE, ROUTE } from "../../config/constants";
 import { InfoModal } from "../../common/modal/InfoModal";
 import { ReportListModal } from "../../components/productDetails/ReportListModal";
 import { getRequest } from "../../config/apiFunctions";
@@ -163,6 +163,13 @@ export const ProductDetail = () => {
   useEffect(() => {
     if (id) {
       getPostDeatilsCallBack();
+      const existing =
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE.RECENT_VIEWS)) || [];
+      const currentId = Number(id);
+      const filtered = existing.filter((item) => item !== currentId);
+      filtered.push(currentId);
+      const limited = filtered.slice(-8);
+      localStorage.setItem(LOCAL_STORAGE.RECENT_VIEWS, JSON.stringify(limited));
     }
   }, [id, currency]);
 
@@ -176,14 +183,13 @@ export const ProductDetail = () => {
     setShareLink(`${shareURL}${location.pathname}`);
   }, [location]);
 
-
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
 
   return (
     <>
       <div className="spacer-x">
-        <div className="pt-15">
+        <div className="pt-10 md:pt-15">
           <div className="text-sm text-gray-500 mb-2">
             <Link className="hover:text-primary" to={ROUTE.ROOT}>
               {t("home")}
@@ -291,7 +297,9 @@ export const ProductDetail = () => {
 
             <div className="lg:w-1/3 w-full lg:ps-5 space-y-4">
               <div className="flex justify-between items-center">
-                <span></span>
+                <span className="font-bold bg-gray-100 px-6 py-1 rounded-full">
+                  {t("listingId")}: {postDetailData?.id}
+                </span>
                 <div className="flex items-center gap-5">
                   <div className="flex items-center gap-1 text-sm">
                     <img src={eyeIcon} alt="icon" />
@@ -535,9 +543,17 @@ export const ProductDetail = () => {
           <div className="pb-8">
             <div className="flex justify-between items-center pb-4">
               <h2 className="main-heading">{t("similarPosts")}</h2>
-              <Link to={ROUTE.PRODUCT_PAGE}>
-                <h2 className="font-bold text-md">{t("viewAll")}</h2>
-              </Link>
+
+              <h2
+                onClick={() => {
+                  navigate(ROUTE.PRODUCT_PAGE, {
+                    state: { subCatId: postDetailData?.sub_category_id },
+                  });
+                }}
+                className="font-bold text-md cursor-pointer"
+              >
+                {t("viewAll")}
+              </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {allPosts?.length > 0 ? (

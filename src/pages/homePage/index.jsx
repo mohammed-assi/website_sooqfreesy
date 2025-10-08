@@ -12,24 +12,27 @@ import { ScreenLoader } from "../../utils/screenLoader";
 import { setNotifications } from "../../redux/slices/notificationSlice";
 import { useTranslation } from "react-i18next";
 import { LOCAL_STORAGE } from "../../config/constants";
+import Catbar from "../../components/Home/Catbar";
 
 export const HomePage = () => {
   const { t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const currency = useSelector((state) => state.currency.value);
+  const viewPostIds =
+    JSON.parse(localStorage.getItem(LOCAL_STORAGE.RECENT_VIEWS)) || [];
   const dispatch = useDispatch();
   const { accessToken } = useSelector((state) => state.auth);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("forYou");
+  const [activeTab, setActiveTab] = useState("worldwide");
   const reduxCoords = useSelector((state) => state.location.coords);
   const [allCategory, setAllCategory] = useState([]);
 
   const tabs = [
-    { id: "forYou", label: t("forYou") },
-    { id: "nearby", label: t("nearby") },
     { id: "worldwide", label: t("worldwide") },
+    { id: "nearby", label: t("nearby") },
+    { id: "forYou", label: t("forYou") },
   ];
 
   const getAllPosts = async (url) => {
@@ -39,13 +42,14 @@ export const HomePage = () => {
       setAllPosts(response?.data?.data?.posts);
       setLoading(false);
     }
+    setLoading(false);
   };
 
   const getAllPostsCallBack = () => {
     let filters = {};
 
     if (activeTab === "forYou") {
-      filters = { foryou: true };
+      filters = { foryou: true, listingIds: viewPostIds };
     } else if (activeTab === "nearby") {
       filters = {
         latitude: reduxCoords?.lat || "",
@@ -118,7 +122,9 @@ export const HomePage = () => {
       ) : (
         <>
           <Banner allCategory={allCategory} />
-          <ImageSlider />
+          <section className="hidden md:block">
+            <ImageSlider />
+          </section>
           <Products
             allPosts={allPosts}
             imagePath={imagePath}
@@ -127,6 +133,13 @@ export const HomePage = () => {
             activeTab={activeTab}
             tabs={tabs}
           />
+          <section className="md:hidden">
+            <ImageSlider />
+          </section>
+          <div className="spacer-x pb-15 md:pb-20 pt-12 md:pt-0">
+            <h3 className="main-heading">{t("welcomeSyria")}</h3>
+            <p className="text-gray-500">{t("welcomeSyriaIntro")}</p>
+          </div>
           <GetApplications />
 
           <LoginModal

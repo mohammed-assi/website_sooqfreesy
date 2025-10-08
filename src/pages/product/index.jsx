@@ -62,6 +62,7 @@ export const ProductPage = () => {
   const lastRequestKeyRef = useRef(null);
   const requestTimerRef = useRef(null);
   const hasUsedSearchText = useRef(false);
+  const processedSubCatRef = useRef(new Set());
 
   /** ------------------------------
    * Handle Filter Changes
@@ -76,8 +77,16 @@ export const ProductPage = () => {
   };
 
   const handleSelectSubcatIds = (id) => {
+    // setSubcategoryIds((prev) =>
+    //   prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    // );
+    // setCurrentPage(1);
+    // clearLocationState();
+    const idNum = Number(id);
     setSubcategoryIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(idNum)
+        ? prev.filter((item) => item !== idNum)
+        : [...prev, idNum]
     );
     setCurrentPage(1);
     clearLocationState();
@@ -245,6 +254,8 @@ export const ProductPage = () => {
    * Initial Fetch
    * ------------------------------ */
   useEffect(() => {
+    if (location.state?.subCatId) return;
+
     const filterObj = buildFilterObject();
     const url =
       Object.keys(filterObj).length === 0
@@ -397,6 +408,30 @@ export const ProductPage = () => {
     const url = buildUrlForRequest(currentPage, false);
     getAllPosts(url);
   }, [currency]);
+
+  useEffect(() => {
+    const rawId = location.state?.subCatId;
+    if (!rawId) return;
+
+    const key = String(rawId);
+    // If we've already processed this id, skip
+    if (processedSubCatRef.current.has(key)) return;
+    processedSubCatRef.current.add(key);
+
+    const idNum = Number(rawId);
+    if (isNaN(idNum)) return;
+
+    setSubcategoryIds((prev) =>
+      prev.includes(idNum)
+        ? prev.filter((item) => item !== idNum)
+        : [...prev, idNum]
+    );
+    setCurrentPage(1);
+
+    // DO NOT clear location.state synchronously here — keeping it prevents the race.
+    // If you still want to remove the navigation state afterwards, do it from
+    // another user action (like when filters change) using your existing clearLocationState().
+  }, [location.state?.subCatId]);
 
   if (loading) return <ScreenLoader />;
 

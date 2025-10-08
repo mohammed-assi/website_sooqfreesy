@@ -27,7 +27,7 @@ export const ImageSlider = () => {
       {items.map((item, i) => (
         <SwiperSlide key={i}>
           <div
-            className="w-full h-100 bg-cover bg-center relative flex"
+            className="w-full lg:h-100 bg-cover bg-center relative flex"
             style={{ backgroundImage: `url(${item.imageUrl})` }}
           >
             <div className="spacer-x w-full flex flex-col justify-end text-center text-white md:text-left h-full py-20">

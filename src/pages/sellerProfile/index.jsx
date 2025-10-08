@@ -343,7 +343,7 @@ export const SellerProfile = () => {
   return (
     <>
       <div className="spacer-x pb-10">
-        <div className="pt-15">
+        <div className="pt-10 md:pt-15">
           <div className="text-sm text-gray-500 mb-2">
             <Link className="hover:text-primary" to={ROUTE.ROOT}>
               {t("home")}

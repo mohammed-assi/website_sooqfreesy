@@ -32,26 +32,26 @@ export const Banner = ({ allCategory }) => {
   //   },
   // ];
 
-const iconMap = {
-  13: estate, // Real estate
-  3: vehicle, // Vehicle
-  2: other,   // Other
-};
+  const iconMap = {
+    13: estate,
+    3: vehicle,
+    2: other,
+  };
 
-const allowedCategoryIds = [13, 3, 2];
+  const allowedCategoryIds = [13, 3, 2];
 
-const categories = useMemo(() => {
-  if (!allCategory?.length) return [];
+  const categories = useMemo(() => {
+    if (!allCategory?.length) return [];
 
-  return allCategory
-    .filter((cat) => allowedCategoryIds.includes(cat.id)) // only 3 categories
-    .map((cat) => ({
-      id: cat.id,
-      name: cat.name,
-      icon: iconMap[cat.id] || other,
-      categoryName: cat.name,
-    }));
-}, [allCategory]);
+    return allCategory
+      .filter((cat) => allowedCategoryIds.includes(cat.id))
+      .map((cat) => ({
+        id: cat.id,
+        name: cat.name,
+        icon: iconMap[cat.id] || other,
+        categoryName: cat.name,
+      }));
+  }, [allCategory]);
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -63,11 +63,10 @@ const categories = useMemo(() => {
     }
   };
 
-  console.log("allCategory", allCategory);
   return (
     <div
       // dir={i18n.language === "ar" ? "rtl" : "ltr"}
-      className="relative flex text-center items-center justify-center min-h-150 py-17 bg-gradient-to-r from-orange-100 to-blue-100"
+      className="relative flex text-center items-center justify-center lg:min-h-150 md:py-17 py-10 bg-gradient-to-r from-orange-100 to-blue-100"
     >
       <div className="absolute bottom-0 start-0 hidden md:block">
         <img src={bannerLeft} alt="imageee" />
@@ -78,11 +77,11 @@ const categories = useMemo(() => {
       </div>
 
       <div className="w-150 relative z-10 px-3">
-        <h1 className="font-bold text-3xl md:text-4xl lg:text-heading">
+        <h1 className="font-bold text-2xl md:text-4xl lg:text-heading">
           {t("homeBannerHeading")}
         </h1>
 
-        <div className="my-8 shadow-md  flex justify-between">
+        <div className="md:my-8 my-6 shadow-md flex justify-between">
           <input
             type="text"
             placeholder={t("bannerSearchPlaceHolder")}
@@ -102,11 +101,11 @@ const categories = useMemo(() => {
           </button>
         </div>
 
-        <h3 className="font-semibold text-subHeading">
+        <h3 className="font-semibold md:text-subHeading">
           {t("homeBannerSubheading")}
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 mt-6">
+        <div className="md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 mt-6 hidden">
           {categories.map((category) => (
             <button
               onClick={() => {

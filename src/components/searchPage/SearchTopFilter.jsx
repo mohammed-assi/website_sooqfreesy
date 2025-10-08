@@ -25,7 +25,7 @@ export const SearchTopFilter = ({
   const reduxCoords = useSelector((state) => state.location.coords);
 
   return (
-    <div className="pt-15">
+    <div className="pt-10 md:pt-15">
       <div className="text-sm text-gray-500 mb-2">
         <Link className="hover:text-primary" to={ROUTE.ROOT}>
           {t("home")}
@@ -34,7 +34,7 @@ export const SearchTopFilter = ({
         {searchText !== "" ? t("searchButton") : t("products")}
       </div>
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between md:mb-6">
         <h1 className="main-heading">
           {t("buySell")}{" "}
           {reduxCoords?.country ? `${t("in")} ${reduxCoords?.country}` : ""}
