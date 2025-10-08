@@ -113,7 +113,7 @@ export const HomePage = () => {
 
   useEffect(() => {
     getAllPostsCallBack();
-  }, [accessToken, activeTab, currency]);
+  }, [accessToken, activeTab, currency, reduxCoords]);
 
   return (
     <>
