@@ -45,7 +45,6 @@ export const WebHead = () => {
   const [suggestionList, setSuggestionList] = useState([]);
   const [allCategory, setAllCategory] = useState([]);
 
-
   const handleMenuToggle = () => {
     setMenuOpen(!menuOpen);
   };
@@ -427,7 +426,7 @@ export const WebHead = () => {
               {!isCreateOrUpdate ? (
                 <>
                   <div
-                    className={`menu-wrap flex w-full justify-between z-10 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 pl-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${
+                    className={`menu-wrap flex w-full justify-between z-30 lg:transform-none transition-all duration-300 ease-in-out lg:static lg:bg-transparent lg:shadow-none lg:h-auto lg:flex-row lg:items-center lg:gap-6 lg:justify-end lg:pt-0 lg:pb-0 pl-7 flex-col bg-white shadow-lg top-0 left-0 h-full ${
                       menuOpen ? "translate-x-0" : "-translate-x-full"
                     } lg:translate-x-0`}
                   >
@@ -759,7 +758,7 @@ export const WebHead = () => {
                       </span>
                     </button> */}
                     <div
-                      className={`menu-overlay lg:hidden bg-black/75 w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
+                      className={`menu-overlay lg:hidden bg-black/75 z-[21] w-full h-full fixed top-0 left-0 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-300 ease-in-out ${
                         menuOpen &&
                         "opacity-100 !pointer-events-auto cursor-pointer"
                       }`}
@@ -784,8 +783,7 @@ export const WebHead = () => {
           </nav>
         </div>
       </header>
-                <Catbar allCategory={allCategory}/>
-      
+      <Catbar allCategory={allCategory} />
 
       <LoginModal
         show={showLoginModal}

@@ -28,7 +28,7 @@ export const SearchTopFilter = ({
     <div className="pt-10 md:pt-15">
       <div className="text-sm text-gray-500 mb-2">
         <Link className="hover:text-primary" to={ROUTE.ROOT}>
-          {t("home")}
+          {t("home")}  
         </Link>{" "}
         <span className="mx-1">{">"}</span>{" "}
         {searchText !== "" ? t("searchButton") : t("products")}

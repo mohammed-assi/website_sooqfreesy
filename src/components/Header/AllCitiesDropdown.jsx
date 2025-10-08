@@ -14,43 +14,90 @@ export const AllCitiesDropdown = () => {
   const dropdownRef = useRef(null); // attach to wrapper
   const [location, setLocation] = useState("");
 
+  // const handleUseMyLocation = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       async (pos) => {
+  //         const lat = pos.coords.latitude;
+  //         const lng = pos.coords.longitude;
+
+  //         try {
+  //           const res = await fetch(
+  //             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}`
+  //           );
+  //           const data = await res.json();
+
+  //           if (data.status === "OK") {
+  //             const result = data.results[0];
+  //             const countryObj = result.address_components.find((c) =>
+  //               c.types.includes("country")
+  //             );
+  //             const country = countryObj ? countryObj.long_name : "";
+
+  //             const newCoords = { lat, lng, country };
+  //             setLocation(result.formatted_address);
+  //             dispatch(setLocationCoords(newCoords));
+  //             setOpen(false);
+  //           }
+  //         } catch (err) {
+  //           console.error("Reverse geocoding failed:", err);
+  //         }
+  //       },
+  //       (err) => {
+  //         console.error("Error fetching location:", err);
+  //         alert("Unable to fetch your location. Please allow location access.");
+  //       }
+  //     );
+  //   } else {
+  //     alert("Geolocation is not supported by your browser.");
+  //   }
+  // };
+
   const handleUseMyLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-
-          try {
-            const res = await fetch(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}`
-            );
-            const data = await res.json();
-
-            if (data.status === "OK") {
-              const result = data.results[0];
-              const countryObj = result.address_components.find((c) =>
-                c.types.includes("country")
-              );
-              const country = countryObj ? countryObj.long_name : "";
-
-              const newCoords = { lat, lng, country };
-              setLocation(result.formatted_address);
-              dispatch(setLocationCoords(newCoords));
-              setOpen(false);
-            }
-          } catch (err) {
-            console.error("Reverse geocoding failed:", err);
-          }
-        },
-        (err) => {
-          console.error("Error fetching location:", err);
-          alert("Unable to fetch your location. Please allow location access.");
-        }
-      );
-    } else {
+    if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser.");
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        try {
+          const res = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_API_KEY}`
+          );
+          const data = await res.json();
+
+          if (data.status === "OK") {
+            const result = data.results[0];
+            const countryObj = result.address_components.find((c) =>
+              c.types.includes("country")
+            );
+            const country = countryObj ? countryObj.long_name : "";
+
+            const newCoords = { lat, lng, country };
+            setLocation(result.formatted_address);
+            dispatch(setLocationCoords(newCoords));
+            setOpen(false);
+          }
+        } catch (err) {
+          console.error("Reverse geocoding failed:", err);
+        }
+      },
+      (err) => {
+        if (err.code === err.PERMISSION_DENIED) {
+          alert(
+            "Location access was denied. Please enable location permissions in your browser settings and try again."
+          );
+          // Optionally, you can guide the user to open settings with a link if supported
+        } else {
+          console.error("Error fetching location:", err);
+          alert("Unable to fetch your location. Please try again.");
+        }
+      }
+    );
   };
 
   useEffect(() => {
@@ -92,8 +139,11 @@ export const AllCitiesDropdown = () => {
 
       {open && (
         <div
-          className={`${i18n.language === "ar" ? "lg:right-0 -right-3.5" : "-left-6 lg:-right-15"
-            } absolute top-6 mt-2 w-3xs lg:w-80 rounded-md bg-white shadow-lg border p-2 z-50`}
+          className={`${
+            i18n.language === "ar"
+              ? "lg:right-0 -right-3.5"
+              : "-left-6 lg:-right-15"
+          } absolute top-6 mt-2 w-3xs lg:w-80 rounded-md bg-white shadow-lg border p-2 z-50`}
         >
           <div className="w-full space-y-2 p-2">
             <p className="text-gray-800">{t("provideLocation")}</p>
