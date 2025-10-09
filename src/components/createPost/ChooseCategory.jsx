@@ -16,7 +16,7 @@ export const ChooseCategory = ({
               <img
                 src={`${imagePath}/${item.image_url}`}
                 alt={item.name}
-                className="h-full w-full object-cover rounded-lg"
+                className="h-full w-full object-contain rounded-lg"
               />
             </div>
             <h3 className="text-center pt-4 font-bold text-xl">{item.name}</h3>

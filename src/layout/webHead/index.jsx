@@ -783,7 +783,7 @@ export const WebHead = () => {
           </nav>
         </div>
       </header>
-      <Catbar allCategory={allCategory} />
+      <Catbar allCategory={allCategory} imagePath={imagePath} />
 
       <LoginModal
         show={showLoginModal}

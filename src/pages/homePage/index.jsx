@@ -129,17 +129,15 @@ export const HomePage = () => {
     getAllPostsCallBack();
   }, [accessToken, activeTab, currency, reduxCoords]);
 
-  console.log("pageData", pageData);
-
   return (
     <>
       {loading ? (
         <ScreenLoader />
       ) : (
         <>
-          <Banner allCategory={allCategory} />
+          <Banner allCategory={allCategory} imagePath={imagePath} />
           <section className="hidden md:block">
-            <ImageSlider />
+            <ImageSlider pageData={pageData} imagePath={imagePath} />
           </section>
           <Products
             allPosts={allPosts}

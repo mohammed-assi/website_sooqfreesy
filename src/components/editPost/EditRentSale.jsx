@@ -56,7 +56,7 @@ const OptionCard = ({ onClick, imgSrc, alt, label, isActive }) => {
         <img
           src={imgSrc}
           alt={alt}
-          className="h-full w-full object-cover rounded-lg"
+          className="h-full w-full object-contain rounded-lg"
         />
       </div>
       <h3 className="text-center pt-4 font-bold text-xl">{label}</h3>

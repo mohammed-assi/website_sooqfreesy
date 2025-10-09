@@ -1,57 +1,16 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import bannerLeft from "../../assets/image/bannerLeft.png";
 import bannerRight from "../../assets/image/bannerRight.png";
 import { useTranslation } from "react-i18next";
-import estate from "../../assets/icon/estate.svg";
-import vehicle from "../../assets/icon/vehicle.svg";
-import other from "../../assets/icon/other.svg";
+// import estate from "../../assets/icon/estate.svg";
+// import vehicle from "../../assets/icon/vehicle.svg";
+// import other from "../../assets/icon/other.svg";
 import { ROUTE } from "../../config/constants";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export const Banner = ({ allCategory }) => {
+export const Banner = ({ allCategory, imagePath }) => {
   const { i18n, t } = useTranslation();
   const navigate = useNavigate();
-  // const categories = [
-  //   {
-  //     id: 1,
-  //     name: t("realEstate"),
-  //     icon: estate,
-  //     categoryName: "Real estate",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: t("vehicle"),
-  //     icon: vehicle,
-  //     categoryName: "Vehicle",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: t("others"),
-  //     icon: other,
-  //     categoryName: "Other",
-  //   },
-  // ];
-
-  const iconMap = {
-    13: estate,
-    3: vehicle,
-    2: other,
-  };
-
-  const allowedCategoryIds = [13, 3, 2];
-
-  const categories = useMemo(() => {
-    if (!allCategory?.length) return [];
-
-    return allCategory
-      .filter((cat) => allowedCategoryIds.includes(cat.id))
-      .map((cat) => ({
-        id: cat.id,
-        name: cat.name,
-        icon: iconMap[cat.id] || other,
-        categoryName: cat.name,
-      }));
-  }, [allCategory]);
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -62,6 +21,8 @@ export const Banner = ({ allCategory }) => {
       navigate(ROUTE.PRODUCT_PAGE);
     }
   };
+
+  console.log("allCategory", allCategory);
 
   return (
     <div
@@ -106,18 +67,18 @@ export const Banner = ({ allCategory }) => {
         </h3>
 
         <div className="md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 mt-6 hidden">
-          {categories.map((category) => (
+          {allCategory?.map((category) => (
             <button
               onClick={() => {
                 navigate(ROUTE.PRODUCT_PAGE, {
-                  state: { categoryName: category?.categoryName },
+                  state: { categoryName: category?.name },
                 });
               }}
               key={category.id}
               className="flex flex-col items-center justify-center border bg-white border-gray-300 rounded-xl p-6 hover:shadow-lg hover:border-none transition group"
             >
               <img
-                src={category.icon}
+                src={`${imagePath}${category?.image_url}`}
                 alt={category.name}
                 className="w-12 h-12 mb-3 group-hover:scale-110 transition"
               />

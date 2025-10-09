@@ -15,7 +15,7 @@ export const ChooseRentSale = ({
             <img
               src={`${imagePath}/${categoryData.image_url}`}
               alt={categoryData.name}
-              className="h-full w-full object-cover rounded-lg"
+              className="h-full w-full object-contain rounded-lg"
             />
           </div>
           <h3 className="text-center pt-4 font-bold text-xl">
@@ -28,7 +28,7 @@ export const ChooseRentSale = ({
             <img
               src={`${imagePath}/${categoryData.image_url}`}
               alt={categoryData.name}
-              className="h-full w-full object-cover rounded-lg"
+              className="h-full w-full object-contain rounded-lg"
             />
           </div>
           <h3 className="text-center pt-4 font-bold text-xl">
