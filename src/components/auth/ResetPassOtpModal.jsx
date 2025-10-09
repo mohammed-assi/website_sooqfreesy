@@ -31,7 +31,7 @@ export const ResetPassOtpModal = ({
     password: Yup.string()
       .required(t("userPasswordRequired"))
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_.])[A-Za-z\d!@#$%^&*_.]{8,}$/,
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
         t("passwordRegx")
       ),
     confirmPassword: Yup.string()
