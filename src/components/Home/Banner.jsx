@@ -66,7 +66,7 @@ export const Banner = ({ allCategory }) => {
   return (
     <div
       // dir={i18n.language === "ar" ? "rtl" : "ltr"}
-      className="relative flex text-center items-center justify-center lg:min-h-150 md:py-17 py-10 bg-gradient-to-r from-orange-100 to-blue-100"
+      className="relative md:flex text-center items-center justify-center lg:min-h-150 md:py-17 py-10 bg-gradient-to-r from-orange-100 to-blue-100 hidden"
     >
       <div className="absolute bottom-0 start-0 hidden md:block">
         <img src={bannerLeft} alt="imageee" />

@@ -106,6 +106,8 @@ export const SideFilter = ({
         transform: "translateY(-50%)",
       };
 
+      console.log("filters?.category", filters?.category);
+
   return (
     <aside className="bg-white shadow rounded-lg p-3 space-y-7">
       <h2 className="text-[1.5rem] font-bold mb-4">{t("filters")}</h2>
@@ -268,6 +270,7 @@ export const SideFilter = ({
         </label>
         <select
           value={filters?.category}
+          disabled={filters?.category}
           onChange={(e) => handleChange("category", e.target.value)}
           className="w-full bg-[#F5F5F5] h-[48px] rounded-lg px-3 py-2 text-sm select-filter focus:outline-none"
         >
