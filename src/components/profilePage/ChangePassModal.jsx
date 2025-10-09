@@ -18,12 +18,11 @@ export const ChangePassModal = ({ isOpen, onClose, userInfo }) => {
     password: userInfo?.is_password_set
       ? Yup.string().required(t("userPasswordRequired"))
       : Yup.string().notRequired(),
-    newPassword: Yup.string()
-      .required(t("userNewPasswordRequired"))
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
-        t("passwordRegx")
-      ),
+    newPassword: Yup.string().required(t("userNewPasswordRequired")),
+    // .matches(
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
+    //   t("passwordRegx")
+    // ),
     confirmPassword: Yup.string()
       .required(t("confirmPasswordRequired"))
       .when("newPassword", {

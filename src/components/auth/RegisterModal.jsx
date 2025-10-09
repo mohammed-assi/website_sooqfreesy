@@ -76,7 +76,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         schema
           .required(t("usernameRequired"))
           .min(3, t("usernameMin"))
-          .matches(/^[a-zA-Z0-9_]+$/, t("usernameAlphaNumOnly")),
+          // .matches(/^[a-zA-Z0-9_]+$/, t("usernameAlphaNumOnly")),
+          .matches(/^[a-z0-9_]+$/, t("usernameAlphaNumOnly")),
     }),
     email: Yup.string().when("$tab", {
       is: 2,
@@ -91,13 +92,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
     }),
     password: Yup.string().when("$tab", {
       is: 2,
-      then: (schema) =>
-        schema
-          .required(t("userPasswordRequired"))
-          .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
-            t("passwordRegx")
-          ),
+      then: (schema) => schema.required(t("userPasswordRequired")),
+      // .matches(
+      //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
+      //   t("passwordRegx")
+      // ),
     }),
     confirmPassword: Yup.string().when("$tab", {
       is: 2,
@@ -264,7 +263,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
       }
     } catch (error) {
       console.log(error);
-      showErrorToast(error?.response?.data?.message);
+      // showErrorToast(error?.response?.data?.message);
       setUserNameAvailable(error?.response?.data?.data);
     }
   };

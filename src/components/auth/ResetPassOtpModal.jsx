@@ -29,11 +29,11 @@ export const ResetPassOtpModal = ({
 
   const schema = Yup.object().shape({
     password: Yup.string()
-      .required(t("userPasswordRequired"))
-      .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
-        t("passwordRegx")
-      ),
+      .required(t("userPasswordRequired")),
+      // .matches(
+      //       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
+      //   t("passwordRegx")
+      // ),
     confirmPassword: Yup.string()
       .required(t("confirmPasswordRequired"))
       .when("newPassword", {

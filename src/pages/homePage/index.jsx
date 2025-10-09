@@ -4,7 +4,7 @@ import { GetApplications } from "../../components/Home/GetApplications";
 import { ImageSlider } from "../../components/Home/ImageSlider";
 import { Products } from "../../components/Home/Products";
 import { getRequest } from "../../config/apiFunctions";
-import { CUSTOMER, POST } from "../../config/endPoints";
+import { CONTENT, CUSTOMER, POST } from "../../config/endPoints";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import LoginModal from "../../components/auth/LoginModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +28,20 @@ export const HomePage = () => {
   const [activeTab, setActiveTab] = useState("worldwide");
   const reduxCoords = useSelector((state) => state.location.coords);
   const [allCategory, setAllCategory] = useState([]);
+  const [pageData, setPageData] = useState({});
+
+  const getPageData = async (url) => {
+    setLoading(true);
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setPageData(response?.data?.data?.content);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getPageData(`${CONTENT.GET}?type=HOME_SLIDER`);
+  }, []);
 
   const tabs = [
     { id: "worldwide", label: t("worldwide") },
@@ -114,6 +128,8 @@ export const HomePage = () => {
   useEffect(() => {
     getAllPostsCallBack();
   }, [accessToken, activeTab, currency, reduxCoords]);
+
+  console.log("pageData", pageData);
 
   return (
     <>
