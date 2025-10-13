@@ -162,12 +162,29 @@ export const ProductPage = () => {
   /** ------------------------------
    * Build Filter Object
    * ------------------------------ */
+console.log("filters.subCategory", filters.subCategory);
+console.log("subcategoryIds", subcategoryIds);
+
   const buildFilterObject = useCallback(() => {
     const filterObj = {};
     if (filters.category) filterObj.category_id = Number(filters.category);
-    if (filters.subCategory)
-      filterObj.sub_category = Number(filters.subCategory);
-    if (subcategoryIds?.length) filterObj.sub_category_id = subcategoryIds;
+    // if (filters.subCategory)
+    //   filterObj.sub_category = Number(filters.subCategory);
+    // if (subcategoryIds?.length) filterObj.sub_category_id = subcategoryIds;
+
+    if (filters.subCategory || subcategoryIds?.length) {
+    const allSubCategories = [];
+
+    if (filters.subCategory) {
+      allSubCategories.push(Number(filters.subCategory));
+    }
+
+    if (subcategoryIds?.length) {
+      allSubCategories.push(...subcategoryIds.map(Number));
+    }
+
+    filterObj.sub_category_id = allSubCategories;
+  }
     if (filters.priceRange?.[0]) filterObj.price_min = filters.priceRange[0];
     if (filters.priceRange?.[1]) filterObj.price_max = filters.priceRange[1];
     if (reduxCoords?.country) filterObj.country = reduxCoords?.country;
