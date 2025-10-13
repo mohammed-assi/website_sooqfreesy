@@ -54,6 +54,7 @@ export const ProductDetail = () => {
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
   const currency = useSelector((state) => state.currency.value);
+  const reduxCoords = useSelector((state) => state.location.coords);
   const [loading, setLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -82,8 +83,17 @@ export const ProductDetail = () => {
   };
 
   const getAllPostsCallBack = () => {
+    let filters = {};
+    if (reduxCoords?.country) {
+      filters = { country: reduxCoords?.country };
+    }
+    const queryString = Object.keys(filters).length
+      ? `&filters=${encodeURIComponent(JSON.stringify(filters))}`
+      : "";
     getAllPosts(
-      `${POST.GET_SIMILAR_POST}/${postDetailData?.id}?page=${1}&limit=8`
+      `${POST.GET_SIMILAR_POST}/${
+        postDetailData?.id
+      }?page=${1}&limit=8${queryString}`
     );
   };
 

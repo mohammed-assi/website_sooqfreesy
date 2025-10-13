@@ -81,7 +81,7 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
             </p>
             <div className="flex items-center gap-2 text-gray-500 text-xs mt-3 capitalize">
               <img src={location} alt="icon" />
-              {item?.state && <span>{item.state},</span>} {item?.city}
+              {item?.nearby_location}
             </div>
           </div>
         </div>
