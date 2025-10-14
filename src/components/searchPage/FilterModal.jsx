@@ -86,8 +86,9 @@ export const FilterModal = ({
           <button
             className="px-5 py-2 font-semibold bg-primary text-white rounded-lg hover:bg-primaryDark transition w-full"
             onClick={() => {
-              onApply({ sorting, price });
-              handleApplyFilters();
+              const values = { sorting, price };
+              onApply(values);
+              handleApplyFilters(values);
             }}
           >
             {t("applyButton")}

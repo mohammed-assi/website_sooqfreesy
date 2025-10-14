@@ -216,14 +216,15 @@ export const ProductPage = () => {
    * Build URL for API Request
    * ------------------------------ */
   const buildUrlForRequest = useCallback(
-    (page = currentPage, applySortingPrice = false) => {
+    (page = currentPage, applySortingPrice = false, passedFilters = null) => {
       const filterObj = buildFilterObject();
       let url = `${POST.GET_ALL}?page=${page}&limit=12`;
 
       if (applySortingPrice) {
         const sorting =
-          filtersModal?.sorting === "relevant" ? "relevant" : "newest";
-        const byPrice = filtersModal?.price === "lowest" ? "lowest" : "highest";
+          passedFilters?.sorting || filtersModal?.sorting || "newest";
+        const byPrice =
+          passedFilters?.price || filtersModal?.price || "highest";
         url += `&sorting=${sorting}&byPrice=${byPrice}`;
       }
 
@@ -299,8 +300,8 @@ export const ProductPage = () => {
   /** ------------------------------
    * Apply Filter Sorting
    * ------------------------------ */
-  const handleApplyFilters = () => {
-    const url = buildUrlForRequest(currentPage, true);
+  const handleApplyFilters = (values) => {
+    const url = buildUrlForRequest(currentPage, true, values);
     getAllPosts(url);
   };
 
