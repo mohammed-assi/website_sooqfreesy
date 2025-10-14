@@ -38,6 +38,8 @@ export const CUSTOMER = {
   GET_REVIEWS: `${BASEURL}/customer/reviews/get-customer-reviews`,
 
   NOTIFICTIN_COUNT: `${BASEURL}/customer/notifications-and-wishlist/count`,
+
+  BANNER_IMAGES: `${BASEURL}/customer/banner/get-all`
 };
 
 export const REPORT_LIST = {

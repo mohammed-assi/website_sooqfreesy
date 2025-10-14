@@ -224,8 +224,8 @@ export const EditPost = () => {
     formData.append("phone", data.phone || "9876543210");
     // formData.append("city", selectedCity.label || "Mohali");
     // formData.append("country", coords?.country || "Syria");
-    formData.append("city", data.city || data.country);
-    formData.append("state", data.state || data.country);
+    formData.append("city", data.city || "");
+    formData.append("state", data.state || "");
     formData.append("country", data.country);
 
     // formData.append("currency", data.currency);

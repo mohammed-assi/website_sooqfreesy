@@ -38,7 +38,11 @@ export const ProductPage = () => {
   const [totalCount, setTotalCounts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [subcategoryIds, setSubcategoryIds] = useState([]);
-  const [filtersModal, setFiltersModal] = useState({});
+  // const [filtersModal, setFiltersModal] = useState({});
+  const [filtersModal, setFiltersModal] = useState({
+    sorting: "newest",
+    price: "highest",
+  });
   const [searchText, setSearchText] = useState("");
   const [filters, setFilters] = useState({
     city: "",
@@ -162,8 +166,8 @@ export const ProductPage = () => {
   /** ------------------------------
    * Build Filter Object
    * ------------------------------ */
-console.log("filters.subCategory", filters.subCategory);
-console.log("subcategoryIds", subcategoryIds);
+  console.log("filters.subCategory", filters.subCategory);
+  console.log("subcategoryIds", subcategoryIds);
 
   const buildFilterObject = useCallback(() => {
     const filterObj = {};
@@ -173,18 +177,18 @@ console.log("subcategoryIds", subcategoryIds);
     // if (subcategoryIds?.length) filterObj.sub_category_id = subcategoryIds;
 
     if (filters.subCategory || subcategoryIds?.length) {
-    const allSubCategories = [];
+      const allSubCategories = [];
 
-    if (filters.subCategory) {
-      allSubCategories.push(Number(filters.subCategory));
+      if (filters.subCategory) {
+        allSubCategories.push(Number(filters.subCategory));
+      }
+
+      if (subcategoryIds?.length) {
+        allSubCategories.push(...subcategoryIds.map(Number));
+      }
+
+      filterObj.sub_category_id = allSubCategories;
     }
-
-    if (subcategoryIds?.length) {
-      allSubCategories.push(...subcategoryIds.map(Number));
-    }
-
-    filterObj.sub_category_id = allSubCategories;
-  }
     if (filters.priceRange?.[0]) filterObj.price_min = filters.priceRange[0];
     if (filters.priceRange?.[1]) filterObj.price_max = filters.priceRange[1];
     if (reduxCoords?.country) filterObj.country = reduxCoords?.country;
@@ -461,6 +465,7 @@ console.log("subcategoryIds", subcategoryIds);
         handleSelectSubcatIds={handleSelectSubcatIds}
         subcategoryIds={subcategoryIds}
         setFiltersModal={setFiltersModal}
+        filtersModal={filtersModal}
         searchText={searchText}
         setSearchText={setSearchText}
         setSearchTextDebounce={setSearchTextDebounce}

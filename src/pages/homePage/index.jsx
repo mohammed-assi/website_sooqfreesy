@@ -34,13 +34,13 @@ export const HomePage = () => {
     setLoading(true);
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
-      setPageData(response?.data?.data?.content);
+      setPageData(response?.data?.data);
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    getPageData(`${CONTENT.GET}?type=HOME_SLIDER`);
+    getPageData(`${CUSTOMER.BANNER_IMAGES}`);
   }, []);
 
   const tabs = [
@@ -148,7 +148,7 @@ export const HomePage = () => {
             tabs={tabs}
           />
           <section className="md:hidden">
-            <ImageSlider />
+            <ImageSlider pageData={pageData} imagePath={imagePath} />
           </section>
           <div className="spacer-x pb-15 md:pb-20 pt-12 md:pt-0">
             <h3 className="main-heading">{t("welcomeSyria")}</h3>

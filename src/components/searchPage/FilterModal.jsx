@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export const FilterModal = ({
@@ -6,10 +6,18 @@ export const FilterModal = ({
   onClose,
   onApply,
   handleApplyFilters,
+  initialFilters,
 }) => {
   const { t } = useTranslation();
-  const [sorting, setSorting] = useState("newest");
-  const [price, setPrice] = useState("highest");
+  const [sorting, setSorting] = useState(initialFilters?.sorting || "newest");
+  const [price, setPrice] = useState(initialFilters?.price || "highest");
+
+  useEffect(() => {
+    if (isOpen) {
+      setSorting(initialFilters?.sorting || "newest");
+      setPrice(initialFilters?.price || "highest");
+    }
+  }, [isOpen, initialFilters]);
 
   if (!isOpen) return null;
 
