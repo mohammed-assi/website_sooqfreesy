@@ -26,7 +26,7 @@ export const ImageSlider = ({ pageData, imagePath }) => {
       modules={[Pagination, Navigation, Autoplay]}
       className="mySwiper image-slider"
     >
-      {/* {pageData?.length
+      {pageData?.length
         ? pageData?.map((item, i) => (
             <SwiperSlide key={i}>
               <div
@@ -63,9 +63,9 @@ export const ImageSlider = ({ pageData, imagePath }) => {
                 </div>
               </div>
             </SwiperSlide>
-          ))} */}
+          ))}
 
-      {items.map((item, i) => (
+      {/* {items.map((item, i) => (
         <SwiperSlide key={i}>
           <div
             className="w-full lg:h-100 bg-cover bg-center relative flex"
@@ -81,7 +81,7 @@ export const ImageSlider = ({ pageData, imagePath }) => {
             </div>
           </div>
         </SwiperSlide>
-      ))}
+      ))} */}
     </Swiper>
   );
 };
