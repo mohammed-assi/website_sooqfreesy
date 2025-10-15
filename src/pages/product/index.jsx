@@ -393,6 +393,24 @@ export const ProductPage = () => {
     }
   };
 
+  const handleResetFilters = () => {
+    setFilters({
+      city: "",
+      type: "",
+      category: "",
+      subCategory: "",
+      priceRange: [0, 0],
+    });
+    setSelectedState("");
+    setSelectedCity("");
+    setSelectedLocation("");
+    setCoords({ lat: null, lng: null, country: null });
+    setSubcategoryIds([]);
+    setSubCategoryList([]);
+    setCurrentPage(1);
+    clearLocationState();
+  };
+
   /** ------------------------------
    * Country / State / City Handling
    * ------------------------------ */
@@ -497,6 +515,7 @@ export const ProductPage = () => {
         setCoords={setCoords}
         selectedLocation={selectedLocation}
         subCategoryList={subCategoryList}
+        handleResetFilters={handleResetFilters}
       />
 
       <LoginModal

@@ -29,6 +29,7 @@ export const ListingFilter = ({
   selectedLocation,
   subCategoryList,
   handleApplyFilters,
+  handleResetFilters
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("listing");
@@ -100,6 +101,7 @@ export const ListingFilter = ({
               setCoords={setCoords}
               selectedLocation={selectedLocation}
               subCategoryList={subCategoryList}
+              handleResetFilters={handleResetFilters}
             />
             <div className="lg:col-span-3">
               {allPosts?.length > 0 ? (

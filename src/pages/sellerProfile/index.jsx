@@ -330,6 +330,27 @@ export const SellerProfile = () => {
     }
   }, [selectedState, states]);
 
+  const handleResetFilters = () => {
+    setFilters({
+      city: "",
+      type: "",
+      category: "",
+      subCategory: "",
+      priceRange: [0, 0],
+    });
+
+    setSelectedState("");
+    setSelectedCity("");
+    setSelectedLocation("");
+    setCoords({ lat: null, lng: null, country: null });
+    setSubCategoryList([]);
+    setModalFilter({});
+    setSearchTextDebounce("");
+
+    const url = buildUrlForRequest(1, false);
+    getAllPosts(url);
+  };
+
   useEffect(() => {
     if (!currency) return;
     const url = buildUrlForRequest(1, false);
@@ -457,6 +478,7 @@ export const SellerProfile = () => {
           selectedLocation={selectedLocation}
           subCategoryList={subCategoryList}
           handleApplyFilters={handleApplyFilters}
+          handleResetFilters={handleResetFilters}
         />
       </div>
 

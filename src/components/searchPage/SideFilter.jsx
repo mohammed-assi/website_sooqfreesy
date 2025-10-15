@@ -18,6 +18,7 @@ export const SideFilter = ({
   setCoords,
   selectedLocation,
   subCategoryList,
+  handleResetFilters
 }) => {
   const { i18n, t } = useTranslation();
 
@@ -106,11 +107,12 @@ export const SideFilter = ({
         transform: "translateY(-50%)",
       };
 
-      console.log("filters?.category", filters?.category);
-
   return (
     <aside className="bg-white shadow rounded-lg p-3 space-y-7">
-      <h2 className="text-[1.5rem] font-bold mb-4">{t("filters")}</h2>
+      <div className="flex justify-between mb-4 items-center">
+        <h2 className="text-[1.5rem] font-bold">{t("filters")}</h2>
+        <p onClick={handleResetFilters} className="cursor-pointer">{t("reset")}</p>
+      </div>
 
       <div className="">
         <label className="block mb-2 text-md font-bold">{t("state")}</label>

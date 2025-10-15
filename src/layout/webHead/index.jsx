@@ -89,7 +89,6 @@ export const WebHead = () => {
     setSearchValue(query);
     navigate(ROUTE.PRODUCT_PAGE, { state: { searchText: query } });
   };
-  console.log("searchValue---->", searchValue);
 
   const handleNavigate = (slug) => {
     if (accessToken) {

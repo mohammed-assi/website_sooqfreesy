@@ -26,6 +26,7 @@ export default function ProductFilter({
   setCoords,
   selectedLocation,
   subCategoryList,
+  handleResetFilters,
 }) {
   const { t } = useTranslation();
   return (
@@ -46,6 +47,7 @@ export default function ProductFilter({
           setCoords={setCoords}
           selectedLocation={selectedLocation}
           subCategoryList={subCategoryList}
+          handleResetFilters={handleResetFilters}
         />
 
         <main className="lg:col-span-3">
