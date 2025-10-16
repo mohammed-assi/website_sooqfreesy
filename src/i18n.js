@@ -335,7 +335,8 @@ const resources = {
       nearByHeading: "No data found in your location!",
       nearByDes: "Choose a location to get started.",
       chooseLocaButton: "Choose Location",
-      reset: "Reset"
+      reset: "Reset",
+      explore: "Explore"
     },
   },
   ar: {
@@ -664,7 +665,8 @@ const resources = {
       nearByHeading: "لم يتم العثور على بيانات في موقعك!",
       nearByDes: "اختر موقعًا للبدء.",
       chooseLocaButton: "اختر الموقع",
-      reset: "إعادة ضبط"
+      reset: "إعادة ضبط",
+      explore: "يستكشف"
     },
   },
 };
