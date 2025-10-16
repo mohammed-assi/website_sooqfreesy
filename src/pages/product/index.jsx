@@ -166,8 +166,6 @@ export const ProductPage = () => {
   /** ------------------------------
    * Build Filter Object
    * ------------------------------ */
-  console.log("filters.subCategory", filters.subCategory);
-  console.log("subcategoryIds", subcategoryIds);
 
   const buildFilterObject = useCallback(() => {
     const filterObj = {};
@@ -196,7 +194,7 @@ export const ProductPage = () => {
     else if (filters.city) filterObj.city = filters.city;
     if (filters.type) filterObj.post_type = filters.type;
     if (searchTextDebounce) filterObj.searchtext = searchTextDebounce;
-    if (location?.state?.search) filterObj.searchtext = location.state.search;
+    // if (location?.state?.search) filterObj.searchtext = location.state.search;
     if (selectedState) filterObj.state = selectedState;
     if (coords?.lat) filterObj.latitude = Number(coords.lat);
     if (coords?.lng) filterObj.longitude = Number(coords.lng);
@@ -205,7 +203,7 @@ export const ProductPage = () => {
     filters,
     subcategoryIds,
     searchTextDebounce,
-    location?.state?.search,
+    // location?.state?.search,
     selectedCity,
     selectedState,
     coords,
@@ -276,6 +274,8 @@ export const ProductPage = () => {
    * Initial Fetch
    * ------------------------------ */
   useEffect(() => {
+
+    if (location.state?.searchText || location.state?.search) return;
     if (location.state?.subCatId) return;
 
     const filterObj = buildFilterObject();
@@ -289,13 +289,30 @@ export const ProductPage = () => {
   /** ------------------------------
    * Handle Search from Location State
    * ------------------------------ */
+  // useLayoutEffect(() => {
+  //   if (location.state?.searchText) {
+  //     hasUsedSearchText.current = true;
+  //     setSearchText(location.state.searchText);
+  //     setSearchTextDebounce(location.state.searchText);
+  //   }
+  // }, [location, setSearchTextDebounce]);
+
   useLayoutEffect(() => {
-    if (location.state?.searchText) {
+    const text = location.state?.searchText || location.state?.search || "";
+
+    if (text) {
+      lastRequestKeyRef.current = null;
       hasUsedSearchText.current = true;
-      setSearchText(location.state.searchText);
-      setSearchTextDebounce(location.state.searchText);
+      setSearchText(text);
+      setSearchTextDebounce(text);
+      navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location, setSearchTextDebounce]);
+  }, [
+    location.state?.searchText,
+    location.state?.search,
+    navigate,
+    setSearchTextDebounce,
+  ]);
 
   /** ------------------------------
    * Apply Filter Sorting
@@ -308,28 +325,28 @@ export const ProductPage = () => {
   /** ------------------------------
    * Reset Search if Filters Change
    * ------------------------------ */
-  useEffect(() => {
-    if (
-      hasUsedSearchText.current &&
-      (filters.category ||
-        filters.city ||
-        filters.type ||
-        subcategoryIds?.length ||
-        currentPage > 1 ||
-        filters.subCategory)
-    ) {
-      hasUsedSearchText.current = false;
-      setSearchText("");
-      setSearchTextDebounce("");
-      clearLocationState();
-    }
-  }, [
-    filters,
-    subcategoryIds,
-    currentPage,
-    setSearchTextDebounce,
-    clearLocationState,
-  ]);
+  // useEffect(() => {
+  //   if (
+  //     hasUsedSearchText.current &&
+  //     (filters.category ||
+  //       filters.city ||
+  //       filters.type ||
+  //       subcategoryIds?.length ||
+  //       currentPage > 1 ||
+  //       filters.subCategory)
+  //   ) {
+  //     hasUsedSearchText.current = false;
+  //     setSearchText("");
+  //     setSearchTextDebounce("");
+  //     clearLocationState();
+  //   }
+  // }, [
+  //   filters,
+  //   subcategoryIds,
+  //   currentPage,
+  //   setSearchTextDebounce,
+  //   clearLocationState,
+  // ]);
 
   /** ------------------------------
    * Fetch Category / Subcategory Data
@@ -409,6 +426,12 @@ export const ProductPage = () => {
     setSubCategoryList([]);
     setCurrentPage(1);
     clearLocationState();
+
+    setSearchText("");
+    setSearchTextDebounce("");
+    hasUsedSearchText.current = false;
+
+    window.dispatchEvent(new Event("clear-search-input"));
   };
 
   /** ------------------------------

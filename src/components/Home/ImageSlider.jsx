@@ -40,7 +40,7 @@ export const ImageSlider = ({ pageData, imagePath }) => {
                   <h1 className="image-heading font-heading font-bold text-3xl md:text-5xl drop-shadow-lg">
                     {item?.title}
                   </h1>
-                  <h2 className="image-subheading font-heading font-black text-3xl md:text-5xl">
+                  <h2 className="image-subheading font-heading font-black text-3xl md:text-4xl">
                     {item?.sub_title}
                   </h2>
                   <div className="flex justify-center md:justify-start pt-3">

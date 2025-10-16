@@ -204,6 +204,12 @@ export const WebHead = () => {
     getAllCategory(CUSTOMER.CATEGORY_LIST);
   }, []);
 
+  useEffect(() => {
+    const handleClear = () => setSearchValue("");
+    window.addEventListener("clear-search-input", handleClear);
+    return () => window.removeEventListener("clear-search-input", handleClear);
+  }, []);
+
   return (
     <>
       {/* <div
