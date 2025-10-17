@@ -20,7 +20,8 @@ export const LanguageSelectBox = () => {
   }, [i18n.language]);
 
   const handleSelect = (value) => {
-    i18n.changeLanguage(value);
+    console.log(value, "dowjdowjdo");
+    i18n.changeLanguage(value || "en");
     setOpen(false);
   };
 
@@ -34,6 +35,9 @@ export const LanguageSelectBox = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
+  useEffect(() => {
+    i18n.changeLanguage("en");
   }, []);
 
   return (

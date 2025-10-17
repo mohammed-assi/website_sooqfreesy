@@ -19,8 +19,6 @@ export const Header = ({ ...props }) => {
     dispatch(toggleCurrency());
   };
 
-  console.log("currency--->", currency);
-
   return (
     <div className="bg-black text-white text-tiny w-full py-2">
       <div
