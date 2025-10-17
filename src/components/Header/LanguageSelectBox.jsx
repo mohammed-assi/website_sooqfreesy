@@ -11,17 +11,20 @@ export const LanguageSelectBox = () => {
   const { i18n, t } = useTranslation();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
-
+  // const dropdownRef = useRef(null);
+  const defaultLanguageSet = useRef(false);
+  const [currentLang, setCurrentLang] = useState(i18n.language || "en");
   useEffect(() => {
     const rtlLanguages = ["ar"];
     document.documentElement.dir = rtlLanguages.includes(i18n.language)
       ? "rtl"
       : "ltr";
+    setCurrentLang(i18n.language || "en");
   }, [i18n.language]);
 
   const handleSelect = (value) => {
-    console.log(value, "dowjdowjdo");
     i18n.changeLanguage(value || "en");
+    setCurrentLang(value || "en");
     setOpen(false);
   };
 
@@ -37,8 +40,15 @@ export const LanguageSelectBox = () => {
     };
   }, []);
   useEffect(() => {
-    i18n.changeLanguage("en");
-  }, []);
+    if (
+      !defaultLanguageSet.current &&
+      (!i18n.language || !languages.some((lang) => lang.code === i18n.language))
+    ) {
+      i18n.changeLanguage("en");
+      setCurrentLang("en");
+      defaultLanguageSet.current = true;
+    }
+  }, [i18n.language]);
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -46,7 +56,7 @@ export const LanguageSelectBox = () => {
         onClick={() => setOpen(!open)}
         className="flex items-center gap-2 cursor-pointer text-xs md:text-sm"
       >
-        {languages.find((l) => l.code === i18n.language)?.label}
+        {languages.find((l) => l.code === i18n.language)?.label || "English"}
         <i className="fa-solid fa-angle-down fa-sm ml-auto" />
       </button>
 
@@ -67,7 +77,7 @@ export const LanguageSelectBox = () => {
                 } flex items-center justify-between cursor-pointer px-2 py-1 hover:text-black border-b border-gray-100`}
               >
                 <span>{l.label}</span>
-                {i18n.language === l.code && (
+                {currentLang === l.code && (
                   <img src={selectedLang} alt="icon" />
                 )}
               </li>
