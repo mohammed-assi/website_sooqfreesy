@@ -74,6 +74,8 @@ export const EditCityLocation = ({
     }
   };
 
+  console.log("userCountry-->", userCountry);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex gap-7 pt-4 flex-wrap md:flex-nowrap">

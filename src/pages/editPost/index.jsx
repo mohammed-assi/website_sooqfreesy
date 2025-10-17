@@ -494,6 +494,14 @@ export const EditPost = () => {
       const postType = postDetailData?.post_type === "SALE" ? 1 : 2;
       setLandlordAgentId(userType);
       setSaleRentId(postType);
+      if (postDetailData?.country) {
+        const matchedCountry = countries.find(
+          (c) => c.name.toLowerCase() === postDetailData.country.toLowerCase()
+        );
+        if (matchedCountry) {
+          setUserCountry(matchedCountry.isoCode);
+        }
+      }
     }
   }, [postDetailData, reset]);
 
