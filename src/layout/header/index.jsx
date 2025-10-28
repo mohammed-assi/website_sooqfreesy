@@ -4,7 +4,7 @@ import headLang from "../../assets/icon/headLang.svg";
 import { useTranslation } from "react-i18next";
 import { LanguageSelectBox } from "../../components/Header/LanguageSelectBox";
 import { AllCitiesDropdown } from "../../components/Header/AllCitiesDropdown";
-import { LOCAL_STORAGE, ROUTE } from "../../config/constants";
+import { ROUTE } from "../../config/constants";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCurrency } from "../../redux/slices/currencySlice";
