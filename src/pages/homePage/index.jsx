@@ -13,6 +13,7 @@ import { setNotifications } from "../../redux/slices/notificationSlice";
 import { useTranslation } from "react-i18next";
 import { LOCAL_STORAGE } from "../../config/constants";
 import Catbar from "../../components/Home/Catbar";
+import parse from "html-react-parser";
 
 export const HomePage = () => {
   const { t } = useTranslation();
@@ -29,6 +30,20 @@ export const HomePage = () => {
   const reduxCoords = useSelector((state) => state.location.coords);
   const [allCategory, setAllCategory] = useState([]);
   const [pageData, setPageData] = useState({});
+  const [welcomeData, setWelcomeData] = useState([]);
+
+  const getWelcomeData = async (url) => {
+    setLoading(true);
+    const response = await getRequest(url);
+    if (response?.data?.success && response?.data?.statusCode === 200) {
+      setWelcomeData(response?.data?.data?.content);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getWelcomeData(`${CONTENT.GET}?type=WELCOME`);
+  }, []);
 
   const getPageData = async (url) => {
     setLoading(true);
@@ -129,6 +144,8 @@ export const HomePage = () => {
     getAllPostsCallBack();
   }, [accessToken, activeTab, currency, reduxCoords]);
 
+  console.log("welcomeData", welcomeData);
+
   return (
     <>
       {loading ? (
@@ -151,8 +168,10 @@ export const HomePage = () => {
             <ImageSlider pageData={pageData} imagePath={imagePath} />
           </section>
           <div className="spacer-x pb-15 md:pb-20 pt-12 md:pt-0">
-            <h3 className="main-heading">{t("welcomeSyria")}</h3>
-            <p className="text-gray-500">{t("welcomeSyriaIntro")}</p>
+            <h3 className="main-heading">{welcomeData[0]?.title}</h3>
+            <p className="text-gray-500">
+              {parse(`${welcomeData[0]?.description}`)}
+            </p>
           </div>
           <GetApplications />
 

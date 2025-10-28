@@ -16,9 +16,11 @@ import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 import { City, Country, State } from "country-state-city";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
+// import arCountries from "../../data/countries/arCountries.json";
+// import enCountries from "../../data/countries/enCountries.json";
 
 export const CreatePost = () => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
   const navigate = useNavigate();
   const [showChooseCategory, setShowChooseCategory] = useState(false);
@@ -365,6 +367,18 @@ export const CreatePost = () => {
   useEffect(() => {
     setCountries(Country.getAllCountries());
   }, []);
+
+  // useEffect(() => {
+  //   const allCountries = Country.getAllCountries();
+  //   const translated = allCountries.map((c) => ({
+  //     ...c,
+  //     name:
+  //       i18n.language === "ar"
+  //         ? arCountries[c.isoCode] || c.name
+  //         : enCountries[c.isoCode] || c.name,
+  //   }));
+  //   setCountries(translated);
+  // }, [i18n.language]);
 
   const getCountryCodeByName = (name) => {
     const country = countries.find((c) => c.name === name);

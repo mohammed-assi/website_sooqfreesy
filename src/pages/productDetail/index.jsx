@@ -613,6 +613,7 @@ export const ProductDetail = () => {
             title={postDetailData?.title}
             description={postDetailData?.description}
             image={`${imagePath}/${postDetailData?.images[0]?.image_url}`}
+            price={postDetailData?.currencyTypePrice}
           />
         )}
 
