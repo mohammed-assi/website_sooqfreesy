@@ -52,14 +52,14 @@ export const Header = ({ ...props }) => {
               />
               <div className="w-12 md:w-14 h-7 md:h-8 bg-[#c7f3fc] rounded-full relative duration-300">
                 <div
-                  className={`absolute top-1 left-1 h-5 md:h-6 w-6 flex items-center justify-center rounded-full text-white font-bold text-md md:text-lg duration-300
+                  className={`absolute top-1 left-1 h-5 md:h-6 w-6 flex items-center justify-center rounded-full text-white font-bold text-xs duration-300
         ${
           currency === "SYP"
             ? "translate-x-4 md:translate-x-6 bg-[#00b8e6]"
             : "translate-x-0 bg-[#00b8e6]"
         }`}
                 >
-                  {currency === "SYP" ? "£" : "$"}
+                  {currency === "SYP" ? "SYP" : "$"}
                 </div>
               </div>
             </label>

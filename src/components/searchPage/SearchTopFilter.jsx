@@ -43,7 +43,7 @@ export const SearchTopFilter = ({
         <div className="flex items-center space-x-4">
           <button
             onClick={() => setOpenFilterModal(true)}
-            className="p-2 rounded hover:bg-gray-100"
+            className="p-2 rounded hover:bg-gray-100 shrink-0"
           >
             <img src={filterIcon} alt="Filter" className="w-5 h-5" />
           </button>
@@ -61,12 +61,12 @@ export const SearchTopFilter = ({
       </div>
 
       {!filters?.category && (
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-1 md:gap-3">
           {categories.map((cat, i) => (
             <button
               key={i}
               onClick={() => handleSelectSubcatIds(cat.id)}
-              className={`px-4 py-2 rounded-md text-sm transition ${
+              className={`px-2 py-1 md:px-4 text-xs md:py-2 rounded-full md:rounded-md md:text-sm transition ${
                 subcategoryIds.includes(cat.id)
                   ? "bg-primary text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"

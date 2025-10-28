@@ -3,6 +3,7 @@ import { ProductCard } from "../../common/card/ProductCard";
 import Pagination from "../../common/pagination";
 import ProductListCard from "./ProductListCard";
 import { SideFilter } from "./SideFilter";
+import { useState } from "react";
 
 export default function ProductFilter({
   toggleGrid,
@@ -29,26 +30,77 @@ export default function ProductFilter({
   handleResetFilters,
 }) {
   const { t } = useTranslation();
+
+  const [showFilter, setShowFilter] = useState(false);
   return (
     <div className="pt-8 pb-15">
+      <div className="flex justify-between items-center mb-5 px-2 lg:hidden">
+        <h2 className="text-lg font-semibold"></h2>
+        <button
+          onClick={() => setShowFilter(true)}
+          className="flex items-center gap-2 text-primary font-semibold"
+        >
+          <i className="fa-solid fa-bars-filter size-4" />
+          {t("filters")}
+        </button>
+      </div>
+
+      {showFilter && (
+        <div
+          className="fixed inset-0 z-50 bg-black/40 flex items-end justify-end"
+          onClick={() => setShowFilter(false)}
+        >
+          <div
+            className="w-full sm:w-[400px] h-[75%] bg-white p-4 overflow-y-auto shadow-lg rounded-t-xl bottom-0 left-0 animate-slide-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold">{t("filters")}</h2>
+              <button onClick={() => setShowFilter(false)}>
+                <i className="fa-solid fa-xmark size-5" />
+              </button>
+            </div>
+            <SideFilter
+              allCategory={allCategory}
+              handleChange={handleChange}
+              filters={filters}
+              searchTextDebounce={searchTextDebounce}
+              states={states}
+              selectedState={selectedState}
+              setSelectedState={setSelectedState}
+              cities={cities}
+              selectedCity={selectedCity}
+              setSelectedCity={setSelectedCity}
+              setSelectedLocation={setSelectedLocation}
+              setCoords={setCoords}
+              selectedLocation={selectedLocation}
+              subCategoryList={subCategoryList}
+              handleResetFilters={handleResetFilters}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-        <SideFilter
-          allCategory={allCategory}
-          handleChange={handleChange}
-          filters={filters}
-          searchTextDebounce={searchTextDebounce}
-          states={states}
-          selectedState={selectedState}
-          setSelectedState={setSelectedState}
-          cities={cities}
-          selectedCity={selectedCity}
-          setSelectedCity={setSelectedCity}
-          setSelectedLocation={setSelectedLocation}
-          setCoords={setCoords}
-          selectedLocation={selectedLocation}
-          subCategoryList={subCategoryList}
-          handleResetFilters={handleResetFilters}
-        />
+        <div className="hidden lg:block">
+          <SideFilter
+            allCategory={allCategory}
+            handleChange={handleChange}
+            filters={filters}
+            searchTextDebounce={searchTextDebounce}
+            states={states}
+            selectedState={selectedState}
+            setSelectedState={setSelectedState}
+            cities={cities}
+            selectedCity={selectedCity}
+            setSelectedCity={setSelectedCity}
+            setSelectedLocation={setSelectedLocation}
+            setCoords={setCoords}
+            selectedLocation={selectedLocation}
+            subCategoryList={subCategoryList}
+            handleResetFilters={handleResetFilters}
+          />
+        </div>
 
         <main className="lg:col-span-3">
           {allPosts?.length === 0 ? (

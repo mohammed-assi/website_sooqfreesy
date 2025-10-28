@@ -33,8 +33,8 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
         schema
           .min(3, t("usernameMin"))
           // .required(t("usernameRequired"))
-          // .matches(/^[a-zA-Z0-9_]+$/, t("usernameAlphaNumOnly")),
-          .matches(/^[a-z0-9_]+$/, t("usernameAlphaNumOnly")),
+          .matches(/^[a-zA-Z0-9_]+$/, t("usernameAlphaNumOnly")),
+          // .matches(/^[a-z0-9_]+$/, t("usernameAlphaNumOnly")),
       otherwise: (schema) => schema.notRequired().nullable(),
     }),
     email: yup

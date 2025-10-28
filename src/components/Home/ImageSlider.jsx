@@ -31,23 +31,23 @@ export const ImageSlider = ({ pageData, imagePath }) => {
         ? pageData?.map((item, i) => (
             <SwiperSlide key={i}>
               <div
-                className="w-full lg:h-100 bg-cover bg-center relative flex"
+                className="w-full lg:h-100 h-[280px] bg-cover bg-center relative flex"
                 style={{
                   backgroundImage: `url(${imagePath}${item?.banner_image})`,
                 }}
               >
                 <div className="spacer-x w-full flex flex-col justify-end text-center text-white md:text-left h-full py-20">
-                  <h1 className="image-heading font-heading font-bold text-3xl md:text-5xl drop-shadow-lg">
+                  <h1 className="image-heading font-heading font-bold text-2xl md:text-5xl drop-shadow-lg">
                     {item?.title}
                   </h1>
-                  <h2 className="image-subheading font-heading font-black text-3xl md:text-4xl">
+                  <h2 className="image-subheading font-heading font-black text-3xl md:text-4xl hidden md:block">
                     {item?.sub_title}
                   </h2>
                   <div className="flex justify-center md:justify-start pt-3">
                     <Link
                       to={item.link}
                       target="_blank"
-                      className="bg-primary text-white hover:bg-primaryDark py-3 px-6 font-semibold rounded-lg transition inline-block"
+                      className="bg-primary text-white hover:bg-primaryDark py-1 px-3 md:py-3 md:px-6 font-semibold rounded-lg transition inline-block"
                     >
                       {t("explore")}
                     </Link>

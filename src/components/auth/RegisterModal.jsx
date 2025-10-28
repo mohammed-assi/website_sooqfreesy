@@ -76,8 +76,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
         schema
           .required(t("usernameRequired"))
           .min(3, t("usernameMin"))
-          // .matches(/^[a-zA-Z0-9_]+$/, t("usernameAlphaNumOnly")),
-          .matches(/^[a-z0-9_]+$/, t("usernameAlphaNumOnly")),
+          .matches(/^[a-zA-Z0-9_]+$/, t("usernameAlphaNumOnly")),
+      // .matches(/^[a-z0-9_]+$/, t("usernameAlphaNumOnly")),
     }),
     email: Yup.string().when("$tab", {
       is: 2,

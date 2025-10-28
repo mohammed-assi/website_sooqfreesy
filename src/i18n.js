@@ -302,7 +302,8 @@ const resources = {
       resendIt: "Resend it",
       enterCityField: "Enter city",
       enterStateField: "Enter state",
-      usernameAlphaNumOnly: "Username can only contain lowercase letters, numbers, and underscores",
+      usernameAlphaNumOnly:
+        "Username can only contain letters, numbers, and underscores",
       useMyLocation: "Use my current location",
       subcategory: "Sub Category",
       in: "in",
@@ -336,7 +337,7 @@ const resources = {
       nearByDes: "Choose a location to get started.",
       chooseLocaButton: "Choose Location",
       reset: "Reset",
-      explore: "Explore"
+      explore: "Explore",
     },
   },
   ar: {
@@ -633,7 +634,8 @@ const resources = {
       resendIt: "إعادة الإرسال",
       enterCityField: "أدخل المدينة",
       enterStateField: "أدخل الولاية",
-      usernameAlphaNumOnly: "يمكن أن يحتوي اسم المستخدم على أحرف صغيرة وأرقام وشرطة سفلية فقط",
+      usernameAlphaNumOnly:
+        "يمكن أن يحتوي اسم المستخدم فقط على أحرف وأرقام وشرطات سفلية",
       useMyLocation: "استخدم موقعي الحالي",
       subcategory: "الفئة الفرعية",
       in: "في",
@@ -666,7 +668,7 @@ const resources = {
       nearByDes: "اختر موقعًا للبدء.",
       chooseLocaButton: "اختر الموقع",
       reset: "إعادة ضبط",
-      explore: "يستكشف"
+      explore: "يستكشف",
     },
   },
 };
