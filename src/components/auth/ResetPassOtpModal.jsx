@@ -28,12 +28,11 @@ export const ResetPassOtpModal = ({
   const [loading, setLoading] = useState(false);
 
   const schema = Yup.object().shape({
-    password: Yup.string()
-      .required(t("userPasswordRequired")),
-      // .matches(
-      //       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
-      //   t("passwordRegx")
-      // ),
+    password: Yup.string().required(t("userPasswordRequired")),
+    // .matches(
+    //       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~`!@#$%^&*_|:;"'<>,./])[A-Za-z\d~`!@#$%^&*_|:;"'<>,./]{8,}$/,
+    //   t("passwordRegx")
+    // ),
     confirmPassword: Yup.string()
       .required(t("confirmPasswordRequired"))
       .when("newPassword", {
@@ -120,6 +119,12 @@ export const ResetPassOtpModal = ({
   useEffect(() => {
     reset();
   }, [t]);
+
+  useEffect(() => {
+    if (show && inputsRef.current[0]) {
+      inputsRef.current[0].focus();
+    }
+  }, [show]);
 
   return (
     <>
