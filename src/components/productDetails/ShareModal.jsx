@@ -1,9 +1,6 @@
 import { useTranslation } from "react-i18next";
 import facebook from "../../assets/Social/facebook.svg";
 import instagram from "../../assets/Social/Instagram.svg";
-// import messages from "../../assets/Social/messages.svg";
-// import messanger from "../../assets/Social/messanger.svg";
-// import skype from "../../assets/Social/skype.svg";
 import whatsapp from "../../assets/Social/whatsapp.svg";
 import { Link } from "react-router-dom";
 
@@ -13,20 +10,14 @@ export const ShareModal = ({ onClose, shareLink }) => {
 
   const shareLinks = {
     whatsapp: `https://wa.me/?text=${encodedUrl}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-    messenger: `https://www.facebook.com/dialog/send?link=${encodedUrl}&app_id=YOUR_FACEBOOK_APP_ID&redirect_uri=${encodedUrl}`,
-    skype: `https://web.skype.com/share?url=${encodedUrl}`,
-    messages: `sms:?body=${encodedUrl}`,
     instagram: `https://www.instagram.com/`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
   };
 
   const shareApps = [
     { name: "Whatsapp", icon: whatsapp, link: shareLinks.whatsapp },
     { name: "Instagram", icon: instagram, link: shareLinks.instagram },
     { name: "Facebook", icon: facebook, link: shareLinks.facebook },
-    // { name: "Messages", icon: messages, link: shareLinks.messages },
-    // { name: "Skype", icon: skype, link: shareLinks.skype },
-    // { name: "Messenger", icon: messanger, link: shareLinks.messenger },
   ];
 
   return (

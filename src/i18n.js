@@ -338,6 +338,7 @@ const resources = {
       chooseLocaButton: "Choose Location",
       reset: "Reset",
       explore: "Explore",
+      viewProfile: "View profile",
     },
   },
   ar: {
@@ -668,7 +669,8 @@ const resources = {
       nearByDes: "اختر موقعًا للبدء.",
       chooseLocaButton: "اختر الموقع",
       reset: "إعادة ضبط",
-      explore: "يستكشف",
+      explore: "استكشاف",
+      viewProfile: "عرض الملف الشخصي",
     },
   },
 };

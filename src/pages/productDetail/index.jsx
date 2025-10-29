@@ -22,7 +22,7 @@ import "swiper/css/thumbs";
 import { ProductCard } from "../../common/card/ProductCard";
 import { AddReviewModal } from "../../components/productDetails/AddReviewModal";
 import RatingStar from "../../common/ratingStar/RatingStar";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { LOCAL_STORAGE, ROUTE } from "../../config/constants";
 import { InfoModal } from "../../common/modal/InfoModal";
 import { ReportListModal } from "../../components/productDetails/ReportListModal";
@@ -45,11 +45,9 @@ import { setNotifications } from "../../redux/slices/notificationSlice";
 export const ProductDetail = () => {
   const { t } = useTranslation();
   const { id } = useParams();
-  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
-  const shareURL = import.meta.env.VITE_APP_SHARE_URL;
   const GOOGLE_API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
   const { accessToken } = useSelector((state) => state.auth);
   const { userInfo } = useSelector((state) => state.user);
@@ -189,9 +187,19 @@ export const ProductDetail = () => {
     }
   }, [postDetailData, currency]);
 
-  useEffect(() => {
-    setShareLink(`${shareURL}${location.pathname}`);
-  }, [location]);
+  // useEffect(() => {
+  //   setShareLink(postDetailData?.webLink);
+  // }, [postDetailData]);
+
+ useEffect(() => {
+  if (postDetailData?.webLink) {
+    const encodedId = postDetailData.webLink.split("/").pop();
+    const decodedId = atob(encodedId);
+    const fullLinkWithDecodedId = postDetailData.webLink.replace(encodedId, decodedId);
+
+    setShareLink(fullLinkWithDecodedId);
+  }
+}, [postDetailData]);
 
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
@@ -457,8 +465,6 @@ export const ProductDetail = () => {
                 </div>
 
                 <div className="py-4">
-                  {/* <h3 className="font-bold text-xl">{t("postOwner")}</h3> */}
-
                   {postDetailData?.post_type === "SALE" && (
                     <h3 className="font-bold text-xl">
                       {postDetailData?.user_type === "AGENT"
@@ -485,16 +491,7 @@ export const ProductDetail = () => {
                         className="h-full w-full rounded-lg object-cover"
                       />
                     </div>
-                    <div
-                      onClick={() => {
-                        if (postDetailData?.user?.userid !== userInfo?.id) {
-                          navigate(
-                            `${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`
-                          );
-                        }
-                      }}
-                      className="cursor-pointer"
-                    >
+                    <div>
                       <h3 className="text-xl font-bold">
                         {postDetailData?.user?.username}
                       </h3>
@@ -515,6 +512,18 @@ export const ProductDetail = () => {
                         {moment(postDetailData?.user?.created_at).format(
                           "MM/DD/yyyy"
                         )}
+                      </p>
+                      <p
+                        onClick={() => {
+                          if (postDetailData?.user?.userid !== userInfo?.id) {
+                            navigate(
+                              `${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`
+                            );
+                          }
+                        }}
+                        className="text-sm text-gray-500 underline hover:text-primary cursor-pointer"
+                      >
+                        {t("viewProfile")}
                       </p>
                     </div>
                   </div>
@@ -546,6 +555,8 @@ export const ProductDetail = () => {
                     </button>
                   </div>
                 </div>
+
+                
               </div>
             </div>
           </div>
