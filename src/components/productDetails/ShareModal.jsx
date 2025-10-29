@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import facebook from "../../assets/Social/facebook.svg";
 import instagram from "../../assets/Social/Instagram.svg";
-import messages from "../../assets/Social/messages.svg";
-import messanger from "../../assets/Social/messanger.svg";
-import skype from "../../assets/Social/skype.svg";
+// import messages from "../../assets/Social/messages.svg";
+// import messanger from "../../assets/Social/messanger.svg";
+// import skype from "../../assets/Social/skype.svg";
 import whatsapp from "../../assets/Social/whatsapp.svg";
 import { Link } from "react-router-dom";
 
@@ -24,9 +24,9 @@ export const ShareModal = ({ onClose, shareLink }) => {
     { name: "Whatsapp", icon: whatsapp, link: shareLinks.whatsapp },
     { name: "Instagram", icon: instagram, link: shareLinks.instagram },
     { name: "Facebook", icon: facebook, link: shareLinks.facebook },
-    { name: "Messages", icon: messages, link: shareLinks.messages },
-    { name: "Skype", icon: skype, link: shareLinks.skype },
-    { name: "Messenger", icon: messanger, link: shareLinks.messenger },
+    // { name: "Messages", icon: messages, link: shareLinks.messages },
+    // { name: "Skype", icon: skype, link: shareLinks.skype },
+    // { name: "Messenger", icon: messanger, link: shareLinks.messenger },
   ];
 
   return (
