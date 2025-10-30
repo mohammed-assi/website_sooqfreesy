@@ -20,6 +20,7 @@ import UnprotectedRoute from "./section/UnprotectedRoute";
 import { CreatePost } from "../pages/createPost";
 import { EditPost } from "../pages/editPost";
 import NotFoundPage from "../pages/notFoundPage";
+import ProductDetailsWrapper from "../utils/redirectToProductDetails";
 
 export const Router = () => {
   return (
@@ -27,7 +28,8 @@ export const Router = () => {
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path={ROUTE.PRODUCT_PAGE} element={<ProductPage />} />
-        <Route path={`${ROUTE.PRODUCT_PAGE}/:id`} element={<ProductDetail />} />
+        {/* <Route path={`${ROUTE.PRODUCT_PAGE}/:id`} element={<ProductDetail />} /> */}
+        <Route path={`${ROUTE.PRODUCT_PAGE}/:id`} element={<ProductDetailsWrapper />} />
         <Route
           path={`${ROUTE.SELLER_PROFILE}/:id`}
           element={<SellerProfile />}

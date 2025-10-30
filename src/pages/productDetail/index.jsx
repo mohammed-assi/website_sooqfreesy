@@ -64,7 +64,6 @@ export const ProductDetail = () => {
   const [postDetailData, setPostDetailData] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [reportList, setReportList] = useState("");
-  const [shareLink, setShareLink] = useState("");
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: GOOGLE_API_KEY,
@@ -191,18 +190,10 @@ export const ProductDetail = () => {
   //   setShareLink(postDetailData?.webLink);
   // }, [postDetailData]);
 
- useEffect(() => {
-  if (postDetailData?.webLink) {
-    const encodedId = postDetailData.webLink.split("/").pop();
-    const decodedId = atob(encodedId);
-    const fullLinkWithDecodedId = postDetailData.webLink.replace(encodedId, decodedId);
-
-    setShareLink(fullLinkWithDecodedId);
-  }
-}, [postDetailData]);
-
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
+
+  console.log("postDetailData", postDetailData?.webLink);
 
   return (
     <>
@@ -620,7 +611,7 @@ export const ProductDetail = () => {
         {showShareModal && (
           <ShareModal
             onClose={() => setShowShareModal(false)}
-            shareLink={shareLink}
+            shareLink={postDetailData?.webLink}
             title={postDetailData?.title}
             description={postDetailData?.description}
             image={`${imagePath}/${postDetailData?.images[0]?.image_url}`}
