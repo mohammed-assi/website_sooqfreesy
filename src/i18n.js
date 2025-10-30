@@ -339,6 +339,7 @@ const resources = {
       reset: "Reset",
       explore: "Explore",
       viewProfile: "View profile",
+      price: "Price",
     },
   },
   ar: {
@@ -671,6 +672,7 @@ const resources = {
       reset: "إعادة ضبط",
       explore: "استكشاف",
       viewProfile: "عرض الملف الشخصي",
+      price: "سعر",
     },
   },
 };

@@ -4,14 +4,37 @@ import instagram from "../../assets/Social/Instagram.svg";
 import whatsapp from "../../assets/Social/whatsapp.svg";
 import { Link } from "react-router-dom";
 
-export const ShareModal = ({ onClose, shareLink }) => {
+export const ShareModal = ({
+  onClose,
+  shareLink,
+  title,
+  description,
+  price,
+  currency,
+}) => {
   const { i18n, t } = useTranslation();
+  // const encodedUrl = encodeURIComponent(shareLink);
+
+  // const shareLinks = {
+  //   whatsapp: `https://wa.me/?text=${encodedUrl}`,
+  //   instagram: `https://www.instagram.com/`,
+  //   facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+  // };
+
+  const message = `${title}
+${description}
+${t("price")}: ${currency === "SYP" ? "£" : "$"} ${price}
+${shareLink}`;
+
+  const encodedMessage = encodeURIComponent(message);
   const encodedUrl = encodeURIComponent(shareLink);
 
   const shareLinks = {
-    whatsapp: `https://wa.me/?text=${encodedUrl}`,
-    instagram: `https://www.instagram.com/`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    whatsapp: `https://wa.me/?text=${encodedMessage}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodeURIComponent(
+      `${title} - ${description} | ${t("price")}: ${price}`
+    )}`,
+    instagram: `https://www.instagram.com/?url=${encodedUrl}`,
   };
 
   const shareApps = [

@@ -193,8 +193,6 @@ export const ProductDetail = () => {
   if (loading) return <ScreenLoader />;
   if (!postDetailData && !loading) return <NotFoundPage />;
 
-  console.log("postDetailData", postDetailData?.webLink);
-
   return (
     <>
       <div className="spacer-x">
@@ -616,6 +614,7 @@ export const ProductDetail = () => {
             description={postDetailData?.description}
             image={`${imagePath}/${postDetailData?.images[0]?.image_url}`}
             price={postDetailData?.currencyTypePrice}
+            currency={currency}
           />
         )}
 
