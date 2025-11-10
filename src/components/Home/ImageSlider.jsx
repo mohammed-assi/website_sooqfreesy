@@ -31,7 +31,7 @@ export const ImageSlider = ({ pageData, imagePath }) => {
         ? pageData?.map((item, i) => (
             <SwiperSlide key={i}>
               <div
-                className="w-full lg:h-100 h-[280px] bg-cover bg-center relative flex"
+                className="w-full lg:h-80 h-[280px] bg-cover bg-center relative flex"
                 style={{
                   backgroundImage: `url(${imagePath}${item?.banner_image})`,
                 }}

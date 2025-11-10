@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import CountryFlags from "../countryFlags/CountryFlags";
 
 export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
   const { t } = useTranslation();
@@ -79,9 +80,15 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
                 ? `${item.description.slice(0, 50)}...`
                 : item.description}
             </p>
+            <div className="flex justify-around ">
+
             <div className="flex items-center gap-2 text-gray-500 text-xs mt-3 capitalize">
               <img src={location} alt="icon" />
               {item?.nearby_location}
+            </div>
+            <div className="flex items-center gap-2">
+               <CountryFlags countryName={item?.countryNameForFlag} />
+            </div>
             </div>
           </div>
         </div>

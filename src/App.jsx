@@ -28,6 +28,7 @@ import { setCount } from "./redux/slices/notificationSlice";
 import "moment/locale/ar";
 import moment from "moment/moment";
 
+
 function App() {
   const { t, i18n } = useTranslation();
   const location = useLocation();

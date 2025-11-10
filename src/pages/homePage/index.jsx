@@ -153,9 +153,9 @@ export const HomePage = () => {
       ) : (
         <>
           <Banner allCategory={allCategory} imagePath={imagePath} />
-          <section className="hidden md:block">
+          {/* <section className="hidden md:block">
             <ImageSlider pageData={pageData} imagePath={imagePath} />
-          </section>
+          </section> */}
           <Products
             allPosts={allPosts}
             imagePath={imagePath}
@@ -164,10 +164,10 @@ export const HomePage = () => {
             activeTab={activeTab}
             tabs={tabs}
           />
-          <section className="md:hidden">
+         <section className="hidden md:block">
             <ImageSlider pageData={pageData} imagePath={imagePath} />
           </section>
-          <div className="spacer-x pb-15 md:pb-20 pt-12 md:pt-0">
+          <div className="spacer-x pb-15 md:pb-20 pt-12 md:pt-5">
             <h3 className="main-heading">{welcomeData[0]?.title}</h3>
             <p className="text-gray-500">
               {parse(`${welcomeData[0]?.description}`)}

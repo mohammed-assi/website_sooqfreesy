@@ -16,7 +16,7 @@ export const Products = ({
   const navigate = useNavigate();
 
   return (
-    <div className="spacer-x py-10 md:py-20">
+    <div className="spacer-x py-10 md:py-10">
       <div className="w-full">
         <div className="flex">
           {tabs.map((tab) => (
