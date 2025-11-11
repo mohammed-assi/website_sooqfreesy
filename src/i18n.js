@@ -340,6 +340,8 @@ const resources = {
       explore: "Explore",
       viewProfile: "View profile",
       price: "Price",
+      page: "Page",
+      of: "of",
     },
   },
   ar: {
@@ -673,6 +675,8 @@ const resources = {
       explore: "استكشاف",
       viewProfile: "عرض الملف الشخصي",
       price: "سعر",
+      page: "صفحة",
+      of: "من",
     },
   },
 };

@@ -333,8 +333,14 @@ export const ProductDetail = () => {
 
               <div className="flex justify-between items-center">
                 <h2 className="main-heading text-primary">
-                  {currency === "SYP" ? "£S" : "$"}{" "}
-                  {postDetailData?.currencyTypePrice}
+                  {/* {currency === "SYP" ? "£S" : "$"}{" "}
+                  {postDetailData?.currencyTypePrice} */}
+                  <span dir="ltr" className="inline-block">
+                    <span className="mr-1">
+                      {currency === "SYP" ? "£S" : "$"}
+                    </span>
+                    <span>{postDetailData?.currencyTypePrice}</span>
+                  </span>
                 </h2>
                 <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
                   {postDetailData?.subCategoryName}
@@ -544,8 +550,6 @@ export const ProductDetail = () => {
                     </button>
                   </div>
                 </div>
-
-                
               </div>
             </div>
           </div>

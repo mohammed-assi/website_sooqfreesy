@@ -99,7 +99,6 @@
 //   );
 // };
 
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Pagination } from "swiper/modules";
@@ -117,9 +116,7 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
   const currency = useSelector((state) => state.currency.value);
 
   return (
-    // make the card full-height and a column flex so children align
     <div className="bg-white rounded-xl overflow-hidden relative h-full flex flex-col shadow-sm">
-      {/* image area - fixed height so all thumbnails align */}
       {item?.images?.length > 0 ? (
         <div className="w-full h-48">
           <Swiper pagination={{ dynamicBullets: true }} modules={[Pagination]}>
@@ -140,10 +137,9 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
         </div>
       )}
 
-      {/* wishlist button */}
       <button
         onClick={(e) => {
-          e.preventDefault(); // prevent Link navigation when clicking heart
+          e.preventDefault();
           e.stopPropagation();
           handleLikeUnlikePost(item);
         }}
@@ -157,19 +153,23 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
         )}
       </button>
 
-      {/* main content — make this flex-1 so it expands and all cards match height */}
       <Link to={`${ROUTE.PRODUCT_PAGE}/${item?.id}`} className="flex-1 block">
         <div className="py-4 px-4 flex flex-col h-full">
           <div className="flex items-center justify-between">
-            <p className="text-lg font-bold">
+            {/* <p className="text-lg font-bold">
               {currency === "SYP" ? "£S" : "$"} {item?.price}
+            </p> */}
+            <p className="text-lg font-bold">
+              <span dir="ltr" className="inline-block">
+                <span className="mr-1">{currency === "SYP" ? "£S" : "$"}</span>
+                <span>{item?.price}</span>
+              </span>
             </p>
             <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
               {item?.sub_categoryName}
             </span>
           </div>
 
-          {/* title + description — restrict lines so card doesn't grow too tall */}
           <div className="text-start mt-2 flex-1">
             <h3
               className="font-semibold text-sm leading-tight mb-1
@@ -196,11 +196,12 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
             </p>
           </div>
 
-          {/* footer — fixed height region so it stays bottom aligned */}
           <div className="flex justify-between items-center mt-3 pt-2 border-t border-transparent">
             <div className="flex items-center gap-2 text-gray-500 text-xs capitalize truncate">
               <img src={location} alt="icon" className="w-4 h-4" />
-              <span className="truncate max-w-[11rem]">{item?.nearby_location}</span>
+              <span className="truncate max-w-[11rem]">
+                {item?.nearby_location}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <CountryFlags
@@ -214,4 +215,3 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
     </div>
   );
 };
-

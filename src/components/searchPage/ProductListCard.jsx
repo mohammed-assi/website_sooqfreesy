@@ -80,7 +80,10 @@ const ProductListCard = ({
           </span>
 
           <h2 className="text-2xl font-bold text-gray-900">
-            {currency === "SYP" ? "£S" : "$"} {item.price}
+            <span dir="ltr" className="inline-block">
+              <span className="mr-1">{currency === "SYP" ? "£S" : "$"}</span>
+              <span>{item?.price}</span>
+            </span>
           </h2>
 
           <h3 className="text-xl font-bold text-gray-800 mt-3">{item.title}</h3>
