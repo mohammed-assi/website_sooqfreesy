@@ -3,6 +3,8 @@ import { ProductCard } from "../../common/card/ProductCard";
 import LoadingButton from "../../common/loadingButton/LoadingButton";
 import { useNavigate } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
+import { ScreenLoader } from "../../utils/screenLoader";
+import Pagination from "../../common/pagination";
 
 export const Products = ({
   allPosts,
@@ -11,6 +13,10 @@ export const Products = ({
   setActiveTab,
   activeTab,
   tabs,
+  postsLoading,
+  totalPages,
+  currentPage,
+  setCurrentPage,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -42,21 +48,11 @@ export const Products = ({
         </div>
 
         <div className="pt-8 text-center">
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {allPosts?.length > 0 ? (
-              allPosts?.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  item={item}
-                  imagePath={imagePath}
-                  handleLikeUnlikePost={handleLikeUnlikePost}
-                />
-              ))
-            ) : (
-              <p className="text-center text-gray-600">{t("noDataFound")}</p>
-            )}
-          </div> */}
-          {allPosts?.length > 0 ? (
+          {postsLoading ? (
+            <div className="py-10">
+              <ScreenLoader />
+            </div>
+          ) : allPosts?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {allPosts?.map((item) => (
                 <ProductCard
@@ -89,12 +85,19 @@ export const Products = ({
             </div>
           )}
         </div>
-      </div>
 
-      {/* <div className="pt-12">
-        <h3 className="main-heading">{t("welcomeSyria")}</h3>
-        <p className="text-gray-500">{t("welcomeSyriaIntro")}</p>
-      </div> */}
+        {allPosts?.length > 0 && activeTab === "worldwide"  && (
+          <Pagination
+            totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={(page) => {
+                const next = Math.max(1, Math.min(totalPages, page));
+                setCurrentPage(next);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+          />
+        )}
+      </div>
     </div>
   );
 };

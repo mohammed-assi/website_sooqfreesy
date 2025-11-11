@@ -23,22 +23,26 @@ export const HomePage = () => {
     JSON.parse(localStorage.getItem(LOCAL_STORAGE.RECENT_VIEWS)) || [];
   const dispatch = useDispatch();
   const { accessToken } = useSelector((state) => state.auth);
+
+  const [postsLoading, setPostsLoading] = useState(false);
+
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("worldwide");
   const reduxCoords = useSelector((state) => state.location.coords);
   const [allCategory, setAllCategory] = useState([]);
   const [pageData, setPageData] = useState({});
   const [welcomeData, setWelcomeData] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 8;
+
   const getWelcomeData = async (url) => {
-    setLoading(true);
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
       setWelcomeData(response?.data?.data?.content);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -46,12 +50,10 @@ export const HomePage = () => {
   }, []);
 
   const getPageData = async (url) => {
-    setLoading(true);
     const response = await getRequest(url);
     if (response?.data?.success && response?.data?.statusCode === 200) {
       setPageData(response?.data?.data);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -64,38 +66,145 @@ export const HomePage = () => {
     { id: "forYou", label: t("forYou") },
   ];
 
-  const getAllPosts = async (url) => {
-    setLoading(true);
-    const response = await getRequest(url);
-    if (response?.data?.success && response?.data?.statusCode === 200) {
-      setAllPosts(response?.data?.data?.posts);
-      setLoading(false);
+  // const getAllPosts = async (url) => {
+  //   setPostsLoading(true);
+  //   try {
+  //     const response = await getRequest(url);
+  //     if (response?.data?.success && response?.data?.statusCode === 200) {
+  //       setAllPosts(response?.data?.data?.posts || []);
+  //     } else {
+  //       setAllPosts([]);
+  //     }
+  //   } catch (err) {
+  //     setAllPosts([]);
+  //     console.error("Error fetching posts:", err);
+  //   } finally {
+  //     setPostsLoading(false);
+  //   }
+  // };
+
+  // const getAllPostsCallBack = () => {
+  //   let filters = {};
+
+  //   if (activeTab === "forYou") {
+  //     filters = { foryou: true, listingIds: viewPostIds };
+  //   } else if (activeTab === "nearby") {
+  //     filters = {
+  //       latitude: reduxCoords?.lat || "",
+  //       longitude: reduxCoords?.lng || "",
+  //       nearby: true,
+  //     };
+  //   }
+  //   const queryString = Object.keys(filters).length
+  //     ? `&filters=${encodeURIComponent(JSON.stringify(filters))}`
+  //     : "";
+
+  //   const url = `${POST.GET_ALL}?page=1&limit=8${queryString}`;
+  //   getAllPosts(url);
+  // };
+
+  // const handleLikeUnlikePost = async (data) => {
+  //   setPostsLoading(true);
+  //   if (accessToken) {
+  //     let url;
+  //     if (data?.isWishlisted) {
+  //       url = POST.UNLIKE;
+  //     } else {
+  //       url = POST.LIKE;
+  //     }
+  //     try {
+  //       const response = await getRequest(`${url}?listingId=${data?.id}`);
+  //       if (response?.data?.success && response?.data?.statusCode === 200) {
+  //         showSuccessToast(response?.data?.message);
+  //         getAllPostsCallBack();
+  //         const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
+  //         if (res?.data?.success && res?.data?.statusCode === 200) {
+  //           dispatch(setNotifications(res?.data?.data));
+  //         }
+  //       }
+  //     } catch (error) {
+  //       showErrorToast(error?.response?.data?.message);
+  //     } finally {
+  //       setPostsLoading(false);
+  //     }
+  //   } else {
+  //     setShowLoginModal(true);
+  //     setPostsLoading(false);
+  //   }
+  // };
+
+  const getAllPosts = async (page = 1) => {
+    setPostsLoading(true);
+    try {
+      // build filters same as before
+      let filters = {};
+      if (activeTab === "forYou") {
+        filters = { foryou: true, listingIds: viewPostIds };
+      } else if (activeTab === "nearby") {
+        filters = {
+          latitude: reduxCoords?.lat || "",
+          longitude: reduxCoords?.lng || "",
+          nearby: true,
+        };
+      }
+      const queryString = Object.keys(filters).length
+        ? `&filters=${encodeURIComponent(JSON.stringify(filters))}`
+        : "";
+
+      const url = `${POST.GET_ALL}?page=${page}&limit=${limit}${queryString}`;
+      const response = await getRequest(url);
+
+      if (response?.data?.success && response?.data?.statusCode === 200) {
+        // posts
+        const posts = response?.data?.data?.posts || [];
+        setAllPosts(posts);
+
+        // determine total pages — handle common server shapes defensively
+        const totalPagesFromApi =
+          response?.data?.data?.totalCount ??
+          response?.data?.data?.totalCount ??
+          // if API returns total count:
+          (response?.data?.data?.totalCount
+            ? Math.ceil(response?.data?.data?.totalCount / limit)
+            : undefined);
+
+        if (typeof totalPagesFromApi === "number") {
+          setTotalPages(totalPagesFromApi);
+        } else {
+          // fallback (if nothing returned) keep as-is or set to 1
+          setTotalPages((prev) => (posts.length ? prev : 1));
+        }
+      } else {
+        setAllPosts([]);
+        setTotalPages(1);
+      }
+    } catch (err) {
+      setAllPosts([]);
+      setTotalPages(1);
+      console.error("Error fetching posts:", err);
+    } finally {
+      setPostsLoading(false);
     }
-    setLoading(false);
   };
 
-  const getAllPostsCallBack = () => {
-    let filters = {};
+  // wrapper used earlier; now we call getAllPosts directly when needed
+  // const getAllPostsCallBack = () => {
+  //   getAllPosts(currentPage);
+  // };
 
-    if (activeTab === "forYou") {
-      filters = { foryou: true, listingIds: viewPostIds };
-    } else if (activeTab === "nearby") {
-      filters = {
-        latitude: reduxCoords?.lat || "",
-        longitude: reduxCoords?.lng || "",
-        nearby: true,
-      };
-    }
-    const queryString = Object.keys(filters).length
-      ? `&filters=${encodeURIComponent(JSON.stringify(filters))}`
-      : "";
+  // fetch posts when these deps change (including page)
+  useEffect(() => {
+    getAllPosts(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, activeTab, currency, reduxCoords, currentPage]);
 
-    const url = `${POST.GET_ALL}?page=1&limit=8${queryString}`;
-    getAllPosts(url);
-  };
+  // reset page to 1 when activeTab changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab]);
 
   const handleLikeUnlikePost = async (data) => {
-    setLoading(true);
+    setPostsLoading(true);
     if (accessToken) {
       let url;
       if (data?.isWishlisted) {
@@ -107,8 +216,8 @@ export const HomePage = () => {
         const response = await getRequest(`${url}?listingId=${data?.id}`);
         if (response?.data?.success && response?.data?.statusCode === 200) {
           showSuccessToast(response?.data?.message);
-          getAllPostsCallBack();
-          setLoading(false);
+          // re-fetch current page after like/unlike
+          getAllPosts(currentPage);
           const res = await getRequest(CUSTOMER.NOTIFICTIN_COUNT);
           if (res?.data?.success && res?.data?.statusCode === 200) {
             dispatch(setNotifications(res?.data?.data));
@@ -116,13 +225,13 @@ export const HomePage = () => {
         }
       } catch (error) {
         showErrorToast(error?.response?.data?.message);
-        setLoading(false);
+      } finally {
+        setPostsLoading(false);
       }
     } else {
       setShowLoginModal(true);
-      setLoading(false);
+      setPostsLoading(false);
     }
-    setLoading(false);
   };
 
   const getAllCategory = async (url) => {
@@ -140,13 +249,17 @@ export const HomePage = () => {
     getAllCategory(CUSTOMER.CATEGORY_LIST);
   }, []);
 
-  useEffect(() => {
-    getAllPostsCallBack();
-  }, [accessToken, activeTab, currency, reduxCoords]);
+  // useEffect(() => {
+  //   getAllPostsCallBack();
+  // }, [accessToken, activeTab, currency, reduxCoords]);
+
+  if (postsLoading && !allPosts?.length) {
+    return <ScreenLoader />;
+  }
 
   return (
     <>
-      {loading ? (
+      {postsLoading ? (
         <ScreenLoader />
       ) : (
         <>
@@ -161,8 +274,12 @@ export const HomePage = () => {
             setActiveTab={setActiveTab}
             activeTab={activeTab}
             tabs={tabs}
+            postsLoading={postsLoading}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
           />
-         <section className="hidden md:block">
+          <section className="hidden md:block">
             <ImageSlider pageData={pageData} imagePath={imagePath} />
           </section>
           <div className="spacer-x pb-15 md:pb-20 pt-12 md:pt-5">
