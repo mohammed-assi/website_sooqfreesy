@@ -22,8 +22,6 @@ export const Banner = ({ allCategory, imagePath }) => {
     }
   };
 
-  console.log("allCategory", allCategory);
-
   return (
     <div
       // dir={i18n.language === "ar" ? "rtl" : "ltr"}

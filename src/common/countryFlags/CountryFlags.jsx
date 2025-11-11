@@ -64,9 +64,9 @@ export default function CountryFlags({ countryName, size = 20 }) {
 
   const code = matchedName ? getCode(matchedName) : null;
 
-  console.log("countryName0", countryName);
-  console.log("code--->", code);
-  console.log("countries", countries);
+  // console.log("countryName0", countryName);
+  // console.log("code--->", code);
+  // console.log("countries", countries);
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>

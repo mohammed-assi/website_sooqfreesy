@@ -10,7 +10,7 @@ const Catbar = ({ allCategory, imagePath }) => {
         <button
           onClick={() => {
             navigate(ROUTE.PRODUCT_PAGE, {
-              state: { categoryName: category?.name },
+              state: {  categoryName: category?.name,  categoryId : category?.id  },
             });
           }}
           key={category.id}

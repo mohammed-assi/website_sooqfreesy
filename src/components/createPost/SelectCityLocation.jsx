@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Controller } from "react-hook-form";
 import Autocomplete from "react-google-autocomplete";
@@ -71,6 +71,17 @@ export const SelectCityLocation = ({
       return null;
     }
   };
+
+  useEffect(() => {
+    const defaultCountryName = "Syria"; 
+    const defaultCountry = countries.find((c) => c.name === defaultCountryName);
+
+    if (defaultCountry) {
+      setValue("country", defaultCountry.name);
+      setUserCountry(defaultCountry.isoCode);
+      trigger("country");
+    }
+  }, [countries, setValue, setUserCountry, trigger]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

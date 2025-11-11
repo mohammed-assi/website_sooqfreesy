@@ -407,8 +407,6 @@ export const CreatePost = () => {
     }
   }, [selectedState, selectedCountry, setValue, states]);
 
-  console.log("userLocation-->", userLocation);
-
   return (
     <div className="spacer-x">
       <div className="pt-8 md:pt-15 pb-10">

@@ -144,8 +144,6 @@ export const HomePage = () => {
     getAllPostsCallBack();
   }, [accessToken, activeTab, currency, reduxCoords]);
 
-  console.log("welcomeData", welcomeData);
-
   return (
     <>
       {loading ? (

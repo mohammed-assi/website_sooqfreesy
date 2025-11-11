@@ -630,6 +630,9 @@ export const ProductPage = () => {
   const clearLocationState = useCallback(() => {
     if (location.state && Object.keys(location.state).length > 0) {
       navigate(location.pathname, { replace: true, state: {} });
+      navigate(location.pathname, { replace: true, state: {} });
+   // allow immediate refetch after navigation-by-state
+    lastRequestKeyRef.current = null;
     }
   }, [location, navigate]);
 
@@ -813,6 +816,9 @@ export const ProductPage = () => {
         ...prev,
         category: location?.state?.categoryId,
       }));
+      setCurrentPage(1);
+   lastRequestKeyRef.current = null;
+ recentRequestsRef.current.clear()
       clearLocationState();
     }
   }, [location?.state, clearLocationState]);
@@ -831,43 +837,82 @@ export const ProductPage = () => {
   /** ------------------------------
    * Fetch Posts whenever filters/subcategories/page/search change
    * ------------------------------ */
+  // useEffect(() => {
+  //   if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
+
+  //   if (hasSetCategoryFromLocation.current) {
+  //     hasSetCategoryFromLocation.current = false;
+  //     return;
+  //   }
+
+  //   const filterObj = buildFilterObject();
+  //   const requestKey = JSON.stringify({
+  //     page: currentPage,
+  //     filters: filterObj,
+  //   });
+  //   if (lastRequestKeyRef.current === requestKey) return;
+
+  //   requestTimerRef.current = setTimeout(() => {
+  //     lastRequestKeyRef.current = requestKey;
+  //     const url = buildUrlForRequest(currentPage, false);
+  //     getAllPosts(url);
+  //     requestTimerRef.current = null;
+  //   }, 600);
+
+  //   return () => {
+  //     if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
+  //   };
+  // }, [
+  //   currentPage,
+  //   filters,
+  //   subcategoryIds,
+  //   searchTextDebounce,
+  //   buildFilterObject,
+  //   buildUrlForRequest,
+  //   getAllPosts,
+  //   selectedCity,
+  //   selectedState,
+  //   coords,
+  // ]);
+
   useEffect(() => {
+  if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
+
+  if (hasSetCategoryFromLocation.current) {
+    hasSetCategoryFromLocation.current = false;
+    lastRequestKeyRef.current = null;
+  }
+
+  const filterObj = buildFilterObject();
+  const requestKey = JSON.stringify({
+    page: currentPage,
+    filters: filterObj,
+  });
+  if (lastRequestKeyRef.current === requestKey) return;
+
+  requestTimerRef.current = setTimeout(() => {
+    lastRequestKeyRef.current = requestKey;
+    const url = buildUrlForRequest(currentPage, false);
+    getAllPosts(url);
+    requestTimerRef.current = null;
+  }, 600);
+
+  return () => {
     if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
+  };
+}, [
+  currentPage,
+  filters,
+  subcategoryIds,
+  searchTextDebounce,
+  buildFilterObject,
+  buildUrlForRequest,
+  getAllPosts,
+  selectedCity,
+  selectedState,
+  coords,
+]);
 
-    if (hasSetCategoryFromLocation.current) {
-      hasSetCategoryFromLocation.current = false;
-      return;
-    }
-
-    const filterObj = buildFilterObject();
-    const requestKey = JSON.stringify({
-      page: currentPage,
-      filters: filterObj,
-    });
-    if (lastRequestKeyRef.current === requestKey) return;
-
-    requestTimerRef.current = setTimeout(() => {
-      lastRequestKeyRef.current = requestKey;
-      const url = buildUrlForRequest(currentPage, false);
-      getAllPosts(url);
-      requestTimerRef.current = null;
-    }, 600);
-
-    return () => {
-      if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
-    };
-  }, [
-    currentPage,
-    filters,
-    subcategoryIds,
-    searchTextDebounce,
-    buildFilterObject,
-    buildUrlForRequest,
-    getAllPosts,
-    selectedCity,
-    selectedState,
-    coords,
-  ]);
 
   /** ------------------------------
    * Initial Fetch: categories & subcategories
@@ -1024,6 +1069,8 @@ export const ProductPage = () => {
 
   // if (loading) return <ScreenLoader />;
   if (!hasFetchedOnceRef.current || loading) return <ScreenLoader />;
+
+  console.log("locationnnnnn", location);
 
   return (
     <div className="spacer-x">
