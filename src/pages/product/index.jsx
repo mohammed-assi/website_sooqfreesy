@@ -910,9 +910,8 @@ export const ProductPage = () => {
   getAllPosts,
   selectedCity,
   selectedState,
-  coords,
+  coords
 ]);
-
 
   /** ------------------------------
    * Initial Fetch: categories & subcategories
@@ -1036,14 +1035,15 @@ export const ProductPage = () => {
   //   getAllPosts(url);
   // }, [currency]);
 
-  useEffect(() => {
-    if (!currency) return;
-    // Changing page or filters will trigger the central fetch effect.
-    // Reset to page 1 so the main effect picks up the new currency and refetches.
-    setCurrentPage(1);
-    // optionally clear lastRequestKeyRef so requestKey comparison doesn't prevent the fetch
-    lastRequestKeyRef.current = null;
-  }, [currency]);
+useEffect(() => {
+  if (!currency) return;
+
+  setCurrentPage(1);
+  lastRequestKeyRef.current = null;
+  recentRequestsRef.current.clear();
+  const url = buildUrlForRequest(1, false);
+  getAllPosts(url);
+}, [currency, buildUrlForRequest, getAllPosts]);
 
   /** ------------------------------
    * SubCatId from location.state (once)
@@ -1069,8 +1069,6 @@ export const ProductPage = () => {
 
   // if (loading) return <ScreenLoader />;
   if (!hasFetchedOnceRef.current || loading) return <ScreenLoader />;
-
-  console.log("locationnnnnn", location);
 
   return (
     <div className="spacer-x">

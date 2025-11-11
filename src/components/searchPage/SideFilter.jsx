@@ -426,7 +426,7 @@ export const SideFilter = ({
             {t("min")}
             <div className="relative">
               <p className="absolute top-4 left-2 font-normal">
-                {currency === "SYP" ? "£" : "$"}
+                {currency === "SYP" ? "£S" : "$"}
               </p>
               <input
                 type="number"
@@ -447,7 +447,7 @@ export const SideFilter = ({
                     ]);
                   }
                 }}
-                className="mt-1 h-[48px] bg-[#F5F5F5] px-4 text-base font-normal rounded-md focus:outline-none no-arrow ml-1 w-full"
+                className="mt-1 pl-7 h-[48px] bg-[#F5F5F5] px-4 text-base font-normal rounded-md focus:outline-none no-arrow ml-1 w-full"
               />
             </div>
           </div>
@@ -457,7 +457,7 @@ export const SideFilter = ({
             {t("max")}
             <div className="relative">
               <p className="absolute top-4 left-2 font-normal">
-                {currency === "SYP" ? "£" : "$"}
+                {currency === "SYP" ? "£S" : "$"}
               </p>
               <input
                 type="number"
@@ -479,7 +479,7 @@ export const SideFilter = ({
                     ]);
                   }
                 }}
-                className="mt-1 ml-1 h-[48px] bg-[#F5F5F5] px-4 text-base font-normal rounded-md focus:outline-none no-arrow w-full"
+                className="mt-1 ml-1 pl-7 h-[48px] bg-[#F5F5F5] px-4 text-base font-normal rounded-md focus:outline-none no-arrow w-full"
               />
             </div>
           </div>
