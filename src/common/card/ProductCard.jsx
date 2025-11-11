@@ -66,7 +66,7 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
         <div className="py-4 space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-lg font-bold">
-              {currency === "SYP" ? "£" : "$"} {item?.price}
+              {currency === "SYP" ? "£S" : "$"} {item?.price}
             </p>
             <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
               {item?.sub_categoryName}
@@ -80,15 +80,14 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
                 ? `${item.description.slice(0, 50)}...`
                 : item.description}
             </p>
-            <div className="flex justify-around ">
-
-            <div className="flex items-center gap-2 text-gray-500 text-xs mt-3 capitalize">
-              <img src={location} alt="icon" />
-              {item?.nearby_location}
-            </div>
-            <div className="flex items-center gap-2">
-               <CountryFlags countryName={item?.countryNameForFlag} />
-            </div>
+            <div className="flex justify-between items-center mt-3">
+              <div className="w-70 flex items-center gap-2 text-gray-500 text-xs capitalize">
+                <img src={location} alt="icon" />
+                {item?.nearby_location}
+              </div>
+              <div className="flex items-center gap-2">
+                <CountryFlags countryName={item?.countryNameForFlag} />
+              </div>
             </div>
           </div>
         </div>

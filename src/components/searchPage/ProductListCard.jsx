@@ -79,7 +79,7 @@ const ProductListCard = ({
           </span>
 
           <h2 className="text-2xl font-bold text-gray-900">
-            {currency === "SYP" ? "£" : "$"} {item.price}
+            {currency === "SYP" ? "£S" : "$"} {item.price}
           </h2>
 
           <h3 className="text-xl font-bold text-gray-800 mt-3">{item.title}</h3>

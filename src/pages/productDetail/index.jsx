@@ -333,7 +333,7 @@ export const ProductDetail = () => {
 
               <div className="flex justify-between items-center">
                 <h2 className="main-heading text-primary">
-                  {currency === "SYP" ? "£" : "$"}{" "}
+                  {currency === "SYP" ? "£S" : "$"}{" "}
                   {postDetailData?.currencyTypePrice}
                 </h2>
                 <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">

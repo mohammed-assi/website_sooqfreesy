@@ -34,7 +34,7 @@ import { getCode, getNames } from "country-list";
 
 // Aliases normalized without spaces and lowercase
 const aliasMap = {
-  syria: "Syrian Arab Republic",
+  syria: "Syrian Arab Republic (the)",
   usa: "United States",
   uk: "United Kingdom",
   russia: "Russian Federation",
@@ -62,6 +62,10 @@ export default function CountryFlags({ countryName, size = 20 }) {
     ) || null;
 
   const code = matchedName ? getCode(matchedName) : null;
+
+  console.log("countryName0", countryName);
+  console.log("code--->", code);
+  console.log("countries", countries);
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>

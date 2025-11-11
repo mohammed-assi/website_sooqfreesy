@@ -552,7 +552,6 @@
 
 // export default ProductPage;
 
-
 import React, {
   useCallback,
   useEffect,
@@ -622,6 +621,9 @@ export const ProductPage = () => {
   const hasUsedSearchText = useRef(false);
   const processedSubCatRef = useRef(new Set());
 
+  // 🟢 NEW FLAG to prevent duplicate API calls
+  const hasSetCategoryFromLocation = useRef(false);
+
   /** ------------------------------
    * Clear Location State
    * ------------------------------ */
@@ -659,7 +661,32 @@ export const ProductPage = () => {
   /** ------------------------------
    * Fetch Posts
    * ------------------------------ */
+  const inFlightRequestsRef = useRef(new Set());
+  const recentRequestsRef = useRef(new Map());
+  const RECENT_TTL = 1000;
+
   const getAllPosts = useCallback(async (url) => {
+    if (!url) return;
+
+    const now = Date.now();
+    const recent = recentRequestsRef.current;
+    const lastTs = recent.get(url);
+    if (lastTs && now - lastTs < RECENT_TTL) {
+      // recently called this exact URL — skip to avoid immediate duplicate
+      // console.debug("Skipping recent duplicate url:", url);
+      return;
+    }
+
+    const inFlight = inFlightRequestsRef.current;
+    if (inFlight.has(url)) {
+      // already in-flight (concurrent) -> dedupe
+      // console.debug("Already in-flight:", url);
+      return;
+    }
+
+    inFlight.add(url);
+    // mark as attempted now so sequential calls within TTL are ignored
+    recent.set(url, now);
     setLoading(true);
     try {
       const response = await getRequest(url);
@@ -674,6 +701,7 @@ export const ProductPage = () => {
       console.error("Error fetching posts:", err);
       showErrorToast(err?.response?.data?.message || "Failed to fetch posts");
     } finally {
+      inFlight.delete(url);
       setLoading(false);
     }
   }, []);
@@ -683,7 +711,9 @@ export const ProductPage = () => {
    * ------------------------------ */
   const getSubCategory = async (categoryId) => {
     try {
-      const response = await getRequest(`${CUSTOMER.GET_SUBCATEGORY}/${categoryId}`);
+      const response = await getRequest(
+        `${CUSTOMER.GET_SUBCATEGORY}/${categoryId}`
+      );
       if (response?.data?.success && response?.data?.statusCode === 200) {
         setSubCategoryList(response?.data?.data || []);
       }
@@ -700,8 +730,10 @@ export const ProductPage = () => {
     if (filters.category) filterObj.category_id = Number(filters.category);
     if (filters.subCategory || subcategoryIds.length) {
       const allSubCategories = [];
-      if (filters.subCategory) allSubCategories.push(Number(filters.subCategory));
-      if (subcategoryIds.length) allSubCategories.push(...subcategoryIds.map(Number));
+      if (filters.subCategory)
+        allSubCategories.push(Number(filters.subCategory));
+      if (subcategoryIds.length)
+        allSubCategories.push(...subcategoryIds.map(Number));
       filterObj.sub_category_id = allSubCategories;
     }
     if (filters.priceRange?.[0]) filterObj.price_min = filters.priceRange[0];
@@ -714,7 +746,6 @@ export const ProductPage = () => {
     if (selectedState) filterObj.state = selectedState;
     if (coords?.lat) filterObj.latitude = Number(coords.lat);
     if (coords?.lng) filterObj.longitude = Number(coords.lng);
-
     return filterObj;
   }, [
     filters,
@@ -735,8 +766,10 @@ export const ProductPage = () => {
       let url = `${POST.GET_ALL}?page=${page}&limit=12`;
 
       if (applySortingPrice) {
-        const sorting = passedFilters?.sorting || filtersModal?.sorting || "newest";
-        const byPrice = passedFilters?.price || filtersModal?.price || "highest";
+        const sorting =
+          passedFilters?.sorting || filtersModal?.sorting || "newest";
+        const byPrice =
+          passedFilters?.price || filtersModal?.price || "highest";
         url += `&sorting=${sorting}&byPrice=${byPrice}`;
       }
 
@@ -760,7 +793,9 @@ export const ProductPage = () => {
   const handleSelectSubcatIds = (id) => {
     const idNum = Number(id);
     setSubcategoryIds((prev) =>
-      prev.includes(idNum) ? prev.filter((item) => item !== idNum) : [...prev, idNum]
+      prev.includes(idNum)
+        ? prev.filter((item) => item !== idNum)
+        : [...prev, idNum]
     );
     setCurrentPage(1);
     clearLocationState();
@@ -770,23 +805,14 @@ export const ProductPage = () => {
    * Set category from location.state (once)
    * ------------------------------ */
   useEffect(() => {
-    // if (!location?.state?.categoryId || allCategory.length === 0) return;
-
-    // const matchedCategory = allCategory.find(
-    //   (cat) => cat?.id === Number(location?.state.categoryId)
-    // );
-
-    // if (matchedCategory) {
-    //   setFilters((prev) => ({ ...prev, category: matchedCategory.id }));
-    // }
-
-    if (location?.state?.categoryId) {
-      setFilters((prev) => ({ ...prev, category:location?.state?.categoryId }));
-
+    if (location?.state?.categoryId && !hasSetCategoryFromLocation.current) {
+      hasSetCategoryFromLocation.current = true;
+      setFilters((prev) => ({
+        ...prev,
+        category: location?.state?.categoryId,
+      }));
+      clearLocationState();
     }
-
-
-    clearLocationState();
   }, [location?.state, clearLocationState]);
 
   /** ------------------------------
@@ -806,8 +832,16 @@ export const ProductPage = () => {
   useEffect(() => {
     if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
 
+    if (hasSetCategoryFromLocation.current) {
+      hasSetCategoryFromLocation.current = false;
+      return;
+    }
+
     const filterObj = buildFilterObject();
-    const requestKey = JSON.stringify({ page: currentPage, filters: filterObj });
+    const requestKey = JSON.stringify({
+      page: currentPage,
+      filters: filterObj,
+    });
     if (lastRequestKeyRef.current === requestKey) return;
 
     requestTimerRef.current = setTimeout(() => {
@@ -852,7 +886,12 @@ export const ProductPage = () => {
     setSearchText(text);
     setSearchTextDebounce(text);
     navigate(location.pathname, { replace: true, state: {} });
-  }, [location.state?.searchText, location.state?.search, navigate, setSearchTextDebounce]);
+  }, [
+    location.state?.searchText,
+    location.state?.search,
+    navigate,
+    setSearchTextDebounce,
+  ]);
 
   /** ------------------------------
    * Wishlist Like/Unlike
@@ -880,7 +919,9 @@ export const ProductPage = () => {
         showErrorToast("Unable to update wishlist");
       }
     } catch (error) {
-      showErrorToast(error?.response?.data?.message || "Failed to update wishlist");
+      showErrorToast(
+        error?.response?.data?.message || "Failed to update wishlist"
+      );
     }
   };
 
@@ -933,16 +974,28 @@ export const ProductPage = () => {
     if (!selectedState) return;
     const stateObj = states.find((s) => s.name === selectedState);
     if (stateObj) {
-      const cityList = City.getCitiesOfState(stateObj.countryCode, stateObj.isoCode);
+      const cityList = City.getCitiesOfState(
+        stateObj.countryCode,
+        stateObj.isoCode
+      );
       setCities(cityList);
       setSelectedCity("");
     }
   }, [selectedState, states]);
 
+  // useEffect(() => {
+  //   if (!currency) return;
+  //   const url = buildUrlForRequest(currentPage, false);
+  //   getAllPosts(url);
+  // }, [currency]);
+
   useEffect(() => {
     if (!currency) return;
-    const url = buildUrlForRequest(currentPage, false);
-    getAllPosts(url);
+    // Changing page or filters will trigger the central fetch effect.
+    // Reset to page 1 so the main effect picks up the new currency and refetches.
+    setCurrentPage(1);
+    // optionally clear lastRequestKeyRef so requestKey comparison doesn't prevent the fetch
+    lastRequestKeyRef.current = null;
   }, [currency]);
 
   /** ------------------------------
@@ -960,7 +1013,9 @@ export const ProductPage = () => {
     if (isNaN(idNum)) return;
 
     setSubcategoryIds((prev) =>
-      prev.includes(idNum) ? prev.filter((item) => item !== idNum) : [...prev, idNum]
+      prev.includes(idNum)
+        ? prev.filter((item) => item !== idNum)
+        : [...prev, idNum]
     );
     setCurrentPage(1);
   }, [location.state?.subCatId]);
@@ -981,9 +1036,14 @@ export const ProductPage = () => {
         setSearchText={setSearchText}
         setSearchTextDebounce={setSearchTextDebounce}
         filters={filters}
+        // handleApplyFilters={(values) => {
+        //   const url = buildUrlForRequest(currentPage, true, values);
+        //   getAllPosts(url);
+        // }}
         handleApplyFilters={(values) => {
-          const url = buildUrlForRequest(currentPage, true, values);
-          getAllPosts(url);
+          setFiltersModal(values);
+          setCurrentPage(1);
+          lastRequestKeyRef.current = null;
         }}
       />
 
