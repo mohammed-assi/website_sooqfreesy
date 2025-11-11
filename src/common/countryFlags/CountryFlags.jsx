@@ -43,6 +43,7 @@ const aliasMap = {
   northkorea: "Korea, Democratic People's Republic of",
   vietnam: "Viet Nam",
   laos: "Lao People's Democratic Republic",
+  netherlands:'Netherlands (Kingdom of the)'
 };
 
 export default function CountryFlags({ countryName, size = 20 }) {

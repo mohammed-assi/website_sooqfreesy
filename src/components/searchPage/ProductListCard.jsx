@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { ROUTE } from "../../config/constants";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import CountryFlags from "../../common/countryFlags/CountryFlags";
 
 const ProductListCard = ({
   item,
@@ -90,9 +91,14 @@ const ProductListCard = ({
               : item.description}
           </p>
 
-          <div className="flex items-center gap-2 text-gray-500 text-sm pt-2">
-            <img src={location} alt="icon" />
-            {item.nearby_location}
+          <div className="flex justify-between items-center mt-3">
+            <div className="w-80 flex items-center gap-2 text-gray-500 text-sm pt-2">
+              <img src={location} alt="icon" />
+              {item.nearby_location}
+            </div>
+            <div className="flex items-center gap-2">
+              <CountryFlags countryName={item?.countryNameForFlag} />
+            </div>
           </div>
         </Link>
       </div>

@@ -663,6 +663,7 @@ export const ProductPage = () => {
    * ------------------------------ */
   const inFlightRequestsRef = useRef(new Set());
   const recentRequestsRef = useRef(new Map());
+  const hasFetchedOnceRef = useRef(false);
   const RECENT_TTL = 1000;
 
   const getAllPosts = useCallback(async (url) => {
@@ -703,6 +704,7 @@ export const ProductPage = () => {
     } finally {
       inFlight.delete(url);
       setLoading(false);
+      hasFetchedOnceRef.current = true;
     }
   }, []);
 
@@ -1020,7 +1022,8 @@ export const ProductPage = () => {
     setCurrentPage(1);
   }, [location.state?.subCatId]);
 
-  if (loading) return <ScreenLoader />;
+  // if (loading) return <ScreenLoader />;
+  if (!hasFetchedOnceRef.current || loading) return <ScreenLoader />;
 
   return (
     <div className="spacer-x">
