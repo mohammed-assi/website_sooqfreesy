@@ -86,7 +86,10 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
                 {item?.nearby_location}
               </div>
               <div className="flex items-center gap-2">
-                <CountryFlags countryName={item?.countryNameForFlag} />
+                <CountryFlags
+                  countryName={item?.countryNameForFlag}
+                  countryCode={item?.countryCodeForFlag}
+                />
               </div>
             </div>
           </div>

@@ -77,7 +77,10 @@ const MyAdsCard = ({
               {item.nearby_location}
             </div>
             <div className="flex items-center gap-2">
-              <CountryFlags countryName={item?.countryNameForFlag} />
+              <CountryFlags
+                countryName={item?.countryNameForFlag}
+                countryCode={item?.countryCodeForFlag}
+              />
             </div>
           </div>
           <p className="bg-primary text-white text-xs font-medium px-3 py-1 rounded-full mt-2 inline-block">

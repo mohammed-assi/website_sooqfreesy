@@ -1,84 +1,40 @@
-// import React from "react";
-// import ReactCountryFlag from "react-country-flag";
-// import { getCode, getNames } from "country-list";
-
-// export default function CountryFlags({ countryName }) {
-//   // normalize case-insensitive
-//   const countries = getNames(); // gives all valid country names
-//   const matchedName = countries.find(
-//     (name) => name.toLowerCase() === countryName.toLowerCase()
-//   );
-
-//   const code = matchedName ? getCode(matchedName) : null;
-
-//   return (
-//     <div style={{ display: "flex", alignItems: "center" }}>
-//       {code ? (
-//         <ReactCountryFlag
-//           countryCode={code}
-//           svg
-//           style={{ width: "2em", height: "2em", marginRight: "8px" }}
-//           title={countryName}
-//         />
-//       ) : (
-//         <span style={{ width: "2em", marginRight: "8px" }}>❓</span> // fallback
-//       )}
-//       {countryName}
-//     </div>
-//   );
-// }
-
-import React from "react";
 import ReactCountryFlag from "react-country-flag";
-import { getCode, getNames } from "country-list";
+import { getCode } from "country-list";
 
-// Aliases normalized without spaces and lowercase
 const aliasMap = {
-  syria: "Syrian Arab Republic (the)",
-  usa: "United States",
-  uk: "United Kingdom",
-  russia: "Russian Federation",
-  iran: "Iran, Islamic Republic of",
-  southkorea: "Korea, Republic of",
-  northkorea: "Korea, Democratic People's Republic of",
-  vietnam: "Viet Nam",
-  laos: "Lao People's Democratic Republic",
-  netherlands:'Netherlands (Kingdom of the)'
+  syria: "SY",
+  usa: "US",
+  uk: "GB",
+  russia: "RU",
+  iran: "IR",
+  southkorea: "KR",
+  northkorea: "KP",
+  vietnam: "VN",
+  laos: "LA",
+  netherlands: "NL",
+  india: "IN",
 };
 
-export default function CountryFlags({ countryName, size = 20 }) {
-  const countries = getNames();
+export default function CountryFlags({ countryName, countryCode, size = 20 }) {
 
-  // Normalize input: lowercase, remove spaces
-  const normalizedInput = countryName.toLowerCase().replace(/\s+/g, "");
+   let finalCode = countryCode?.toUpperCase();
 
-  // Find official name from alias map or fallback to input
-  const officialName =
-    aliasMap[normalizedInput] || countryName;
-
-  // Match with country-list names (case-insensitive)
-  const matchedName =
-    countries.find(
-      (name) => name.toLowerCase() === officialName.toLowerCase()
-    ) || null;
-
-  const code = matchedName ? getCode(matchedName) : null;
-
-  // console.log("countryName0", countryName);
-  // console.log("code--->", code);
-  // console.log("countries", countries);
+  if (!finalCode && countryName) {
+    const normalized = countryName.toLowerCase().replace(/\s+/g, "");
+    finalCode = aliasMap[normalized] || getCode(countryName) || "";
+  }
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      {code ? (
+      {finalCode ? (
         <ReactCountryFlag
-          countryCode={code}
+          countryCode={finalCode}
           svg
           style={{ width: `${size}px`, height: `${size}px` }}
-          title={countryName}
+          title={countryName || finalCode}
         />
       ) : (
-        <span style={{ width: `${size}px`, marginRight: "8px" }}>❓</span>
+        <span style={{ width: `${size}px`, marginRight: "8px" }}>.</span>
       )}
     </div>
   );
