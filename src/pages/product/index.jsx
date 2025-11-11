@@ -621,7 +621,6 @@ export const ProductPage = () => {
   const hasUsedSearchText = useRef(false);
   const processedSubCatRef = useRef(new Set());
 
-  // 🟢 NEW FLAG to prevent duplicate API calls
   const hasSetCategoryFromLocation = useRef(false);
 
   /** ------------------------------
@@ -833,47 +832,6 @@ export const ProductPage = () => {
       setSubCategoryList([]);
     }
   }, [filters.category]);
-
-  /** ------------------------------
-   * Fetch Posts whenever filters/subcategories/page/search change
-   * ------------------------------ */
-  // useEffect(() => {
-  //   if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
-
-  //   if (hasSetCategoryFromLocation.current) {
-  //     hasSetCategoryFromLocation.current = false;
-  //     return;
-  //   }
-
-  //   const filterObj = buildFilterObject();
-  //   const requestKey = JSON.stringify({
-  //     page: currentPage,
-  //     filters: filterObj,
-  //   });
-  //   if (lastRequestKeyRef.current === requestKey) return;
-
-  //   requestTimerRef.current = setTimeout(() => {
-  //     lastRequestKeyRef.current = requestKey;
-  //     const url = buildUrlForRequest(currentPage, false);
-  //     getAllPosts(url);
-  //     requestTimerRef.current = null;
-  //   }, 600);
-
-  //   return () => {
-  //     if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
-  //   };
-  // }, [
-  //   currentPage,
-  //   filters,
-  //   subcategoryIds,
-  //   searchTextDebounce,
-  //   buildFilterObject,
-  //   buildUrlForRequest,
-  //   getAllPosts,
-  //   selectedCity,
-  //   selectedState,
-  //   coords,
-  // ]);
 
   useEffect(() => {
   if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
