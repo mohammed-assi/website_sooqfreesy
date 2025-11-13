@@ -484,7 +484,7 @@ export const EditPost = () => {
         pictures:
           postDetailData.images?.map((img) => ({
             file: null,
-            preview: `${imagePath}${img.image_url}`,
+            preview: `${imagePath}/${img.image_url}`,
             id: img.id,
           })) || [],
       };

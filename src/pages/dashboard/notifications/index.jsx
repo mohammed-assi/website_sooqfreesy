@@ -241,7 +241,7 @@ export const Notifictions = () => {
                     <img
                       src={
                         item.user_profile_url
-                          ? `${imagePath}${item.user_profile_url}`
+                          ? `${imagePath}/${item.user_profile_url}`
                           : defaultUser
                       }
                       alt="imageess"

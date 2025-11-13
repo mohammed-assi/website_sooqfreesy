@@ -33,7 +33,7 @@ export const ImageSlider = ({ pageData, imagePath }) => {
               <div
                 className="w-full lg:h-80 h-[280px] bg-cover bg-center relative flex"
                 style={{
-                  backgroundImage: `url(${imagePath}${item?.banner_image})`,
+                  backgroundImage: `url(${imagePath}/${item?.banner_image})`,
                 }}
               >
                 <div className="spacer-x w-full flex flex-col justify-end text-center text-white md:text-left h-full py-20">

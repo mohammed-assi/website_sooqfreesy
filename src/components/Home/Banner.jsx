@@ -76,7 +76,7 @@ export const Banner = ({ allCategory, imagePath }) => {
               className="flex flex-col items-center justify-center border bg-white border-gray-300 rounded-xl p-6 hover:shadow-lg hover:border-none transition group"
             >
               <img
-                src={`${imagePath}${category?.image_url}`}
+                src={`${imagePath}/${category?.image_url}`}
                 alt={category.name}
                 className="w-12 h-12 mb-3 group-hover:scale-110 transition"
               />

@@ -17,7 +17,7 @@ const Catbar = ({ allCategory, imagePath }) => {
           className="flex justify-center items-center gap-2 not-last:border-r not-last:border-gray-200"
         >
           <img
-            src={`${imagePath}${category?.image_url}`}
+            src={`${imagePath}/${category?.image_url}`}
             alt={category.name}
             className="size-8 group-hover:scale-110 transition"
           />
