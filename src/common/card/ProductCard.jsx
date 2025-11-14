@@ -66,7 +66,7 @@
 //         <div className="py-4 space-y-2">
 //           <div className="flex items-center justify-between">
 //             <p className="text-lg font-bold">
-//               {currency === "SYP" ? "£S" : "$"} {item?.price}
+//               {currency === "SYP" ? "SYP" : "$"} {item?.price}
 //             </p>
 //             <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
 //               {item?.sub_categoryName}
@@ -157,11 +157,11 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
         <div className="py-4 px-4 flex flex-col h-full">
           <div className="flex items-center justify-between">
             {/* <p className="text-lg font-bold">
-              {currency === "SYP" ? "£S" : "$"} {item?.price}
+              {currency === "SYP" ? "SYP" : "$"} {item?.price}
             </p> */}
             <p className="text-lg font-bold">
               <span dir="ltr" className="inline-block">
-                <span className="mr-1">{currency === "SYP" ? "£S" : "$"}</span>
+                <span className="mr-1">{currency === "SYP" ? "SYP" : "$"}</span>
                 <span>{item?.price}</span>
               </span>
             </p>

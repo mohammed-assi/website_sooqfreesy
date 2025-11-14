@@ -23,7 +23,7 @@ export const ShareModal = ({
 
   const message = `${title}
 ${description}
-${t("price")}: ${currency === "SYP" ? "£S" : "$"} ${price}
+${t("price")}: ${currency === "SYP" ? "SYP" : "$"} ${price}
 ${shareLink}`;
 
   const encodedMessage = encodeURIComponent(message);

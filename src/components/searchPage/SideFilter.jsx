@@ -425,8 +425,8 @@ export const SideFilter = ({
           <div className="flex flex-col w-[50%] text-base font-bold">
             {t("min")}
             <div className="relative">
-              <p className="absolute top-4 left-2 font-normal">
-                {currency === "SYP" ? "£S" : "$"}
+              <p className="absolute top-4 left-0.5 font-normal">
+                {currency === "SYP" ? "SYP" : "$"}
               </p>
               <input
                 type="number"
@@ -456,8 +456,8 @@ export const SideFilter = ({
           <div className="flex flex-col w-[50%] text-base font-bold">
             {t("max")}
             <div className="relative">
-              <p className="absolute top-4 left-2 font-normal">
-                {currency === "SYP" ? "£S" : "$"}
+              <p className="absolute top-4 left-0.5 font-normal">
+                {currency === "SYP" ? "SYP" : "$"}
               </p>
               <input
                 type="number"

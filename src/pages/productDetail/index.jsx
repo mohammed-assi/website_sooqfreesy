@@ -333,11 +333,11 @@ export const ProductDetail = () => {
 
               <div className="flex justify-between items-center">
                 <h2 className="main-heading text-primary">
-                  {/* {currency === "SYP" ? "£S" : "$"}{" "}
+                  {/* {currency === "SYP" ? "SYP" : "$"}{" "}
                   {postDetailData?.currencyTypePrice} */}
                   <span dir="ltr" className="inline-block">
                     <span className="mr-1">
-                      {currency === "SYP" ? "£S" : "$"}
+                      {currency === "SYP" ? "SYP" : "$"}
                     </span>
                     <span>{postDetailData?.currencyTypePrice}</span>
                   </span>
