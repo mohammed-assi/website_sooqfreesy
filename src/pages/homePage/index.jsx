@@ -159,21 +159,13 @@ export const HomePage = () => {
         const posts = response?.data?.data?.posts || [];
         setAllPosts(posts);
 
-        // determine total pages — handle common server shapes defensively
-        const totalPagesFromApi =
-          response?.data?.data?.totalCount ??
-          response?.data?.data?.totalCount ??
-          // if API returns total count:
-          (response?.data?.data?.totalCount
-            ? Math.ceil(response?.data?.data?.totalCount / limit)
-            : undefined);
+        const totalCount = response?.data?.data?.totalCount;
 
-        if (typeof totalPagesFromApi === "number") {
-          setTotalPages(totalPagesFromApi);
-        } else {
-          // fallback (if nothing returned) keep as-is or set to 1
-          setTotalPages((prev) => (posts.length ? prev : 1));
-        }
+        const totalPagesFromApi = Math.ceil((totalCount ?? 0) / limit);
+
+        console.log("totalPagesFromApi", totalPagesFromApi);
+
+        setTotalPages(totalPagesFromApi || 1);
       } else {
         setAllPosts([]);
         setTotalPages(1);
@@ -256,6 +248,8 @@ export const HomePage = () => {
   if (postsLoading && !allPosts?.length) {
     return <ScreenLoader />;
   }
+
+  console.log("totalPages", totalPages);
 
   return (
     <>
