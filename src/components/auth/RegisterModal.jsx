@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
+import ReactCountryFlag from "react-country-flag";
 import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AuthModal } from "../../common/modal/AuthModal";
@@ -20,6 +22,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const { i18n, t } = useTranslation();
+  const phoneRef = useRef(null);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(1);
   const [countryCode, setCountryCode] = useState(963);
@@ -35,6 +38,8 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
   const [showAvailable, setShowAvailable] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("sy");
+  const [resetKey, setResetKey] = useState(0);
   const [countryMeta, setCountryMeta] = useState({
     code: "sy",
     min: 9,
@@ -169,10 +174,13 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           setShowConfirmationModal(true);
           showSuccessToast(response?.data?.message);
           reset();
-          setPhoneNumber(null);
-          setCountryCode(963);
           setUserNameAvailable({});
           setLoading(false);
+          setSelectedCountry("sy");
+          setCountryCode(963);
+          setCountryMeta({ code: "SY", min: 9, max: 9 });
+          setPhoneNumber("");
+          setResetKey((k) => k + 1);
         }
       }
     } catch (error) {
@@ -310,8 +318,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
           reset();
           setActiveTab(1);
           setUserNameAvailable(null);
-          setPhoneNumber(null);
+          setSelectedCountry("sy");
           setCountryCode(963);
+          setCountryMeta({ code: "SY", min: 9, max: 9 });
+          setPhoneNumber("");
+          setResetKey((k) => k + 1);
           setUserNameAvailable({});
         }}
         title={
@@ -333,8 +344,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                 onClick={() => {
                   setActiveTab(tab.id);
                   reset();
-                  setPhoneNumber(null);
+                  setSelectedCountry("sy");
                   setCountryCode(963);
+                  setCountryMeta({ code: "SY", min: 9, max: 9 });
+                  setPhoneNumber("");
+                  setResetKey((k) => k + 1);
                   setUserNameAvailable({});
                 }}
                 className={`relative pb-2 px-6 text-base w-[50%] font-bold transition-colors ${
@@ -380,7 +394,7 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                   }}
                 /> */}
 
-                <div className="flex gap-3">
+                {/* <div className="flex gap-3">
                   <div>
                     <label className="block mb-2 text-base text-black font-bold">
                       {t("countryCode")}
@@ -425,6 +439,81 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                         const onlyNums = e.target.value.replace(/\D/g, "");
                         setPhoneNumber(onlyNums);
                         setValue("phone", onlyNums, { shouldValidate: true });
+                      }}
+                      className={`${
+                        i18n.language === "ar"
+                          ? "text-right pl-12"
+                          : "text-left pr-12"
+                      } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                      placeholder={t("enterPhoneNo")}
+                    />
+                  </div>
+                </div> */}
+                <div className="flex gap-3 relative">
+                  <div>
+                    <label className="block mb-2 text-base text-black font-bold">
+                      {t("countryCode")}
+                    </label>
+                    <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                      <PhoneInput
+                        key={`${selectedCountry}-${resetKey}`} // force remount when resetKey changes
+                        country={selectedCountry} // controlled selected country (lowercase ISO2)
+                        value={""} // keep it empty so PhoneInput shows selected country correctly
+                        enableSearch={true}
+                        containerClass="!w-full phone-container"
+                        inputClass="!hidden"
+                        buttonClass={`${
+                          i18n.language === "ar" ? "right-7" : ""
+                        } !bg-gray-100 !border-none !rounded !p-0`}
+                        dropdownClass="custom-dropdown"
+                        onChange={(value, country) => {
+                          setCountryCode(country?.dialCode);
+                          setCountryMeta({
+                            code: country?.countryCode?.toUpperCase(),
+                          });
+                          setSelectedCountry(
+                            country?.countryCode?.toLowerCase()
+                          );
+                        }}
+                        ref={phoneRef}
+                      />
+
+                      <div
+                        className="flex items-center gap-2 cursor-pointer pl-3"
+                        onClick={() => {
+                          const container =
+                            document.querySelector(".phone-container");
+                          if (!container) return;
+                          const btn = container.querySelector(".selected-flag");
+                          if (btn) btn.click();
+                        }}
+                      >
+                        <ReactCountryFlag
+                          countryCode={countryMeta.code || "SY"}
+                          svg
+                          style={{
+                            width: "20px",
+                            height: "14px",
+                            borderRadius: "1px",
+                          }}
+                          title={countryMeta.code || "SY"}
+                        />
+                        <span className="ml-1 me-3">+{countryCode}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* phone input remains same */}
+                  <div className="w-full">
+                    <label className="block mb-2 text-base text-black font-bold">
+                      {t("phone")}
+                    </label>
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      {...register("phone")}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(/\D/g, "");
                       }}
                       className={`${
                         i18n.language === "ar"
@@ -586,8 +675,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                       navigate(ROUTE.TERMS_CONDITIONS);
                       hide();
                       reset();
-                      setPhoneNumber(null);
+                      setSelectedCountry("sy");
                       setCountryCode(963);
+                      setCountryMeta({ code: "SY", min: 9, max: 9 });
+                      setPhoneNumber("");
+                      setResetKey((k) => k + 1);
                       setUserNameAvailable({});
                     }}
                     className="text-primary cursor-pointer hover:underline"
@@ -622,8 +714,11 @@ export const RegisterModal = ({ show, hide, showLoginModal }) => {
                 reset();
                 setUserNameAvailable({});
                 setActiveTab(1);
-                setPhoneNumber(null);
+                setSelectedCountry("sy");
                 setCountryCode(963);
+                setCountryMeta({ code: "SY", min: 9, max: 9 });
+                setPhoneNumber("");
+                setResetKey((k) => k + 1);
               }}
               className="text-primary hover:underline cursor-pointer"
             >

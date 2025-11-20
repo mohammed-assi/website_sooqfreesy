@@ -7,7 +7,9 @@ import verified from "../../assets/icon/verified.svg";
 import { useTranslation } from "react-i18next";
 import DatePicker from "react-datepicker";
 import { useEffect, useRef, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
 import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import { ChangePassModal } from "./ChangePassModal";
 import { getRequest, postRequest } from "../../config/apiFunctions";
 import { AUTH, CUSTOMER } from "../../config/endPoints";
@@ -26,6 +28,7 @@ import {
 
 export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
   const { i18n, t } = useTranslation();
+  const phoneRef = useRef(null);
   const schema = yup.object().shape({
     fullName: yup.string().when("$action", {
       is: "username",
@@ -526,55 +529,76 @@ export const EditProfile = ({ userInfo, imagePath, setContentLoading }) => {
               {t("phoneNofield")}
             </label>
             <div className="w-full md:w-4/5 relative">
-              <div className="flex gap-3">
-                <div>
-                  <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
-                    <PhoneInput
-                      country={"sy"}
-                      value={`+${countryCode}${phoneNumber}`}
-                      enableSearch={true}
-                      containerClass="!w-full"
-                      inputClass="!hidden"
-                      buttonClass={`${
-                        i18n.language === "ar" ? "right-7" : ""
-                      } !bg-gray-100 !border-none !rounded !p-0`}
-                      dropdownClass="custom-dropdown"
-                      onChange={(value, country) => {
-                        setCountryCode(country?.dialCode);
-                        setCountryMeta({
-                          code: country?.countryCode?.toUpperCase(),
-                        });
-                      }}
-                      inputProps={{
-                        style: {
-                          direction: "ltr",
-                          textAlign: i18n.language === "ar" ? "right" : "left",
-                        },
-                      }}
-                    />
-                    <span className="ml-1 me-3">+{countryCode}</span>
-                  </div>
-                </div>
-                <div className="w-full">
-                  <input
-                    type="tel"
-                    inputMode="numeric"
-                    {...register("phone")}
-                    value={phoneNumber}
-                    onChange={(e) => {
-                      const onlyNums = e.target.value.replace(/\D/g, "");
-                      setPhoneNumber(onlyNums);
-                      setValue("phone", onlyNums, { shouldValidate: true });
+              <div className="flex gap-3 relative">
+            <div>
+              <label className="block mb-2 text-base text-black font-bold">
+                {t("countryCode")}
+              </label>
+              <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                <PhoneInput
+                  country={"sy"}
+                  enableSearch={true}
+                  containerClass="!w-full phone-container"
+                  inputClass="!hidden"
+                  buttonClass={`${
+                    i18n.language === "ar" ? "right-7" : ""
+                  } !bg-gray-100 !border-none !rounded !p-0`}
+                  dropdownClass="custom-dropdown"
+                  onChange={(value, country) => {
+                    setCountryCode(country?.dialCode);
+                    setCountryMeta({
+                      code: country?.countryCode?.toUpperCase(),
+                    });
+                  }}
+                  ref={phoneRef}
+                />
+
+                <div
+                  className="flex items-center gap-2 cursor-pointer pl-3"
+                  onClick={() => {
+                    const container =
+                      document.querySelector(".phone-container");
+                    if (!container) return;
+                    const btn = container.querySelector(".selected-flag");
+                    if (btn) btn.click();
+                  }}
+                >
+                  <ReactCountryFlag
+                    countryCode={countryMeta.code || "SY"}
+                    svg
+                    style={{
+                      width: "20px",
+                      height: "14px",
+                      borderRadius: "1px",
                     }}
-                    className={`${
-                      i18n.language === "ar"
-                        ? "text-right pl-12"
-                        : "text-left pr-12"
-                    } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
-                    placeholder={t("enterPhoneNo")}
+                    title={countryMeta.code || "SY"}
                   />
+                  <span className="ml-1 me-3">+{countryCode}</span>
                 </div>
               </div>
+            </div>
+
+            {/* phone input remains same */}
+            <div className="w-full">
+              <label className="block mb-2 text-base text-black font-bold">
+                {t("phone")}
+              </label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                {...register("phone")}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/\D/g, "");
+                }}
+                className={`${
+                  i18n.language === "ar"
+                    ? "text-right pl-12"
+                    : "text-left pr-12"
+                } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                placeholder={t("enterPhoneNo")}
+              />
+            </div>
+          </div>
               {errors.phone && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.phone.message}

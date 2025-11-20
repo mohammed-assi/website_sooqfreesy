@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import ReactCountryFlag from "react-country-flag";
 import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import { useTranslation } from "react-i18next";
 import { getRequest, postRequest } from "../../config/apiFunctions";
 import { CUSTOMER, REPORT_LIST } from "../../config/endPoints";
@@ -12,6 +14,8 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const ContactUs = () => {
   const { i18n, t } = useTranslation();
+
+  const phoneRef = useRef(null);
   const schema = yup.object().shape({
     fullName: yup.string().required(t("fullNameRequired")),
     email: yup
@@ -113,7 +117,10 @@ export const ContactUs = () => {
 
   return (
     <div className="pb-8">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 lg:w-[60%] w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-5 lg:w-[60%] w-full"
+      >
         <div className="">
           <label className="block mb-2 text-md font-bold">
             {t("needHelpWith")}
@@ -213,7 +220,7 @@ export const ContactUs = () => {
             )}
           /> */}
 
-          <div className="flex gap-3">
+          {/* <div className="flex gap-3">
             <div>
               <label className="block mb-2 text-base text-black font-bold">
                 {t("countryCode")}
@@ -224,7 +231,9 @@ export const ContactUs = () => {
                   enableSearch={true}
                   containerClass="!w-full"
                   inputClass="!hidden"
-                  buttonClass={`${i18n.language === "ar" ? "right-7" : ""} !bg-gray-100 !border-none !rounded !p-0`}
+                  buttonClass={`${
+                    i18n.language === "ar" ? "right-7" : ""
+                  } !bg-gray-100 !border-none !rounded !p-0`}
                   dropdownClass="custom-dropdown"
                   onChange={(value, country) => {
                     setCountryCode(country?.dialCode);
@@ -253,10 +262,81 @@ export const ContactUs = () => {
                 onInput={(e) => {
                   e.target.value = e.target.value.replace(/\D/g, "");
                 }}
-                className={`${i18n.language === "ar"
-                  ? "text-right pl-12"
-                  : "text-left pr-12"
-                  } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                className={`${
+                  i18n.language === "ar"
+                    ? "text-right pl-12"
+                    : "text-left pr-12"
+                } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
+                placeholder={t("enterPhoneNo")}
+              />
+            </div>
+          </div> */}
+          <div className="flex gap-3 relative">
+            <div>
+              <label className="block mb-2 text-base text-black font-bold">
+                {t("countryCode")}
+              </label>
+              <div className="flex items-center w-28 h-[48px] bg-gray-100 rounded px-2">
+                <PhoneInput
+                  country={"sy"}
+                  enableSearch={true}
+                  containerClass="!w-full phone-container"
+                  inputClass="!hidden"
+                  buttonClass={`${
+                    i18n.language === "ar" ? "right-7" : ""
+                  } !bg-gray-100 !border-none !rounded !p-0`}
+                  dropdownClass="custom-dropdown"
+                  onChange={(value, country) => {
+                    setCountryCode(country?.dialCode);
+                    setCountryMeta({
+                      code: country?.countryCode?.toUpperCase(),
+                    });
+                  }}
+                  ref={phoneRef}
+                />
+
+                <div
+                  className="flex items-center gap-2 cursor-pointer pl-3"
+                  onClick={() => {
+                    const container =
+                      document.querySelector(".phone-container");
+                    if (!container) return;
+                    const btn = container.querySelector(".selected-flag");
+                    if (btn) btn.click();
+                  }}
+                >
+                  <ReactCountryFlag
+                    countryCode={countryMeta.code || "SY"}
+                    svg
+                    style={{
+                      width: "20px",
+                      height: "14px",
+                      borderRadius: "1px",
+                    }}
+                    title={countryMeta.code || "SY"}
+                  />
+                  <span className="ml-1 me-3">+{countryCode}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* phone input remains same */}
+            <div className="w-full">
+              <label className="block mb-2 text-base text-black font-bold">
+                {t("phone")}
+              </label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                {...register("phone")}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/\D/g, "");
+                }}
+                className={`${
+                  i18n.language === "ar"
+                    ? "text-right pl-12"
+                    : "text-left pr-12"
+                } flex-1 w-full rounded h-[48px] px-4 py-2 bg-gray-100 focus:outline-none`}
                 placeholder={t("enterPhoneNo")}
               />
             </div>
