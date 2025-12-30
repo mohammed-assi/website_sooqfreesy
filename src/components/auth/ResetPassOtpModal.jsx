@@ -17,7 +17,6 @@ export const ResetPassOtpModal = ({
   userEmail,
   handleResend,
   timer,
-  otp,
 }) => {
   const { i18n, t } = useTranslation();
   const inputsRef = useRef([]);
@@ -139,7 +138,6 @@ export const ResetPassOtpModal = ({
         subtitle={`${t("emailVerificationSubtitle")} ${userEmail}`}
       >
         <div className="">
-          <p className="text-center py-2">OTP: {otp}</p>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
