@@ -74,7 +74,7 @@ export const SideFilter = ({
   };
 
   // compute values (robust and safe)
-  const MAX_PRICE = 25000;
+  const MAX_PRICE = 1000000000;
   const a = Number(filters?.priceRange?.[0] ?? 0);
   const b = Number(filters?.priceRange?.[1] ?? 0);
 
@@ -303,72 +303,6 @@ export const SideFilter = ({
         </select>
       </div>
 
-      {/* <div className="relative">
-        <label className="block text-[1rem] font-bold mb-3">
-          {t("priceRange")}
-        </label>
-
-        <div className="relative h-2">
-          <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-300 rounded transform -translate-y-1/2"></div>
-          <div
-            className="absolute h-1 bg-[#00B4D8] top-[4px] rounded transform -translate-y-1/2"
-            style={{
-              left: `${(filters?.priceRange[0] / 25000) * 100}%`,
-              right: `${100 - (filters?.priceRange[1] / 25000) * 100}%`,
-            }}
-          ></div>
-
-          <input
-            type="range"
-            min="0"
-            max="25000"
-            value={filters?.priceRange[0]}
-            onChange={(e) => {
-              const newMin = +e.target.value;
-              if (newMin <= filters?.priceRange[1]) {
-                handleChange("priceRange", [newMin, filters?.priceRange[1]]);
-              }
-            }}
-            className="absolute top-0 w-full pointer-events-none appearance-none bg-transparent"
-            style={{
-              zIndex: filters?.priceRange[0] === filters?.priceRange[1] ? 5 : 6, // bring forward if equal
-            }}
-          />
-
-          <input
-            type="range"
-            min="0"
-            max="25000"
-            value={filters?.priceRange[1]}
-            onChange={(e) => {
-              const newMax = +e.target.value;
-              if (newMax >= filters?.priceRange[0]) {
-                handleChange("priceRange", [filters?.priceRange[0], newMax]);
-              }
-            }}
-            className="absolute top-0 w-full pointer-events-none appearance-none bg-transparent"
-            style={{
-              zIndex: filters?.priceRange[0] === filters?.priceRange[1] ? 6 : 5, // swap priority
-            }}
-          />
-        </div>
-
-        <div className="flex justify-between text-sm mt-4 gap-5 w-full">
-          <div className="flex flex-col w-[50%] text-base font-bold">
-            {t("min")}{" "}
-            <span className="mt-1 h-[48px] bg-[#F5F5F5] flex items-center px-4 text-base font-normal rounded-md">
-              ${filters?.priceRange[0]}
-            </span>
-          </div>
-          <div className="flex flex-col w-[50%] text-base font-bold">
-            {t("max")}
-            <span className="mt-1 h-[48px] bg-[#F5F5F5] flex items-center px-4 text-base font-normal rounded-md">
-              ${filters?.priceRange[1]}
-            </span>
-          </div>
-        </div>
-      </div> */}
-
       <div className="relative">
         <label className="block text-[1rem] font-bold mb-3">
           {t("priceRange")}
@@ -386,7 +320,7 @@ export const SideFilter = ({
           <input
             type="range"
             min="0"
-            max="25000"
+            max="1000000000"
             value={filters.priceRange[0]}
             onChange={(e) => {
               let newMin = Number(e.target.value);
@@ -404,7 +338,7 @@ export const SideFilter = ({
           <input
             type="range"
             min="0"
-            max="25000"
+            max="1000000000"
             value={filters.priceRange[1]}
             onChange={(e) => {
               let newMax = Number(e.target.value);
@@ -431,12 +365,12 @@ export const SideFilter = ({
               <input
                 type="number"
                 min="0"
-                max="25000"
+                max="1000000000"
                 value={filters.priceRange[0] > 0 && filters.priceRange[0]}
                 onChange={(e) => {
                   let newMin = Number(e.target.value);
                   if (newMin < 0) newMin = 0;
-                  if (newMin > 25000) newMin = 25000;
+                  if (newMin > 1000000000) newMin = 1000000000;
                   handleChange("priceRange", [newMin, filters.priceRange[1]]);
                 }}
                 onBlur={() => {
@@ -462,12 +396,12 @@ export const SideFilter = ({
               <input
                 type="number"
                 min="0"
-                max="25000"
+                max="1000000000"
                 value={filters.priceRange[1] > 0 && filters.priceRange[1]}
                 onChange={(e) => {
                   let newMax = Number(e.target.value);
                   if (newMax < 0) newMax = 0;
-                  if (newMax > 25000) newMax = 25000;
+                  if (newMax > 1000000000) newMax = 1000000000;
                   handleChange("priceRange", [filters.priceRange[0], newMax]);
                 }}
                 onBlur={() => {
