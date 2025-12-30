@@ -342,6 +342,11 @@ const resources = {
       price: "Price",
       page: "Page",
       of: "of",
+      close: "Close",
+      deleteAccTitle: "Delete Account",
+      deleteAccSubtitle: "Are you sure to delete your account?",
+      deleteAccount: "Delete Account",
+      deleting: "Deleting..."
     },
   },
   ar: {
@@ -677,6 +682,11 @@ const resources = {
       price: "سعر",
       page: "صفحة",
       of: "من",
+      close: "إغلاق",
+      deleteAccTitle: "حذف الحساب",
+      deleteAccSubtitle: "هل أنت متأكد من حذف حسابك؟",
+      deleteAccount: "حذف الحساب",
+      deleting: "جارٍ الحذف..."
     },
   },
 };

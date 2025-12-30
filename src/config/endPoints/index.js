@@ -39,7 +39,9 @@ export const CUSTOMER = {
 
   NOTIFICTIN_COUNT: `${BASEURL}/customer/notifications-and-wishlist/count`,
 
-  BANNER_IMAGES: `${BASEURL}/customer/banner/get-all`
+  BANNER_IMAGES: `${BASEURL}/customer/banner/get-all`,
+
+  DELETE_ACCOUNT: `${BASEURL}/customer/delete-account`
 };
 
 export const REPORT_LIST = {
