@@ -90,7 +90,7 @@ export const ProductDetail = () => {
     getAllPosts(
       `${POST.GET_SIMILAR_POST}/${
         postDetailData?.id
-      }?page=${1}&limit=8${queryString}`
+      }?page=${1}&limit=8${queryString}`,
     );
   };
 
@@ -331,21 +331,22 @@ export const ProductDetail = () => {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center">
-                <h2 className="main-heading text-primary">
-                  {/* {currency === "SYP" ? "SYP" : "$"}{" "}
-                  {postDetailData?.currencyTypePrice} */}
-                  <span dir="ltr" className="inline-block">
-                    <span className="mr-1">
-                      {currency === "SYP" ? "SYP" : "$"}
-                    </span>
-                    <span>{postDetailData?.currencyTypePrice}</span>
-                  </span>
-                </h2>
+              <div className="flex items-center justify-end">
                 <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
                   {postDetailData?.subCategoryName}
                 </span>
               </div>
+
+              <h2 className="main-heading text-primary">
+                {/* {currency === "SYP" ? "SYP" : "$"}{" "}
+                  {postDetailData?.currencyTypePrice} */}
+                <span dir="ltr" className="inline-block">
+                  <span className="mr-1">
+                    {currency === "SYP" ? "SYP" : "$"}
+                  </span>
+                  <span>{postDetailData?.currencyTypePrice}</span>
+                </span>
+              </h2>
 
               <p className="text-sm text-gray-700">{postDetailData?.title}</p>
 
@@ -387,7 +388,7 @@ export const ProductDetail = () => {
                         </span>
                         {value}
                       </div>
-                    )
+                    ),
                   )}
                 <div className="flex flex-col text-center items-center min-h-20 justify-center bg-gray-200 rounded-lg py-2 capitalize">
                   <span className="font-semibold leading-none pb-2">
@@ -497,7 +498,7 @@ export const ProductDetail = () => {
                         <p>
                           (
                           {Number(postDetailData?.user?.averageRating).toFixed(
-                            1
+                            1,
                           )}
                           )
                         </p>
@@ -505,14 +506,14 @@ export const ProductDetail = () => {
                       <p className="text-sm text-gray-500 py-2">
                         {t("memberSince")}{" "}
                         {moment(postDetailData?.user?.created_at).format(
-                          "MM/DD/yyyy"
+                          "MM/DD/yyyy",
                         )}
                       </p>
                       <p
                         onClick={() => {
                           if (postDetailData?.user?.userid !== userInfo?.id) {
                             navigate(
-                              `${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`
+                              `${ROUTE.SELLER_PROFILE}/${postDetailData?.user?.userid}`,
                             );
                           }
                         }}

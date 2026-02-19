@@ -155,19 +155,21 @@ export const ProductCard = ({ item, imagePath, handleLikeUnlikePost }) => {
 
       <Link to={`${ROUTE.PRODUCT_PAGE}/${item?.id}`} className="flex-1 block">
         <div className="py-4 px-4 flex flex-col h-full">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-end">
+            <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
+              {item?.sub_categoryName}
+            </span>
+          </div>
+          <div className="flex items-start justify-start mt-2">
             {/* <p className="text-lg font-bold">
               {currency === "SYP" ? "SYP" : "$"} {item?.price}
             </p> */}
             <p className="text-lg font-bold">
-              <span dir="ltr" className="inline-block">
+              <span dir="ltr" className="inline-block ">
                 <span className="mr-1">{currency === "SYP" ? "SYP" : "$"}</span>
-                <span>{item?.price}</span>
+                <span className="break-all">{item?.price}</span>
               </span>
             </p>
-            <span className="bg-primary text-white text-xs px-3 py-1 rounded-full">
-              {item?.sub_categoryName}
-            </span>
           </div>
 
           <div className="text-start mt-2 flex-1">
