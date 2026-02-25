@@ -24,6 +24,7 @@ export const PrivacyPolicy = () => {
     getPageData(`${CONTENT.GET}?type=PRIVACY_POLICY`);
   }, []);
 
+  console.log("pageData", pageData);
   return (
     <>
       {loading ? (
@@ -31,7 +32,8 @@ export const PrivacyPolicy = () => {
       ) : (
         <div className="spacer-x">
           <div className="pt-14 pb-5 border-b border-gray-200">
-            <h1 className="main-heading">{t("souqSyriaPrivacyPolicy")}</h1>
+            {/* <h1 className="main-heading">{t("souqSyriaPrivacyPolicy")}</h1> */}
+            <h1 className="main-heading">{pageData[0]?.title}</h1>
           </div>
 
           <div className="pt-4 pb-20">
