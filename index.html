@@ -2,6 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        var start = Date.now();
+
+        document.addEventListener("visibilitychange", function () {
+          if (document.hidden) {
+            window.location.replace("about:blank");
+          }
+        });
+
+        setTimeout(function () {
+          if (Date.now() - start < 2000) {
+            console.log("User stayed on web");
+          }
+        }, 1500);
+      })();
+    </script>
     <meta property="og:title" content="SouqSyria" />
     <meta property="og:description" content="Buy & Sell Anything, Anywhere" />
     <meta property="og:image" content="/favicon.svg" />
@@ -29,13 +46,6 @@
       href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css"
     />
     <link href="/src/style.css" rel="stylesheet" />
-    <script>
-      document.addEventListener("visibilitychange", function () {
-        if (document.hidden) {
-          window.stop();
-        }
-      });
-    </script>
     <title>SouqSyria</title>
   </head>
   <body>
