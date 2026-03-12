@@ -2,23 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <script>
-      (function () {
-        var start = Date.now();
-
-        document.addEventListener("visibilitychange", function () {
-          if (document.hidden) {
-            window.location.replace("about:blank");
-          }
-        });
-
-        setTimeout(function () {
-          if (Date.now() - start < 2000) {
-            console.log("User stayed on web");
-          }
-        }, 1500);
-      })();
-    </script>
     <meta property="og:title" content="SouqSyria" />
     <meta property="og:description" content="Buy & Sell Anything, Anywhere" />
     <meta property="og:image" content="/favicon.svg" />
