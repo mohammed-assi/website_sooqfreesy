@@ -23,6 +23,10 @@ export const ProductPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const queryParams = new URLSearchParams(location.search);
+  const categoryIdFromUrl = queryParams.get('category');
+
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
 
   const { accessToken } = useSelector((state) => state.auth);
@@ -44,12 +48,11 @@ export const ProductPage = () => {
     price: "highest",
   });
 
-  // Initialize searchText and filters with potential location.state values
   const [searchText, setSearchText] = useState("");
   const [filters, setFilters] = useState(() => ({
     city: "",
     type: "",
-    category: location?.state?.categoryId || "", // <- initialize from nav state
+    category: categoryIdFromUrl || location?.state?.categoryId || "",
     subCategory: "",
     priceRange: [0, 0],
   }));
@@ -69,20 +72,19 @@ export const ProductPage = () => {
   const hasUsedSearchText = useRef(false);
   const processedSubCatRef = useRef(new Set());
 
-  // new refs for dedupe + initial fetch handling
   const inFlightRequestsRef = useRef(new Set());
   const recentRequestsRef = useRef(new Map());
   const hasFetchedOnceRef = useRef(false);
   const RECENT_TTL = 1000;
 
   const hasSetCategoryFromLocation = useRef(false);
+  const isInitialMount = useRef(true);
 
   /** ------------------------------
    * Clear Location State
    * ------------------------------ */
   const clearLocationState = useCallback(() => {
     if (location.state && Object.keys(location.state).length > 0) {
-      // only navigate once; also allow immediate refetch
       navigate(location.pathname, { replace: true, state: {} });
       lastRequestKeyRef.current = null;
       recentRequestsRef.current.clear();
@@ -124,12 +126,12 @@ export const ProductPage = () => {
     const recent = recentRequestsRef.current;
     const lastTs = recent.get(url);
     if (lastTs && now - lastTs < RECENT_TTL) {
-      return; // recently called the same URL -> skip
+      return;
     }
 
     const inFlight = inFlightRequestsRef.current;
     if (inFlight.has(url)) {
-      return; // already in-flight -> skip
+      return;
     }
 
     inFlight.add(url);
@@ -154,22 +156,6 @@ export const ProductPage = () => {
       hasFetchedOnceRef.current = true;
     }
   }, []);
-
-  /** ------------------------------
-   * Fetch Subcategories for a category
-   * ------------------------------ */
-  const getSubCategory = async (categoryId) => {
-    try {
-      const response = await getRequest(
-        `${CUSTOMER.GET_SUBCATEGORY}/${categoryId}`
-      );
-      if (response?.data?.success && response?.data?.statusCode === 200) {
-        setSubCategoryList(response?.data?.data || []);
-      }
-    } catch (error) {
-      showErrorToast(error?.response?.data?.message);
-    }
-  };
 
   /** ------------------------------
    * Build Filter Object
@@ -236,8 +222,19 @@ export const ProductPage = () => {
   const handleChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setCurrentPage(1);
+
+    if (key === 'category') {
+      const params = new URLSearchParams(location.search);
+      if (value) {
+        params.set('categoryId', value);
+      } else {
+        params.delete('categoryId');
+      }
+      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+    }
+
     clearLocationState();
-    lastRequestKeyRef.current = null; // allow immediate refetch
+    lastRequestKeyRef.current = null;
   };
 
   const handleSelectSubcatIds = (id) => {
@@ -253,40 +250,48 @@ export const ProductPage = () => {
   };
 
   /** ------------------------------
-   * Apply category from location.state (synchronously if present)
-   * ------------------------------ */
-  useLayoutEffect(() => {
-    // If navigation provided a categoryId, use it immediately so later effects pick it up.
-    const navCategoryId = location?.state?.categoryId;
-    if (navCategoryId) {
-      hasSetCategoryFromLocation.current = true;
-      setFilters((prev) => ({ ...prev, category: navCategoryId }));
-      setCurrentPage(1);
-      lastRequestKeyRef.current = null;
-      recentRequestsRef.current.clear();
-      // clear the nav state so other logic doesn't reapply it
-      navigate(location.pathname, { replace: true, state: {} });
-    }
-  }, [location?.state?.categoryId, navigate]);
-
-  /** ------------------------------
    * Fetch Subcategories when category changes
    * ------------------------------ */
   useEffect(() => {
-    if (filters.category) {
-      getSubCategory(filters.category);
-    } else {
-      setSubCategoryList([]);
-    }
+    const categoryId = filters.category;
+    
+    const fetchData = async () => {
+      try {
+        setSubCategoryList([]);
+
+        let response;
+
+        if (categoryId) {
+          response = await getRequest(
+            `${CUSTOMER.GET_SUBCATEGORY}/${categoryId}`
+          );
+          console.log('Subcategories for category:', categoryId, response?.data?.data);
+        } else {
+          response = await getRequest(CUSTOMER.GET_ALL_SUBCATEGORY);
+        }
+
+        if (response?.data?.success) {
+          setSubCategoryList(
+            response?.data?.data?.subCategories ||
+            response?.data?.data ||
+            []
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching subcategories:", error);
+        showErrorToast(error?.response?.data?.message);
+      }
+    };
+
+    fetchData();
   }, [filters.category]);
 
   /** ------------------------------
-   * Watch filters / search / pagination and fetch posts (debounced)
+   * MAIN EFFECT: Watch filters and fetch posts
    * ------------------------------ */
   useEffect(() => {
     if (requestTimerRef.current) clearTimeout(requestTimerRef.current);
 
-    // If we just applied a category from location, ensure the fetch isn't suppressed
     if (hasSetCategoryFromLocation.current) {
       hasSetCategoryFromLocation.current = false;
       lastRequestKeyRef.current = null;
@@ -297,11 +302,13 @@ export const ProductPage = () => {
       page: currentPage,
       filters: filterObj,
     });
+    
     if (lastRequestKeyRef.current === requestKey) return;
 
     requestTimerRef.current = setTimeout(() => {
       lastRequestKeyRef.current = requestKey;
       const url = buildUrlForRequest(currentPage, false);
+      console.log('Fetching posts with URL:', url);
       getAllPosts(url);
       requestTimerRef.current = null;
     }, 600);
@@ -323,6 +330,20 @@ export const ProductPage = () => {
   ]);
 
   /** ------------------------------
+   * Handle URL parameter changes (for refresh and browser navigation)
+   * ------------------------------ */
+  useEffect(() => {
+    const categoryId = queryParams.get('categoryId');
+    if (categoryId && filters.category !== categoryId) {
+      console.log('URL category changed, updating filters:', categoryId);
+      setFilters(prev => ({ ...prev, category: categoryId }));
+      setCurrentPage(1);
+      lastRequestKeyRef.current = null;
+      recentRequestsRef.current.clear();
+    }
+  }, [location.search]);
+
+  /** ------------------------------
    * Initial Fetch: categories & subcategories
    * ------------------------------ */
   useEffect(() => {
@@ -331,7 +352,22 @@ export const ProductPage = () => {
   }, [getAllCategory, getAllSubcategory]);
 
   /** ------------------------------
-   * Search from location.state (synchronous)
+   * Apply category from location.state
+   * ------------------------------ */
+  useLayoutEffect(() => {
+    const navCategoryId = location?.state?.categoryId;
+    if (navCategoryId) {
+      hasSetCategoryFromLocation.current = true;
+      setFilters((prev) => ({ ...prev, category: navCategoryId }));
+      setCurrentPage(1);
+      lastRequestKeyRef.current = null;
+      recentRequestsRef.current.clear();
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location?.state?.categoryId, navigate]);
+
+  /** ------------------------------
+   * Search from location.state
    * ------------------------------ */
   useLayoutEffect(() => {
     const text = location.state?.searchText || location.state?.search || "";
@@ -340,7 +376,6 @@ export const ProductPage = () => {
     hasUsedSearchText.current = true;
     setSearchText(text);
     setSearchTextDebounce(text);
-    // remove nav state immediately so it doesn't interfere
     navigate(location.pathname, { replace: true, state: {} });
     lastRequestKeyRef.current = null;
     recentRequestsRef.current.clear();
@@ -410,6 +445,9 @@ export const ProductPage = () => {
     lastRequestKeyRef.current = null;
     recentRequestsRef.current.clear();
 
+    // Clear URL parameters
+    navigate(location.pathname, { replace: true });
+
     window.dispatchEvent(new Event("clear-search-input"));
   };
 
@@ -445,18 +483,8 @@ export const ProductPage = () => {
   }, [selectedState, states]);
 
   /** ------------------------------
-   * Currency change should refetch results
+   * Currency change handling
    * ------------------------------ */
-  // useEffect(() => {
-  //   if (!currency) return;
-
-  //   setCurrentPage(1);
-  //   lastRequestKeyRef.current = null;
-  //   recentRequestsRef.current.clear();
-  //   const url = buildUrlForRequest(1, false);
-  //   getAllPosts(url);
-  // }, [currency, buildUrlForRequest, getAllPosts]);
-
   const prevCurrencyRef = useRef(currency);
 
   useEffect(() => {
@@ -471,7 +499,7 @@ export const ProductPage = () => {
   }, [currency]);
 
   /** ------------------------------
-   * SubCatId from location.state (once)
+   * SubCatId from location.state
    * ------------------------------ */
   useEffect(() => {
     const rawId = location.state?.subCatId;
@@ -497,24 +525,25 @@ export const ProductPage = () => {
 
   return (
     <div className="spacer-x">
-      <SearchTopFilter
-        categories={allSubCategory}
-        toggleGrid={toggleGrid}
-        setToggleGrid={setToggleGrid}
-        handleSelectSubcatIds={handleSelectSubcatIds}
-        subcategoryIds={subcategoryIds}
-        setFiltersModal={setFiltersModal}
-        filtersModal={filtersModal}
-        searchText={searchText}
-        setSearchText={setSearchText}
-        setSearchTextDebounce={setSearchTextDebounce}
-        filters={filters}
-        handleApplyFilters={(values) => {
-          setFiltersModal(values);
-          // setCurrentPage(1);
-          lastRequestKeyRef.current = null;
-        }}
-      />
+      <div className="max-w-6xl mx-auto px-4">
+        <SearchTopFilter
+          categories={subCategoryList}
+          toggleGrid={toggleGrid}
+          setToggleGrid={setToggleGrid}
+          handleSelectSubcatIds={handleSelectSubcatIds}
+          subcategoryIds={subcategoryIds}
+          setFiltersModal={setFiltersModal}
+          filtersModal={filtersModal}
+          searchText={searchText}
+          setSearchText={setSearchText}
+          setSearchTextDebounce={setSearchTextDebounce}
+          filters={filters}
+          handleApplyFilters={(values) => {
+            setFiltersModal(values);
+            lastRequestKeyRef.current = null;
+          }}
+        />
+      </div>
 
       <ProductFilter
         toggleGrid={toggleGrid}

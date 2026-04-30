@@ -68,9 +68,7 @@ export const Banner = ({ allCategory, imagePath }) => {
           {allCategory?.map((category) => (
             <button
               onClick={() => {
-                navigate(ROUTE.PRODUCT_PAGE, {
-                  state: { categoryName: category?.name,  categoryId : category?.id  },
-                });
+                navigate(`${ROUTE.PRODUCT_PAGE}?category=${category?.id}`);
               }}
               key={category.id}
               className="flex flex-col items-center justify-center border bg-white border-gray-300 rounded-xl p-6 hover:shadow-lg hover:border-none transition group"
