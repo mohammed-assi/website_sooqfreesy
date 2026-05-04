@@ -13,6 +13,7 @@ import whitestar from "../../assets/icon/whitestar.svg";
 // import whitecheck from "../../assets/icon/whitecheck.svg";
 import defaultUser from "../../assets/icon/defaultUser.svg";
 import headerContact from "../../assets/icon/headerContact.svg";
+import whatsapp from "../../assets/icon/whatsapp.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
@@ -526,12 +527,27 @@ export const ProductDetail = () => {
 
                   <div className="flex gap-1">
                     <button
-                      onClick={() =>
-                        (window.location.href = `tel:${postDetailData?.user?.phone}`)
-                      }
-                      className="flex gap-2 font-bold items-center px-6 py-3 bg-primary rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
+                    onClick={() => {
+                    const phone = postDetailData?.user?.phone;
+
+                    if (!phone) return;
+
+                    // remove spaces and + if exists
+                    const cleanPhone = phone.replace(/\s+/g, "").replace("+", "");
+
+                    const message = encodeURIComponent("Hello, I am interested in your listing.");
+
+                    window.open(
+                      `https://wa.me/${cleanPhone}?text=${message}`,
+                      "_blank"
+                    );
+                  }}
+                      // onClick={() =>
+                      //   (window.location.href = `tel:${postDetailData?.user?.phone}`)
+                      // }
+                      className="flex gap-2 font-bold items-center px-6 py-3 bg-green-500 rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
                     >
-                      <img src={headerContact} alt="icon" className="h-5 w-5" />{" "}
+                      <img  src={whatsapp}  alt="whatsapp icon"  className="h-5 w-5 filter brightness-0 invert"/>
                       {postDetailData?.user?.phone || "7777777777"}
                     </button>
                     <button

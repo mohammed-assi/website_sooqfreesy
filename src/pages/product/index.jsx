@@ -42,7 +42,9 @@ export const ProductPage = () => {
   const [allSubCategory, setAllSubCategory] = useState([]);
   const [totalCount, setTotalCounts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [subcategoryIds, setSubcategoryIds] = useState([]);
+  // const [subcategoryIds, setSubcategoryIds] = useState([]);
+    const [subcategoryIds, setSubcategoryIds] = useState(null);
+
   const [filtersModal, setFiltersModal] = useState({
     sorting: "newest",
     price: "highest",
@@ -163,14 +165,19 @@ export const ProductPage = () => {
   const buildFilterObject = useCallback(() => {
     const filterObj = {};
     if (filters.category) filterObj.category_id = Number(filters.category);
-    if (filters.subCategory || subcategoryIds.length) {
-      const allSubCategories = [];
-      if (filters.subCategory)
-        allSubCategories.push(Number(filters.subCategory));
-      if (subcategoryIds.length)
-        allSubCategories.push(...subcategoryIds.map(Number));
-      filterObj.sub_category_id = allSubCategories;
-    }
+    if (filters.subCategory || subcategoryIds) {
+  const allSubCategories = [];
+
+  if (filters.subCategory) {
+    allSubCategories.push(Number(filters.subCategory));
+  }
+
+  if (subcategoryIds) {
+    allSubCategories.push(Number(subcategoryIds));
+  }
+
+  filterObj.sub_category_id = allSubCategories;
+}
     if (filters.priceRange?.[0]) filterObj.price_min = filters.priceRange[0];
     if (filters.priceRange?.[1]) filterObj.price_max = filters.priceRange[1];
     if (reduxCoords?.country) filterObj.country = reduxCoords.country;
@@ -237,17 +244,15 @@ export const ProductPage = () => {
     lastRequestKeyRef.current = null;
   };
 
-  const handleSelectSubcatIds = (id) => {
-    const idNum = Number(id);
-    setSubcategoryIds((prev) =>
-      prev.includes(idNum)
-        ? prev.filter((item) => item !== idNum)
-        : [...prev, idNum]
-    );
-    setCurrentPage(1);
-    clearLocationState();
-    lastRequestKeyRef.current = null;
-  };
+const handleSelectSubcatIds = (id) => {
+  const idNum = Number(id);
+
+  setSubcategoryIds((prev) => (prev === idNum ? null : idNum));
+
+  setCurrentPage(1);
+  clearLocationState();
+  lastRequestKeyRef.current = null;
+};
 
   /** ------------------------------
    * Fetch Subcategories when category changes
@@ -433,7 +438,8 @@ export const ProductPage = () => {
     setSelectedCity("");
     setSelectedLocation("");
     setCoords({ lat: null, lng: null, country: null });
-    setSubcategoryIds([]);
+    // setSubcategoryIds([]);
+    setSubcategoryIds(null);
     setSubCategoryList([]);
     setCurrentPage(1);
     clearLocationState();
@@ -512,11 +518,13 @@ export const ProductPage = () => {
     const idNum = Number(rawId);
     if (isNaN(idNum)) return;
 
-    setSubcategoryIds((prev) =>
-      prev.includes(idNum)
-        ? prev.filter((item) => item !== idNum)
-        : [...prev, idNum]
-    );
+    // setSubcategoryIds((prev) =>
+    //   prev.includes(idNum)
+    //     ? prev.filter((item) => item !== idNum)
+    //     : [...prev, idNum]
+    // );
+    setSubcategoryIds(idNum);
+
     setCurrentPage(1);
     lastRequestKeyRef.current = null;
   }, [location.state?.subCatId]);
@@ -528,6 +536,7 @@ export const ProductPage = () => {
       <div className="max-w-6xl mx-auto px-4">
         <SearchTopFilter
           categories={subCategoryList}
+            imagePath={imagePath}   
           toggleGrid={toggleGrid}
           setToggleGrid={setToggleGrid}
           handleSelectSubcatIds={handleSelectSubcatIds}

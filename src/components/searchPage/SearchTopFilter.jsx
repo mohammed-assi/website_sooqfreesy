@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 
 export const SearchTopFilter = ({
   categories,
+  imagePath,
   toggleGrid,
   setToggleGrid,
   handleSelectSubcatIds,
@@ -23,7 +24,7 @@ export const SearchTopFilter = ({
   const { t } = useTranslation();
   const [openFilterModal, setOpenFilterModal] = useState(false);
   const reduxCoords = useSelector((state) => state.location.coords);
-
+  const itemRefs = useRef({});
   const scrollRef = useRef(null);
   const [canScroll, setCanScroll] = useState(false);
 
@@ -39,26 +40,40 @@ export const SearchTopFilter = ({
 
   const [scrollProgress, setScrollProgress] = useState(0);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      const currentScroll = el.scrollLeft;
+      const progress = maxScroll > 0 ? (currentScroll / maxScroll) * 100 : 0;
+      setScrollProgress(progress);
+    };
+
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
-  const el = scrollRef.current;
-  if (!el) return;
+    if (!subcategoryIds) return;
 
-  const handleScroll = () => {
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    const currentScroll = el.scrollLeft;
+    const el = itemRefs.current[subcategoryIds];
+    const container = scrollRef.current;
 
-    const progress = maxScroll > 0 ? (currentScroll / maxScroll) * 100 : 0;
-    setScrollProgress(progress);
-  };
+    if (el && container) {
+      const elLeft = el.offsetLeft;
+      const elWidth = el.offsetWidth;
+      const containerWidth = container.clientWidth;
 
-  el.addEventListener("scroll", handleScroll);
+      container.scrollTo({
+        left: elLeft - containerWidth / 2 + elWidth / 2,
+        behavior: "smooth",
+      });
+    }
+  }, [subcategoryIds]);
 
-  return () => el.removeEventListener("scroll", handleScroll);
-}, []);
-
-
-  // ✅ check if scroll needed
+  // check if scroll needed
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -69,13 +84,16 @@ export const SearchTopFilter = ({
 
     checkScroll();
     window.addEventListener("resize", checkScroll);
-
     return () => window.removeEventListener("resize", checkScroll);
   }, [categories]);
 
-  return (
-    <div className="pt-4 md:pt-6" >
+  const formatName = React.useCallback((name = "", maxLength = 12, showChars = 6) => {
+    if (!name) return "";
+    return name.length > maxLength ? name.slice(0, showChars) + "..." : name;
+  }, []);
 
+  return (
+    <div className="pt-4 md:pt-6">
       {/* Breadcrumb */}
       <div className="text-sm text-gray-500 mb-2">
         <Link className="hover:text-primary" to={ROUTE.ROOT}>
@@ -95,7 +113,7 @@ export const SearchTopFilter = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setOpenFilterModal(true)}
-            className="p-2 rounded hover:bg-gray-100 "
+            className="p-2 rounded hover:bg-gray-100"
           >
             <img src={filterIcon} alt="Filter" className="w-5 h-5" />
           </button>
@@ -113,54 +131,65 @@ export const SearchTopFilter = ({
         </div>
       </div>
 
-      {/* 🔥 CATEGORY SLIDER */}
-      { (
-        <div className="relative  p-[15px]">
-
+      {/* CATEGORY SLIDER */}
+      {(
+        <div className="relative p-[15px]">
           {/* LEFT ARROW */}
           {canScroll && (
             <button
-  onClick={() => scroll("left")}
-  className="hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 z-10
-  bg-white text-primary w-8 h-8 rounded-full shadow-md hover:scale-105 transition"
->
-  ◀
-</button>
+              onClick={() => scroll("left")}
+              className="hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 z-10
+              bg-white text-primary w-8 h-8 rounded-full shadow-md hover:scale-105 transition"
+            >
+              ◀
+            </button>
           )}
 
           {/* SLIDER */}
-          
           <div
             ref={scrollRef}
             className="flex gap-2 overflow-x-auto whitespace-nowrap py-2 px-2 md:px-8 scroll-smooth custom-scrollbar"
           >
-              <div className="flex gap-8 mx-auto w-max">
-            {categories.map((cat) => {
-              const isActive = subcategoryIds.includes(cat.id);
+            <div className="flex gap-5 mx-auto w-max">
+              {categories.map((cat) => {
+                const isActive = subcategoryIds === cat.id;
 
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => handleSelectSubcatIds(cat.id)}
-                  className={`
-                      px-9 py-3 rounded-full whitespace-nowrap transition-all duration-300 transform
-                      ${
-                        isActive
-                          ? "bg-primary text-white text-base font-bold "
-                          : "border-bg-primary shadow-primary/40 shadow-md  bg-white text-gray-700 text-base font-bold hover:bg-primary hover:text-white hover:-translate-y-1"
-                      }
+                return (
+                  <button
+                    onClick={() => handleSelectSubcatIds(cat.id)}
+                    className="group px-4 py-2 flex flex-col items-center gap-1 transition-all duration-300"
+                  >
+                    {/* IMAGE */}
+                    <div
+                      className={`
+                        w-18 h-18 md:w-20 md:h-20 rounded-full overflow-hidden border-6 transition-all duration-300
+                        ${isActive ? "border-primary" : "border-transparent group-hover:border-primary"}
+                      `}
+                    >
+                      <img
+                        src={`${imagePath}/${cat.icon || cat.image_url}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    {/* TEXT */}
+                    <span
+                    className={`
+                      text-center transition-all duration-300
+                      text-base md:text-lg
+                      ${isActive
+                        ? "text-primary font-semibold scale-110"
+                        : "text-gray-700 group-hover:text-primary group-hover:scale-115"}
                     `}
-                >
-                  {cat.name}
-                </button>
-              );
-            })}
-           
+                  >
+                    {formatName(cat.name, 12, 6)}
+                  </span>
 
+                  </button>
+                );
+              })}
             </div>
           </div>
-
-
 
           {/* RIGHT ARROW */}
           {canScroll && (
@@ -189,5 +218,3 @@ export const SearchTopFilter = ({
     </div>
   );
 };
-
-
