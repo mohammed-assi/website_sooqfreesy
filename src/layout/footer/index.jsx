@@ -55,17 +55,18 @@ export const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex gap-2">
                 <p className="w-[120px]">{t("phoneNumber")}</p>
-                <p>+963 1234567890</p>
+                <p dir="ltr">+963 939865649</p>
               </li>
               <li className="flex gap-2">
                 <p className="w-[120px]">{t("email")}</p>
-                <p>arif123@gmail.com</p>
+                <p>souqsyria01@gmail.com</p>
               </li>
               <li className="flex gap-2">
                 <p className="w-[120px]">{t("address")}</p>
-                <p className="max-w-[175px]">
-                  2nd Floor Building No. 447, Homs Syria
-                </p>
+                <div className="max-w-[260px] space-y-1">
+                  <p>{t("addressSyria")}</p>
+                  <p>{t("addressNetherlands")}</p>
+                </div>
               </li>
             </ul>
           </div>
@@ -78,14 +79,14 @@ export const Footer = () => {
 
           <div className="flex gap-4">
             <Link
-              to="https://www.facebook.com"
+              to="https://www.facebook.com/share/16qav1EZia/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src={facebook} alt="Facebook" className="h-6 w-6" />
             </Link>
             <Link
-              to="https://www.instagram.com"
+              to="https://www.instagram.com/souqfreesy"
               target="_blank"
               rel="noopener noreferrer"
             >

@@ -53,6 +53,8 @@ const resources = {
       phoneNumber: "Phone Number:",
       email: "Email:",
       address: "Address:",
+      addressSyria: "Syria - Latakia - Western Corniche",
+      addressNetherlands: "Netherlands - burgerhof 2 - Rotterdam - 3195TB - Pernis",
       copyRight: "SouqSyria, (All rights reserved)",
 
       loginTitleByPhone: "Login by Phone",
@@ -398,6 +400,8 @@ const resources = {
       phoneNumber: "رقم الهاتف:",
       email: "البريد الإلكتروني:",
       address: "العنوان:",
+      addressSyria: "سوريا - اللاذقية - الكورنيش الغربي",
+      addressNetherlands: "هولندا - burgerhof 2 - Rotterdam - 3195TB - Pernis",
       copyRight: "سوق سوريا، جميع الحقوق محفوظة",
 
       loginTitleByPhone: "تسجيل الدخول عبر الهاتف",

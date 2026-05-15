@@ -528,7 +528,7 @@ export const ProductDetail = () => {
                   <div className="flex gap-1">
                     <button
                     onClick={() => {
-                    const phone = postDetailData?.user?.phone;
+                    const phone = postDetailData?.user?.country_code + postDetailData?.user?.phone;
 
                     if (!phone) return;
 
@@ -548,7 +548,7 @@ export const ProductDetail = () => {
                       className="flex gap-2 font-bold items-center px-6 py-3 bg-green-500 rounded-lg text-white hover:bg-primaryDark cursor-pointer transition"
                     >
                       <img  src={whatsapp}  alt="whatsapp icon"  className="h-5 w-5 filter brightness-0 invert"/>
-                      {postDetailData?.user?.phone || "7777777777"}
+                      {postDetailData?.user?.country_code + postDetailData?.user?.phone || ""}
                     </button>
                     <button
                       onClick={() => {
