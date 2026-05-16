@@ -26,6 +26,7 @@ export const ProductPage = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const categoryIdFromUrl = queryParams.get('category');
+  const subCategoryIdFromUrl = queryParams.get('subCategory');
 
   const imagePath = import.meta.env.VITE_APP_IMAGE_URL;
 
@@ -43,7 +44,9 @@ export const ProductPage = () => {
   const [totalCount, setTotalCounts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   // const [subcategoryIds, setSubcategoryIds] = useState([]);
-    const [subcategoryIds, setSubcategoryIds] = useState(null);
+    const [subcategoryIds, setSubcategoryIds] = useState(
+      subCategoryIdFromUrl ? Number(subCategoryIdFromUrl) : null
+    );
 
   const [filtersModal, setFiltersModal] = useState({
     sorting: "newest",
@@ -246,8 +249,17 @@ export const ProductPage = () => {
 
 const handleSelectSubcatIds = (id) => {
   const idNum = Number(id);
+  const next = subcategoryIds === idNum ? null : idNum;
 
-  setSubcategoryIds((prev) => (prev === idNum ? null : idNum));
+  setSubcategoryIds(next);
+
+  const params = new URLSearchParams(location.search);
+  if (next) {
+    params.set('subCategory', String(next));
+  } else {
+    params.delete('subCategory');
+  }
+  navigate(`${location.pathname}?${params.toString()}`, { replace: true });
 
   setCurrentPage(1);
   clearLocationState();
@@ -338,10 +350,22 @@ const handleSelectSubcatIds = (id) => {
    * Handle URL parameter changes (for refresh and browser navigation)
    * ------------------------------ */
   useEffect(() => {
-    const categoryId = queryParams.get('categoryId');
+    const params = new URLSearchParams(location.search);
+
+    const categoryId = params.get('categoryId');
     if (categoryId && filters.category !== categoryId) {
       console.log('URL category changed, updating filters:', categoryId);
       setFilters(prev => ({ ...prev, category: categoryId }));
+      setCurrentPage(1);
+      lastRequestKeyRef.current = null;
+      recentRequestsRef.current.clear();
+    }
+
+    const subCat = params.get('subCategory');
+    const subCatNum = subCat ? Number(subCat) : null;
+    if (subCatNum !== subcategoryIds) {
+      console.log('URL subCategory changed, updating filter:', subCatNum);
+      setSubcategoryIds(subCatNum);
       setCurrentPage(1);
       lastRequestKeyRef.current = null;
       recentRequestsRef.current.clear();
