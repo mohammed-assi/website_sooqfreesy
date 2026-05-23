@@ -459,7 +459,7 @@ export const EditPost = () => {
         `${CUSTOMER.GET_FORM_DATA}?category_id=${postDetailData?.category_id}&sub_category_id=${postDetailData?.sub_category_id}`
       );
       getSubCategory(
-        `${CUSTOMER.GET_SUBCATEGORY}/${postDetailData?.category_id}?onlyWithForms=true`
+        `${CUSTOMER.GET_SUBCATEGORY}/${postDetailData?.category_id}?onlyWithForms=false`
       );
     }
   }, [postDetailData]);

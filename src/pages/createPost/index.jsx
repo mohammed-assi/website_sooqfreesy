@@ -347,7 +347,7 @@ export const CreatePost = () => {
   useEffect(() => {
     if (categoryData) {
       getSubCategory(
-        `${CUSTOMER.GET_SUBCATEGORY}/${categoryData.id}?onlyWithForms=true`
+        `${CUSTOMER.GET_SUBCATEGORY}/${categoryData.id}?onlyWithForms=false`
       );
     }
   }, [categoryData]);
