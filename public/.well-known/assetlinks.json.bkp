@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.app.souqsyria",
+      "sha256_cert_fingerprints":
+        ["F3:AC:A0:BE:2E:30:CB:46:33:F0:92:40:FB:5B:7B:69:B9:28:FC:B0:93:EF:E0:FE:89:A5:C8:4D:B4:9E:8B:44"]
+    }
+  }
+]

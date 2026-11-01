@@ -341,3 +341,49 @@ html[dir="rtl"] .Toastify__close-button {
 .phone-container {
   position: absolute !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* smooth thin scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 1px; /* 🔥 reduced from 6px */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgb(255, 255, 255); /* gray-200 */
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #06b6d4;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #0891b2;
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin; /* already minimal, keep this */
+  scrollbar-color: #06b6d4 #ffffff; /* match track instead of white */
+  padding-bottom: 15px;
+}

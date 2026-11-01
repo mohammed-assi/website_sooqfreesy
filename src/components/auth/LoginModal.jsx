@@ -919,7 +919,7 @@ function LoginModal({ show, hide, setShowLoginModal }) {
           </div>
         </div>
 
-        <div className="pt-[50px] flex flex-col justify-between h-full">
+        <div className="pt-6 md:pt-0 flex flex-col justify-between">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {activeTab === 1 && (
               <div>

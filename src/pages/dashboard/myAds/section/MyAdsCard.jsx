@@ -110,6 +110,14 @@ const MyAdsCard = ({
             </p>
           )}
         </Link>
+        {activeTab === 2 && item.rejection_reason && (
+          <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2">
+            <p className="text-sm font-semibold text-red-600">
+              {t("rejectionReason")}
+            </p>
+            <p className="text-sm text-red-700 mt-1">{item.rejection_reason}</p>
+          </div>
+        )}
         <button
           onClick={() => setShowMenuItem(true)}
           className={`${i18n?.language === "ar" ? "left-3" : "right-3"}
