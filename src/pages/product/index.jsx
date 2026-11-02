@@ -13,6 +13,8 @@ import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 import { setNotifications } from "../../redux/slices/notificationSlice";
 import { ScreenLoader } from "../../utils/screenLoader";
 import useSearchDebounce from "../../utils/searchDebounce";
+import useDebounce from "../../utils/debounce";
+import { applyNearbyFilter } from "../../utils/mapUtils";
 import { City, Country, State } from "country-state-city";
 
 import { 
@@ -72,6 +74,7 @@ export const ProductPage = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [coords, setCoords] = useState({ lat: null, lng: null, country: null });
+  const selectedLocationDebounce = useDebounce(selectedLocation, 600);
   const [subCategoryList, setSubCategoryList] = useState([]);
 
   const totalPages = Math.ceil(totalCount / 12);
@@ -192,8 +195,7 @@ export const ProductPage = () => {
     if (filters.type) filterObj.post_type = filters.type;
     if (searchTextDebounce) filterObj.searchtext = searchTextDebounce;
     if (selectedState) filterObj.state = selectedState;
-    if (coords?.lat) filterObj.latitude = Number(coords.lat);
-    if (coords?.lng) filterObj.longitude = Number(coords.lng);
+    applyNearbyFilter(filterObj, coords, selectedLocationDebounce);
     return filterObj;
   }, [
     filters,
@@ -202,6 +204,7 @@ export const ProductPage = () => {
     selectedCity,
     selectedState,
     coords,
+    selectedLocationDebounce,
     reduxCoords,
   ]);
 
