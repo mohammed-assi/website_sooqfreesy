@@ -18,6 +18,7 @@ import useSearchDebounce from "../../utils/searchDebounce";
 import { ROUTE } from "../../config/constants";
 import moment from "moment";
 import useDebounce from "../../utils/debounce";
+import { applyNearbyFilter } from "../../utils/mapUtils";
 import { City, Country, State } from "country-state-city";
 import NotFoundPage from "../notFoundPage";
 import { setNotifications } from "../../redux/slices/notificationSlice";
@@ -62,6 +63,7 @@ export const SellerProfile = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [coords, setCoords] = useState({ lat: null, lng: null, country: null });
+  const selectedLocationDebounce = useDebounce(selectedLocation, 600);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
@@ -93,12 +95,11 @@ export const SellerProfile = () => {
     // post type
     if (filters.type) filterObj.post_type = filters.type;
 
-    // coordinates
-    if (coords?.lat) filterObj.latitude = Number(coords.lat);
-    if (coords?.lng) filterObj.longitude = Number(coords.lng);
+    // search (backend reads `searchtext`)
+    if (searchTextDebounce) filterObj.searchtext = searchTextDebounce;
 
-    // search
-    if (searchTextDebounce) filterObj.search = searchTextDebounce;
+    // coordinates, or typed location text when coordinates are unavailable
+    applyNearbyFilter(filterObj, coords, selectedLocationDebounce);
 
     return filterObj;
   }, [
@@ -108,6 +109,7 @@ export const SellerProfile = () => {
     selectedCity,
     selectedState,
     coords,
+    selectedLocationDebounce,
   ]);
 
   // ======== API Calls ========

@@ -284,7 +284,9 @@ export const EditCityLocation = ({
                         bounds: cityBounds || stateBounds || null,
                         strictBounds: !!(cityBounds || stateBounds),
                       }}
-                      onChange={() => {
+                      onChange={(e) => {
+                        // keep manually typed text so it still works if Google fails
+                        onChange(e.target.value);
                         setUserLocation("");
                         setCoords({ lat: null, lng: null, country: null });
                       }}

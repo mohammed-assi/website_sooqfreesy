@@ -3,6 +3,10 @@ import Autocomplete from "react-google-autocomplete";
 import { useSelector } from "react-redux";
 import { Country } from "country-state-city";
 import { useState } from "react";
+import { showInfoToast } from "../../utils/toastUtils";
+
+// show the "map search unavailable" notice once per page load
+let geocodeWarned = false;
 
 export const SideFilter = ({
   allCategory,
@@ -51,7 +55,16 @@ export const SideFilter = ({
       );
       const data = await res.json();
 
-      if (data.results[0]?.geometry?.bounds) {
+      if (data.status && data.status !== "OK" && data.status !== "ZERO_RESULTS") {
+        console.warn("Geocoding unavailable:", data.status, data.error_message);
+        if (!geocodeWarned) {
+          geocodeWarned = true;
+          showInfoToast(t("mapSearchUnavailable"));
+        }
+        return null;
+      }
+
+      if (data.results?.[0]?.geometry?.bounds) {
         const { northeast, southwest } = data.results[0].geometry.bounds;
         return {
           north: northeast.lat,
@@ -61,7 +74,7 @@ export const SideFilter = ({
         };
       }
 
-      if (data.results[0]?.geometry?.location) {
+      if (data.results?.[0]?.geometry?.location) {
         const { lat, lng } = data.results[0].geometry.location;
         return getBoundsFromLatLng(lat, lng, 20); // fallback: 20 km box
       }
@@ -196,7 +209,11 @@ export const SideFilter = ({
             apiKey={GOOGLE_API_KEY}
             placeholder={t("nearbyLocation")}
             value={selectedLocation}
-            onChange={(e) => setSelectedLocation(e.target.value)}
+            onChange={(e) => {
+              setSelectedLocation(e.target.value);
+              // typed text replaces any previously picked place
+              setCoords({ lat: null, lng: null, country: null });
+            }}
             onPlaceSelected={(place) => {
               if (place?.geometry?.location) {
                 const lat = place.geometry.location.lat();

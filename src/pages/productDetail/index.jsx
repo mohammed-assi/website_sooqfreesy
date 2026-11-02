@@ -30,6 +30,7 @@ import { ReportListModal } from "../../components/productDetails/ReportListModal
 import { getRequest } from "../../config/apiFunctions";
 import { CUSTOMER, POST, REPORT_LIST } from "../../config/endPoints";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { googleMapsLink, toValidCoords } from "../../utils/mapUtils";
 import {
   showErrorToast,
   showInfoToast,
@@ -66,9 +67,13 @@ export const ProductDetail = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [reportList, setReportList] = useState("");
 
-  const { isLoaded } = useLoadScript({
+  const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: GOOGLE_API_KEY,
   });
+  const mapCoords = toValidCoords(
+    postDetailData?.latitude,
+    postDetailData?.longitude
+  );
 
   const getAllPosts = async (url) => {
     setLoading(true);
@@ -435,27 +440,24 @@ export const ProductDetail = () => {
                     </h3>
                   </div>
                   <div className="w-full h-70 py-2 rounded-lg overflow-hidden shadow">
-                    {!isLoaded ? (
+                    {!mapCoords ? null : loadError ? (
+                      <a
+                        href={googleMapsLink(mapCoords)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary underline"
+                      >
+                        {t("openInGoogleMaps")}
+                      </a>
+                    ) : !isLoaded ? (
                       <p>Loading map...</p>
                     ) : (
                       <GoogleMap
-                        center={
-                          postDetailData?.latitude && postDetailData?.longitude
-                            ? {
-                                lat: Number(postDetailData?.latitude),
-                                lng: Number(postDetailData?.longitude),
-                              }
-                            : { lat: 0, lng: 0 }
-                        }
+                        center={mapCoords}
                         zoom={14}
                         mapContainerStyle={{ width: "100%", height: "100%" }}
                       >
-                        <Marker
-                          position={{
-                            lat: postDetailData.latitude,
-                            lng: postDetailData.longitude,
-                          }}
-                        />
+                        <Marker position={mapCoords} />
                       </GoogleMap>
                     )}
                   </div>
