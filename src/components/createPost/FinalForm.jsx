@@ -289,7 +289,9 @@ export const FinalForm = ({
                         country: userCountry ? userCountry.toLowerCase() : "sy",
                       },
                     }}
-                    onChange={() => {
+                    onChange={(e) => {
+                      // keep manually typed text so it still works if Google fails
+                      onChange(e.target.value);
                       setUserLocation("");
                       setCoords({ lat: null, lng: null, country: null });
                     }}
